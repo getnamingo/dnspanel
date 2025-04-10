@@ -195,6 +195,7 @@ Next, prepare the directories for logs and cache:
 
 ```bash
 mkdir -p /var/log/dns
+mkdir -p /var/log/namingo
 chown -R www-data:www-data /var/log/dns
 chown -R www-data:www-data /var/www/dns/cache/
 ```
