@@ -214,3 +214,12 @@ mv env-sample .env
 ```
 
 Edit the `.env` with the appropriate database details and preferences as required.
+
+## 8. Create admin user
+
+Edit file first !
+
+```bash
+cd /var/www/dns/bin
+php create_admin_user.php
+```
