@@ -27,37 +27,31 @@ class HomeController extends Controller
     public function dashboard(Request $request, Response $response)
     {
         $db = $this->container->get('db');
+        $isAdmin = $_SESSION["auth_roles"] == 0;
+        $userId = $_SESSION["auth_user_id"];
+        
+        if ($isAdmin) {
+            // Admin: total counts
+            $userCount = $db->selectValue('SELECT COUNT(*) FROM users');
+            $zoneCount = $db->selectValue('SELECT COUNT(*) FROM zones');
+            $ticketCount = $db->selectValue('SELECT COUNT(*) FROM support_tickets');
 
-        if ($_SESSION['auth_roles'] === 0) {
-            $clid = null;
+            $openTickets = $db->selectValue('SELECT COUNT(*) FROM support_tickets WHERE status = ?', ['Open']);
         } else {
-            $result = $db->selectRow('SELECT zone_id FROM zone_users WHERE user_id = ?', [$_SESSION['auth_user_id']]);
-            if (is_array($result)) {
-                $clid = $result['zone_id'];
-            } else if (is_object($result) && method_exists($result, 'fetch')) {
-                $clid = $result->fetch();
-            } else {
-                $clid = null;
-            }
+            // Regular user: filtered by user_id
+            $userCount = null; // Don't send this to view for users
+            $zoneCount = $db->selectValue('SELECT COUNT(*) FROM zones WHERE client_id = ?', [$userId]);
+            $ticketCount = $db->selectValue('SELECT COUNT(*) FROM support_tickets WHERE user_id = ?', [$userId]);
+
+            $openTickets = $db->selectValue('SELECT COUNT(*) FROM support_tickets WHERE user_id = ? AND status = ?', [$userId, 'Open']);
         }
 
-        if ($clid !== null) {
-            $zones = $db->selectValue('SELECT count(id) as zones FROM zones WHERE client_id = ?', [$clid]);
-            $latest_zones = $db->select('SELECT domain_name, created_at FROM zones WHERE client_id = ? ORDER BY created_at DESC LIMIT 10', [$clid]);
-            
-            return view($response, 'admin/dashboard/index.twig', [
-                'zones' => $zones,
-                'latest_zones' => $latest_zones,
-            ]);
-        } else {
-            $zones = $db->selectValue('SELECT count(id) as zones FROM zones');
-            $latest_zones = $db->select('SELECT domain_name, created_at FROM zones ORDER BY created_at DESC LIMIT 10');
-
-            return view($response, 'admin/dashboard/index.twig', [
-                'zones' => $zones,
-                'latest_zones' => $latest_zones,
-            ]);
-        }
+        return view($response, 'admin/dashboard/index.twig', [
+            'userCount' => $userCount,
+            'zoneCount' => $zoneCount,
+            'ticketCount' => $ticketCount,
+            'openTickets' => $openTickets
+        ]);
     }
 
     public function mode(Request $request, Response $response)
