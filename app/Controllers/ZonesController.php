@@ -240,8 +240,11 @@ class ZonesController extends Controller
                     'config' => json_encode($config),
                 ];
                 $domain = $service->createDomain($domainOrder);
-            } catch (Exception $e) {
-                $this->container->get('flash')->addMessage('error', 'Error reaching provider: ' . $e->getMessage());
+            } catch (\RuntimeException $e) {
+                $this->container->get('flash')->addMessage('error', $e->getMessage());
+                return $response->withHeader('Location', '/zone/create')->withStatus(302);
+            } catch (\Throwable $e) {
+                $this->container->get('flash')->addMessage('error', 'Unexpected failure during zone create: ' . $e->getMessage());
                 return $response->withHeader('Location', '/zone/create')->withStatus(302);
             }
 
@@ -439,8 +442,11 @@ class ZonesController extends Controller
                     $recordData['cloudns_auth_password'] = $cloudnsAuthPassword;
                 }
                 $recordId = $service->addRecord($recordData);
-            } catch (Throwable $e) {  // Catch generic exceptions
-                $this->container->get('flash')->addMessage('error', 'Database failure during update: ' . $e->getMessage());
+            } catch (\RuntimeException  $e) {
+                $this->container->get('flash')->addMessage('error', $e->getMessage());
+                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+            } catch (\Throwable  $e) {
+                $this->container->get('flash')->addMessage('error', 'Unexpected failure during creation: ' . $e->getMessage());
                 return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
             }
             
@@ -476,7 +482,7 @@ class ZonesController extends Controller
 
             $zone_id = $db->selectValue('SELECT id FROM zones WHERE domain_name = ? LIMIT 1',[$domainName]);
             $record_id = $db->selectValue(
-                'SELECT id FROM records WHERE domain_id = ? AND type = ? AND host = ? LIMIT 1',
+                'SELECT recordId FROM records WHERE domain_id = ? AND type = ? AND host = ? LIMIT 1',
                 [$zone_id, $record_type, $record_name]
             );
 
@@ -555,8 +561,11 @@ class ZonesController extends Controller
                     }
                     $service->updateRecord($updateData);
                 }
-            } catch (Exception $e) {  // Catch generic exceptions
-                $this->container->get('flash')->addMessage('error', 'Database failure during update: ' . $e->getMessage());
+            } catch (\RuntimeException $e) {
+                $this->container->get('flash')->addMessage('error', $e->getMessage());
+                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+            } catch (\Throwable $e) {
+                $this->container->get('flash')->addMessage('error', 'Unexpected failure during update: ' . $e->getMessage());
                 return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
             }
 
