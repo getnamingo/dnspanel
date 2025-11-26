@@ -1,9 +1,8 @@
-<script src="/assets/js/tabulator.min.js" defer></script>
-<script src="/assets/js/sweetalert2.min.js" defer></script>
+<script src="/assets/modules/js/tabulator.min.js" defer></script>
+<script src="/assets/modules/js/sweetalert2.min.js" defer></script>
 <script src="/assets/js/tabler.min.js" defer></script>
-<script src="/assets/js/xlsx.full.min.js" defer></script>
-<script src="/assets/js/jspdf.umd.min.js" defer></script>
-<script src="/assets/js/jspdf.plugin.autotable.min.js" defer></script>
+<script src="/assets/modules/js/jspdf.umd.min.js" defer></script>
+<script src="/assets/modules/js/jspdf.plugin.autotable.min.js" defer></script>
 <script>
     var table;
 
@@ -44,7 +43,7 @@
         clipboardPasteAction:"replace",
         printAsHtml:true,
         sortMode: "remote",
-        ajaxURL: "/dapi/zones",
+        ajaxURL: "/spark/zones",
         ajaxURLGenerator: function(url, config, params) {
             var queryParts = [];
 

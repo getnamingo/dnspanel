@@ -1,60 +1,64 @@
 <!doctype html>
-<html lang="en" class="h-100">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Namingo DNS Panel - a powerful multi-provider DNS management tool that allows users to manage DNS zones.">
+    <meta name="description" content="Namingo Domain Manager - a powerful multi-provider DNS management tool that allows users to manage DNS zones.">
     <meta name="author" content="Namingo Team">
     <meta name="keywords" content="Namingo, DNS Panel, Domain Management, Registrar Tools, Namingo Software, ICANN, Domain Registrar">
     <meta name="theme-color" content="#A62A6C">
-    <title>DNS Panel</title>
+    <title>Home | Domain Manager</title>
     {% include 'partials/css.twig' %}
-    <style>
-      @import url('/assets/fonts/inter/inter.css');
-      :root {
-          --tblr-font-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
-      }
-      @supports (font-variation-settings: normal) {
-          :root {
-              --tblr-font-sans-serif: "InterVariable", -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
-              font-optical-sizing: auto;
-          }
-      }
-    </style>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
     <header>
         <nav class="navbar navbar-expand-lg h-100 navbar-light bg-white border-bottom shadow-sm">
-            <div class="container">
+            <div class="container-xl">
                 <a class="navbar-brand" href="."><img src="{{ logoPath }}" style="height: 35px; width: auto;" /></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbar">
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav ms-lg-auto text-center text-lg-start">
+                        <li class="nav-item">
+                            <a {{ is_current_url('index') ? 'class="nav-link active" aria-current="page"' : 'class="nav-link"' }} href="{{route('index')}}">
+                                Home
+                            </a>
+                        </li>
+
+                        <li class="nav-item d-none d-lg-block">
+                            <span class="nav-link disabled px-2">|</span>
+                        </li>
+
                         {% if auth.isLogin %}
-                        <li class="nav-item">
-                            <a {{ is_current_url('home') ? 'class="nav-link active" aria-current="page"' : 'class="nav-link"' }} href="{{route('home')}}">
-                                Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a {{ is_current_url('logout') ? 'class="nav-link active" aria-current="page"' : 'class="nav-link"' }} href="{{route('logout')}}">
-                                Logout
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a {{ is_current_url('home') ? 'class="btn btn-primary me-2"' : 'class="btn btn-primary me-2"' }} href="{{route('home')}}">
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a {{ is_current_url('logout') ? 'class="btn btn-outline-primary"' : 'class="btn btn-outline-primary"' }} href="{{route('logout')}}">
+                                    Logout
+                                </a>
+                            </li>
                         {% else %}
-                        <li class="nav-item">
-                            <a {{ is_current_url('login') ? 'class="nav-link active" aria-current="page"' : 'class="nav-link"' }} href="{{route('login')}}">
-                                Login
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a {{ is_current_url('login') ? 'class="btn btn-outline-primary me-2"' : 'class="btn btn-outline-primary me-2"' }} href="{{route('login')}}">
+                                    Login
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a {{ is_current_url('register') ? 'class="btn btn-primary"' : 'class="btn btn-primary"' }} href="{{route('register')}}">
+                                    Register
+                                </a>
+                            </li>
                         {% endif %}
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <main class="flex-grow-1">
         <div class="container-fluid p-5 rounded-3 bg-light text-center">
             <div class="text-center my-5">
@@ -104,14 +108,15 @@
                     <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" />
                     </svg>
                 </div>
-                <h4 class="alert-title">To customize this page, copy <code>index.twig</code> from <code>/var/www/dns/resources/views</code> to <code>index.custom.twig</code> and edit the file as required.</h4>
+                <h4 class="alert-title">To edit this page, open <code>resources/views/index.twig</code> and replace the content.</h4>
                 <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
             </div>
         </div>
     </main>
+
     <footer class="footer bg-white border-top shadow-sm py-3">
-        <div class="container">
-            <span class="text-muted">&copy; {{ 'now' | date('Y') }} <strong>{{ copyright }}</strong>. All rights reserved.</span>
+        <div class="container-xl">
+            <span class="text-muted">&copy; {{ 'now' | date('Y') }}. All rights reserved.</span>
         </div>
     </footer>
     {% include 'partials/js.twig' %}

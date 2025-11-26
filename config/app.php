@@ -22,10 +22,10 @@ if (file_exists(__DIR__.'/.env')) {
 
 return [
     'env' => $_ENV['APP_ENV'] ?? 'production',
-    'name' => $_ENV['APP_NAME'] ?? 'Foundry',
+    'name' => $_ENV['APP_NAME'] ?? 'DNS',
     'url' => $_ENV['APP_URL'] ?? 'http://localhost',
     'domain' => $_ENV['APP_DOMAIN'] ?? 'example.com',
-    'root' => $_ENV['APP_ROOT'] ?? '/var/www/panel',
+    'root' => $_ENV['APP_ROOT'] ?? '/var/www/dns',
     'timezone' => $_ENV['TIME_ZONE'] ?? 'UTC',
     'default' => $_ENV['DB_DRIVER'] ?? 'mysql',
     'connections' => [

@@ -28,7 +28,7 @@ class ProfileController extends Controller
     public function __construct(ContainerInterface $container) {
         parent::__construct($container);
 
-        $rpName = 'NDM';
+        $rpName = 'DNS';
         $rpId = envi('APP_DOMAIN');
         $this->webAuthn = new \lbuchs\WebAuthn\WebAuthn($rpName, $rpId, ['android-key', 'android-safetynet', 'apple', 'fido-u2f', 'packed', 'tpm']);
     }

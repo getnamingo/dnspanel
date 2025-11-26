@@ -1,14 +1,15 @@
 <!doctype html>
-<html lang="{{ _lang ?: 'en' }}" dir="{{ _lang == 'ar' or _lang == 'ar_SA' ? 'rtl' : 'ltr' }}">
+<html lang="{{ _lang ?: 'en' }}" dir="{{ _lang in ['ar', 'ar_SA'] ? 'rtl' : 'ltr' }}"{% if screen_mode == 'dark' %} data-bs-theme="dark"{% endif %}{% if theme is not defined or theme is empty %} data-bs-theme-primary="blue"{% else %} data-bs-theme-primary="{{ theme }}"{% endif %}>
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>{% block title %}{% endblock %} | Namingo</title>
+    <title>{% block title %}{% endblock %} | Domain Manager</title>
+    <meta name="theme-color" content="#066fd1">
     <!-- CSS files -->
-{% if route_is('zones') or route_is('users') or route_is('log') or route_is('profile') %}{% include 'partials/css-tables.twig' %}{% else %}{% include 'partials/css.twig' %}{% endif %}
+{% if route_is('transactions') or route_is('users') or is_current_url('listZones') or route_is('providers') or is_current_url('ticketview') or route_is('log') or route_is('profile') %}{% include 'partials/css-tables.twig' %}{% else %}{% include 'partials/css.twig' %}{% endif %}
   </head>
-  <body{% if screen_mode == 'dark' %} data-bs-theme="dark"{% endif %}>
+  <body>
     <div class="page">
       <!-- Navbar -->
       <header class="navbar navbar-expand-md navbar-light d-print-none">
@@ -18,28 +19,21 @@
           </button>
           <h1 class="navbar-brand d-none-navbar-horizontal pe-0 pe-md-3">
             <a href="{{route('home')}}">
-              <img src="{{ logoPath }}" width="110" height="32" alt="Namingo" class="navbar-brand-image">
+              <img src="{{ logoPath }}" alt="Domain Manager" class="navbar-brand-image responsive-logo">
             </a>
           </h1>
           <div class="navbar-nav flex-row order-md-last">
-            <div class="nav-item d-md-flex me-3">
+            <div class="nav-item d-md-flex me-1 me-sm-2 me-md-3">
               <div class="btn-list">
                 <div class="dropdown small-dropdown">
                   <a href="#" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="flag flag-country-{{ uiLang }}"></span>&nbsp;{{ lang }}</a>
                     <div class="dropdown-menu">
                       <a href="/lang?en_US" class="dropdown-item"><span class="flag flag-country-us"></span>&nbsp;English</a>
-                      <a href="/lang?de_DE" class="dropdown-item"><span class="flag flag-country-de"></span>&nbsp;Deutsch</a>
-                      <a href="/lang?uk_UA" class="dropdown-item"><span class="flag flag-country-ua"></span>&nbsp;Українська</a>
-                      <a href="/lang?fr_FR" class="dropdown-item"><span class="flag flag-country-fr"></span>&nbsp;Français</a>
-                      <a href="/lang?es_ES" class="dropdown-item"><span class="flag flag-country-es"></span>&nbsp;Español</a>
-                      <a href="/lang?pt_PT" class="dropdown-item"><span class="flag flag-country-pt"></span>&nbsp;Português</a>
-                      <a href="/lang?jp_JP" class="dropdown-item"><span class="flag flag-country-jp"></span>&nbsp;日本語</a>
-                      <a href="/lang?ar_SA" class="dropdown-item"><span class="flag flag-country-sa"></span>&nbsp;العربية</a>
                     </div>
                 </div>
               </div>
             </div>
-            <div class="d-none d-md-flex me-3">
+            <div class="d-flex me-1 me-sm-2 me-md-3 gap-1 gap-sm-2">
               <a href="/mode" class="nav-link px-0 hide-theme-dark" title="{{ __('Enable dark mode') }}" data-bs-toggle="tooltip"
            data-bs-placement="bottom">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>
@@ -65,7 +59,7 @@
             </div>
           </div>
         </div>
-      </header>
+      </header>  
       <div class="navbar-expand-md">
         <div class="collapse navbar-collapse" id="navbar-menu">
           <div class="navbar navbar-light">
@@ -73,7 +67,8 @@
               <ul class="navbar-nav">
                 <li {{ is_current_url('home') ? 'class="nav-item active"' : 'class="nav-item"' }}>
                   <a class="nav-link" href="{{route('home')}}">
-                    <span class="nav-link-icon d-md-none d-lg-inline-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l-2 0l9 -9l9 9l-2 0"></path><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path><path d="M10 12h4v4h-4z"></path></svg>
+                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><polyline points="5 12 3 12 12 3 21 12 19 12" /><path d="M5 12v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-8" /><rect x="10" y="12" width="4" height="4" /></svg>
                     </span>
                     <span class="nav-link-title">
                       {{ __('Dashboard') }}
@@ -117,26 +112,21 @@
                     </a>
                   </div>
                 </li>{% endif %}
-                <li {{ is_current_url('log') or is_current_url('providers') or is_current_url('serverHealth') ? 'class="nav-item dropdown active"' : 'class="nav-item dropdown"' }}>
+                <li {{ is_current_url('ticketview') or is_current_url('newticket') or 'ticket' in currentUri ? 'class="nav-item dropdown active"' : 'class="nav-item dropdown"' }}>
                   <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
-                    <span class="nav-link-icon d-md-none d-lg-inline-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"></path> <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path></svg>
+                    <span class="nav-link-icon d-md-none d-lg-inline-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path><path d="M15 15l3.35 3.35"></path><path d="M9 15l-3.35 3.35"></path><path d="M5.65 5.65l3.35 3.35"></path><path d="M18.35 5.65l-3.35 3.35"></path></svg>
                     </span>
                     <span class="nav-link-title">
-                      {{ __('System') }}
+                      {{ __('Support') }}
                     </span>
                   </a>
                   <div class="dropdown-menu">
-                    {% if roles == 0 %}
-                    <a class="dropdown-item" href="{{route('providers')}}">
-                      {{ __('Providers') }}
+                    <a class="dropdown-item" href="{{route('ticketview')}}">
+                      {{ __('Support Tickets') }}
                     </a>
-                    <a class="dropdown-item" href="{{route('serverHealth')}}">
-                      {{ __('Server Health') }}
+                    <a class="dropdown-item" href="{{route('newticket')}}">
+                      {{ __('Create Ticket') }}
                     </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{{route('log')}}">
-                      {{ __('Error Log') }}
-                    </a>{% endif %}
                   </div>
                 </li>
               </ul>
@@ -149,16 +139,18 @@
     <!-- Libs JS -->
 {% if route_is('dashboard') %}
     {% include 'partials/js-home.twig' %}
-{% elseif route_is('zones') %}
-    {% include 'partials/js-zones.twig' %}
 {% elseif route_is('users') %}
     {% include 'partials/js-users.twig' %}
-{% elseif route_is('log') %}
-    {% include 'partials/js-log.twig' %}
+{% elseif is_current_url('listZones') %}
+    {% include 'partials/js-zones.twig' %}
+{% elseif route_is('providers') %}
+    {% include 'partials/js-providers.twig' %}
+{% elseif is_current_url('ticketview') %}
+    {% include 'partials/js-support.twig' %}
 {% elseif route_is('profile') %}
     {% include 'partials/js-profile.twig' %}
-{% elseif route_is('server') %}
-    {% include 'partials/js-server.twig' %}
+{% elseif route_is('deposit') %}
+    {% include 'partials/js-deposit.twig' %}
 {% else %}
     {% include 'partials/js.twig' %}
 {% endif %}

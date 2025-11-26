@@ -3,18 +3,20 @@
     <link href="/assets/css/tabler-flags.rtl.min.css" rel="stylesheet"/>
     <link href="/assets/css/tabler-payments.rtl.min.css" rel="stylesheet"/>
     <link href="/assets/css/tabler-vendors.rtl.min.css" rel="stylesheet"/>
+    <link href="/assets/css/tabler-themes.rtl.min.css" rel="stylesheet"/>
 {% else %}
     <link href="/assets/css/tabler.min.css" rel="stylesheet"/>
     <link href="/assets/css/tabler-flags.min.css" rel="stylesheet"/>
     <link href="/assets/css/tabler-payments.min.css" rel="stylesheet"/>
     <link href="/assets/css/tabler-vendors.min.css" rel="stylesheet"/>
+    <link href="/assets/css/tabler-themes.min.css" rel="stylesheet"/>
 {% endif %}
     {% if screen_mode == 'dark' %}
-    <link href="/assets/css/tabulator-dark.min.css" rel="stylesheet">
+    <link href="/assets/modules/css/tabulator-dark.min.css" rel="stylesheet">
     {% else %}
-    <link href="/assets/css/tabulator.min.css" rel="stylesheet">
+    <link href="/assets/modules/css/tabulator.min.css" rel="stylesheet">
     {% endif %}
-    <link href="/assets/css/sweetalert2.min.css" rel="stylesheet">
+    <link href="/assets/modules/css/sweetalert2.min.css" rel="stylesheet">
     <style>
         @import url('/assets/fonts/inter/inter.css');
         :root {
@@ -33,6 +35,15 @@
             width: 20px;
             height: 15px;
             display: inline-block;
+        }
+        .responsive-logo {
+          height: 32px;
+          width: auto;
+        }
+        @media (max-width: 576px) {
+          .responsive-logo {
+            height: 24px;
+          }
         }
 {% if _lang == 'ar' or _lang == 'ar_SA' %}
         [dir="rtl"] {

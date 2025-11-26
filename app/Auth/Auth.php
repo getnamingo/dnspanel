@@ -183,7 +183,7 @@ class Auth
                     // If tfa_secret exists and is not empty, verify the 2FA code
                     $qrCodeProvider = new BaconQRCodeProvider($borderWidth = 0, $backgroundColour = '#ffffff', $foregroundColour = '#000000', $format = 'svg');
                     $tfaService = new TwoFactorAuth(
-                        issuer: "NDM",
+                        issuer: "DNS",
                         qrcodeprovider: $qrCodeProvider,
                     );
                     if ($tfaService->verifyCode($tfa_secret, $code, 0) === true) {

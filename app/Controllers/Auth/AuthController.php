@@ -25,7 +25,7 @@ class AuthController extends Controller
     private $webAuthn;
 
     public function __construct() {
-        $rpName = 'Foundry';
+        $rpName = 'DNS';
         $rpId = envi('APP_DOMAIN');
         $this->webAuthn = new \lbuchs\WebAuthn\WebAuthn($rpName, $rpId, ['android-key', 'android-safetynet', 'apple', 'fido-u2f', 'packed', 'tpm']);
     }
