@@ -1,10 +1,10 @@
-# PlexDNS Panel
+# Namingo Domain Manager
 
 [![StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
 
 [![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
 
-PlexDNS Panel is a powerful and flexible tool for managing **DNS zones** across multiple providers. It provides seamless integration with various DNS services, allowing you to manage and streamline domain name system (DNS) configurations effectively.
+Namingo Domain Manager is a powerful and flexible tool for managing **DNS zones** across multiple providers. It provides seamless integration with various DNS services, allowing you to manage and streamline domain name system (DNS) configurations effectively.
 
 ## Features
 ✅ **Multi-provider support** – Manage DNS records across different DNS providers.
@@ -16,7 +16,7 @@ PlexDNS Panel is a powerful and flexible tool for managing **DNS zones** across 
 ✅ **Fast and secure** – Uses API keys for authentication and ensures secure communication.
 
 ## Supported Providers & Requirements
-PlexDNS Panel supports the following **DNS providers**, each requiring specific credentials:
+Namingo Domain Manager supports the following **DNS providers**, each requiring specific credentials:
 
 | Provider    | Required Credentials |
 |------------|---------------------|
@@ -31,7 +31,7 @@ PlexDNS Panel supports the following **DNS providers**, each requiring specific 
 | **Vultr** | `API_KEY` |
 
 ## Installation
-To install and configure **PlexDNS Panel**, refer to the [installation guide](install.md) for detailed instructions.
+To install and configure **Namingo Domain Manager**, refer to the [installation guide](install.md) for detailed instructions.
 
 ## Contributing
 Contributions are welcome! Feel free to submit a pull request or open an issue.

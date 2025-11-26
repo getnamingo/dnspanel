@@ -1,18 +1,15 @@
-APP_NAME='DNS'
+APP_NAME='Foundry'
 APP_ENV=public
-APP_URL=https://dns.example.com
-APP_DOMAIN=example.com
-APP_ROOT=/var/www/dns
-MINIMUM_DATA=false
+APP_URL=http://localhost
 
 LANG=en_US
 UI_LANG=us
 
 DB_DRIVER=mysql
 DB_HOST=localhost
-DB_DATABASE=dns
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
+DB_DATABASE=foundry
+DB_USERNAME=root
+DB_PASSWORD=
 DB_PORT=3306
 
 #mailer settings (Driver = smtp, utopia or msg [for local message broker]; Api Provder = sendgrid or mailgun)
@@ -24,9 +21,42 @@ MAIL_USERNAME=username
 MAIL_PASSWORD=password
 MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS='example@domain.com'
+MAIL_TO_ADDRESS='example@domain.com'
 MAIL_FROM_NAME='Example'
 MAIL_API_KEY='test-api-key'
 MAIL_API_PROVIDER='sendgrid'
+
+ENABLED_GATEWAYS=stripe,liqpay,plata,adyen,now,nicky
+
+STRIPE_SECRET_KEY='stripe-secret-key'
+STRIPE_PUBLISHABLE_KEY='stripe-publishable-key'
+
+LIQPAY_PUBLIC_KEY='liqpay-public-key'
+LIQPAY_PRIVATE_KEY='liqpay-private-key'
+
+PLATA_TOKEN='plata-token'
+
+ADYEN_API_KEY='adyen-api-key'
+ADYEN_MERCHANT_ID='adyen-merchant-id'
+ADYEN_THEME_ID='adyen-theme-id'
+ADYEN_BASE_URI='https://checkout-test.adyen.com/v70/'
+ADYEN_BASIC_AUTH_USER='adyen-basic-auth-user'
+ADYEN_BASIC_AUTH_PASS='adyen-basic-auth-pass'
+ADYEN_HMAC_KEY='adyen-hmac-key'
+
+NOW_API_KEY='now-api-key'
+
+NICKY_API_KEY='nicky-api-key'
+
+PASSWORD_EXPIRATION_SKIP_USERS=admin
+
+COMPANY_NAME="Your Company Ltd"
+COMPANY_ADDRESS="123 Main St"
+COMPANY_ADDRESS2="Suite 456"
+COMPANY_COUNTRY_CODE="BG"
+COMPANY_VAT_NUMBER="BG123456789"
+COMPANY_PHONE="+359 888 123 456"
+COMPANY_EMAIL="info@example.com"
 
 # AnycastDNS
 DNS_ANYCASTDNS_API_KEY=

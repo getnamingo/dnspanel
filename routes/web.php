@@ -1,15 +1,26 @@
 <?php
+/**
+ * Argora Foundry
+ *
+ * A modular PHP boilerplate for building SaaS applications, admin panels, and control systems.
+ *
+ * @package    App
+ * @author     Taras Kondratyuk <help@argora.org>
+ * @copyright  Copyright (c) 2025 Argora
+ * @license    MIT License
+ * @link       https://github.com/getargora/foundry
+ */
 
 use App\Controllers\Auth\AuthController;
 use App\Controllers\Auth\PasswordController;
 use App\Controllers\HomeController;
 use App\Controllers\ZonesController;
-use App\Controllers\LogsController;
-use App\Controllers\UsersController;
-use App\Controllers\ReportsController;
 use App\Controllers\ProfileController;
-use App\Controllers\SystemController;
-use App\Controllers\DapiController;
+use App\Controllers\UsersController;
+use App\Controllers\ProvidersController;
+use App\Controllers\SupportController;
+use App\Controllers\LogsController;
+use App\Controllers\SparkController;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\GuestMiddleware;
 use Slim\Exception\HttpNotFoundException;
@@ -21,17 +32,23 @@ use Tqdev\PhpCrudApi\Config\Config;
 $app->get('/', HomeController::class .':index')->setName('index');
 
 $app->group('', function ($route) {
+    $route->get('/register', AuthController::class . ':createRegister')->setName('register');
+    $route->post('/register', AuthController::class . ':register');
     $route->get('/login', AuthController::class . ':createLogin')->setName('login');
     $route->map(['GET', 'POST'], '/login/verify', AuthController::class . ':verify2FA')->setName('verify2FA');
     $route->post('/login', AuthController::class . ':login');
+
     $route->post('/webauthn/login/challenge', AuthController::class . ':getLoginChallenge')->setName('webauthn.login.challenge');
     $route->post('/webauthn/login/verify', AuthController::class . ':verifyLogin')->setName('webauthn.login.verify');
+
+    $route->get('/verify-email', AuthController::class.':verifyEmail')->setName('verify.email');
+    $route->get('/verify-email-resend',AuthController::class.':verifyEmailResend')->setName('verify.email.resend');
+
     $route->get('/forgot-password', PasswordController::class . ':createForgotPassword')->setName('forgot.password');
     $route->post('/forgot-password', PasswordController::class . ':forgotPassword');
     $route->get('/reset-password', PasswordController::class.':resetPassword')->setName('reset.password');
     $route->get('/update-password', PasswordController::class.':createUpdatePassword')->setName('update.password');
     $route->post('/update-password', PasswordController::class.':updatePassword');
-    $route->post('/webhook/adyen', FinancialsController::class .':webhookAdyen')->setName('webhookAdyen');
 })->add(new GuestMiddleware($container));
 
 $app->group('', function ($route) {
@@ -45,18 +62,29 @@ $app->group('', function ($route) {
     $route->post('/zone/update', ZonesController::class . ':updateZoneProcess')->setName('updateZoneProcess');
     $route->post('/zone/updaterecord', ZonesController::class . ':zoneUpdateRecord')->setName('zoneUpdateRecord');
     $route->map(['GET', 'POST'], '/zone/delete/{zone}', ZonesController::class . ':deleteZone')->setName('deleteZone');
-    
+
     $route->get('/users', UsersController::class .':listUsers')->setName('listUsers');
     $route->map(['GET', 'POST'], '/user/create', UsersController::class . ':createUser')->setName('createUser');
     $route->get('/user/update/{user}', UsersController::class . ':updateUser')->setName('updateUser');
     $route->post('/user/update', UsersController::class . ':updateUserProcess')->setName('updateUserProcess');
+    $route->get('/user/impersonate/{user}', UsersController::class . ':impersonateUser')->setName('impersonateUser');
+    $route->get('/leave_impersonation', UsersController::class . ':leave_impersonation')->setName('leave_impersonation');
+
+    $route->get('/providers', ProvidersController::class .':listProviders')->setName('listProviders');
+    $route->map(['GET', 'POST'], '/providers/create', ProvidersController::class . ':createProvider')->setName('createProvider');
+    $route->get('/providers/{provider}/edit', ProvidersController::class . ':editProvider')->setName('editProvider');
+    $route->post('/providers/{provider}/update', ProvidersController::class . ':updateProvider')->setName('updateProvider');
+    $route->get('/providers/{provider}/delete', ProvidersController::class . ':deleteProvider')->setName('deleteProvider');
 
     $route->get('/log', LogsController::class .':log')->setName('log');
 
-    $route->get('/server', ReportsController::class .':serverHealth')->setName('serverHealth');
-    $route->post('/clear-cache', ReportsController::class .':clearCache')->setName('clearCache');
+    $route->post('/clear-cache', HomeController::class .':clearCache')->setName('clearCache');
 
-    $route->map(['GET', 'POST'], '/providers', SystemController::class .':providers')->setName('providers');
+    $route->get('/support', SupportController::class .':view')->setName('ticketview');
+    $route->map(['GET', 'POST'], '/support/new', SupportController::class .':newticket')->setName('newticket');
+    $route->get('/ticket/{ticket}', SupportController::class . ':viewTicket')->setName('viewTicket');
+    $route->post('/support/reply', SupportController::class . ':replyTicket')->setName('replyTicket');
+    $route->post('/support/status', SupportController::class . ':statusTicket')->setName('statusTicket');
 
     $route->get('/profile', ProfileController::class .':profile')->setName('profile');
     $route->post('/profile/2fa', ProfileController::class .':activate2fa')->setName('activate2fa');
@@ -64,13 +92,15 @@ $app->group('', function ($route) {
     $route->get('/webauthn/register/challenge', ProfileController::class . ':getRegistrationChallenge')->setName('webauthn.register.challenge');
     $route->post('/webauthn/register/verify', ProfileController::class . ':verifyRegistration')->setName('webauthn.register.verify');
     $route->post('/token-well', ProfileController::class .':tokenWell')->setName('tokenWell');
+    $route->post('/profile/update-contacts', ProfileController::class .':updateContacts')->setName('updateContacts');
 
     $route->get('/mode', HomeController::class .':mode')->setName('mode');
+    $route->post('/theme', HomeController::class . ':selectTheme')->setName('select.theme');
     $route->get('/lang', HomeController::class .':lang')->setName('lang');
     $route->get('/logout', AuthController::class . ':logout')->setName('logout');
     $route->post('/change-password', PasswordController::class . ':changePassword')->setName('change.password');
 
-    $route->get('/dapi/zones', [DapiController::class, 'listZones']);
+    $route->get('/spark/zones', [SparkController::class, 'listZones']);
 })->add(new AuthMiddleware($container));
 
 $app->any('/api[/{params:.*}]', function (
@@ -93,7 +123,7 @@ $app->any('/api[/{params:.*}]', function (
         $db_username = null;
         $db_password = null;
         $db_database = null;
-        $db_address = '/var/www/cp/registry.db';
+        $db_address = $db['sqlite']['database'];
     }
     $config = new Config([
         'driver' => config('default'),
@@ -102,15 +132,13 @@ $app->any('/api[/{params:.*}]', function (
         'database' => $db_database,
         'address' => $db_address,
         'basePath' => '/api',
+        'cachePath' => __DIR__ . '/../cache',
         'middlewares' => 'customization,dbAuth,authorization,sanitation,multiTenancy',
         'authorization.tableHandler' => function ($operation, $tableName) {
-        $restrictedTables = ['contact_authInfo', 'contact_postalInfo', 'domain_authInfo', 'secdns'];
+        $restrictedTables = ['example_restricted_table'];
             return !in_array($tableName, $restrictedTables);
         },
         'authorization.columnHandler' => function ($operation, $tableName, $columnName) {
-            if ($tableName == 'registrar' && $columnName == 'pw') {
-                return false;
-            }
             if ($tableName == 'users' && $columnName == 'password') {
                 return false;
             }
@@ -133,7 +161,8 @@ $app->any('/api[/{params:.*}]', function (
             $response->getBody()->rewind();
             $data = json_decode($bodyContent, true);
 
-            if ($tableName == 'domain') {
+            // Sample table overwrite
+            /* if ($tableName == 'domain') {
                 if (isset($data['records']) && is_array($data['records'])) {
                     foreach ($data['records'] as &$record) {
                         if (isset($record['name']) && stripos($record['name'], 'xn--') === 0) {
@@ -145,21 +174,7 @@ $app->any('/api[/{params:.*}]', function (
                     }
                     unset($record);
                 }
-            }
-            else if ($tableName == 'domain_tld') {
-                if (isset($data['records']) && is_array($data['records'])) {
-                    foreach ($data['records'] as &$record) {
-                        if (isset($record['tld']) && stripos($record['tld'], '.xn--') === 0) {
-                            $punycodeTld = ltrim($record['tld'], '.');
-                            $record['tld_o'] = $record['tld'];
-                            $record['tld'] = '.'.idn_to_utf8(strtolower($punycodeTld), 0, INTL_IDNA_VARIANT_UTS46);
-                        } else {
-                            $record['tld_o'] = $record['tld'];
-                        }
-                    }
-                    unset($record);
-                }
-            }
+            } */
 
             $modifiedBodyContent = json_encode($data, JSON_UNESCAPED_UNICODE);
             $stream = \Nyholm\Psr7\Stream::create($modifiedBodyContent);
@@ -176,27 +191,17 @@ $app->any('/api[/{params:.*}]', function (
             if (isset($_SESSION['auth_roles']) && $_SESSION['auth_roles'] === 0) {
                 return [];
             }
-            $registrarId = $_SESSION['auth_registrar_id'];
 
             $columnMap = [
-                'zone' => 'client_id',
-                'poll' => 'registrar_id',
-                'registrar' => 'id',
-                'users_audit' => 'user_id', // Continues to use user_id
+                'services',
+                'invoices',
+                'statement',
+                'support_tickets',
+                'users_audit',
             ];
 
-            // Check if the special filter condition for the domain table is met
-            $isSpecialDomainRequest = $tableName === 'domain' && isset($_GET['filter']) && $_GET['filter'] === 'trstatus,nis';
-
-            if (array_key_exists($tableName, $columnMap)) {
-                // If it's a special domain request, bypass the usual filtering
-                if ($isSpecialDomainRequest) {
-                    return [];
-                }
-
-                // Use registrarId for tables where 'registrar_id' is the filter
-                // For 'support_tickets' and 'users_audit', use userId
-                return [$columnMap[$tableName] => (in_array($tableName, ['support_tickets', 'users_audit']) ? $_SESSION['auth_user_id'] : $registrarId)];
+            if (in_array($tableName, $columnMap)) {
+                return ['user_id' => $_SESSION['auth_user_id']];
             }
 
             return ['1' => '0'];
@@ -218,5 +223,3 @@ $app->add(function (Psr\Http\Message\ServerRequestInterface $request, Psr\Http\S
             ->withStatus(302);
     }
 });
-
-$app->addErrorMiddleware(true, true, true);

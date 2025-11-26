@@ -1,8 +1,4 @@
-SET FOREIGN_KEY_CHECKS=0;
-
-CREATE DATABASE IF NOT EXISTS `dns`;
-
-CREATE TABLE IF NOT EXISTS `dns`.`users` (
+CREATE TABLE IF NOT EXISTS `users` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `email` varchar(249) COLLATE utf8mb4_unicode_ci NOT NULL,
     `password` varchar(255) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
@@ -23,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `dns`.`users` (
     UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `dns`.`users_audit` (
+CREATE TABLE IF NOT EXISTS `users_audit` (
     `user_id` int(10) unsigned NOT NULL,
     `user_event` VARCHAR(255) NOT NULL,
     `user_resource` VARCHAR(255) default NULL,
@@ -38,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `dns`.`users_audit` (
     FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `dns`.`users_confirmations` (
+CREATE TABLE IF NOT EXISTS `users_confirmations` (
     `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `user_id` int(10) unsigned NOT NULL,
     `email` varchar(249) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -51,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `dns`.`users_confirmations` (
     KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `dns`.`users_remembered` (
+CREATE TABLE IF NOT EXISTS `users_remembered` (
     `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
     `user_id` int(10) unsigned NOT NULL,
     `selector` varchar(24) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
@@ -62,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `dns`.`users_remembered` (
     KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `dns`.`users_resets` (
+CREATE TABLE IF NOT EXISTS `users_resets` (
     `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
     `user_id` int(10) unsigned NOT NULL,
     `selector` varchar(20) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
@@ -73,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `dns`.`users_resets` (
     KEY `user_expires` (`user_id`,`expires`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `dns`.`users_throttling` (
+CREATE TABLE IF NOT EXISTS `users_throttling` (
     `bucket` varchar(44) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
     `tokens` float unsigned NOT NULL,
     `replenished_at` int(10) unsigned NOT NULL,
@@ -82,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `dns`.`users_throttling` (
     KEY `expires_at` (`expires_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `dns`.`users_webauthn` (
+CREATE TABLE IF NOT EXISTS `users_webauthn` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT UNSIGNED NOT NULL,
     `credential_id` VARBINARY(255) NOT NULL,
@@ -95,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `dns`.`users_webauthn` (
     FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `dns`.`zones` (
+CREATE TABLE IF NOT EXISTS `zones` (
     `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
     `client_id` BIGINT(20) NOT NULL,
     `domain_name` VARCHAR(75),
@@ -107,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `dns`.`zones` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
                 
-CREATE TABLE IF NOT EXISTS `dns`.`records` (
+CREATE TABLE IF NOT EXISTS `records` (
     `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
     `domain_id` BIGINT(20) NOT NULL,
     `recordId` VARCHAR(100) DEFAULT NULL,
@@ -122,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `dns`.`records` (
     FOREIGN KEY (`domain_id`) REFERENCES `zones`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `dns`.`zone_users` (
+CREATE TABLE IF NOT EXISTS `zone_users` (
     `zone_id` BIGINT(20) NOT NULL,
     `user_id` int(10) unsigned NOT NULL,
     PRIMARY KEY (`zone_id`, `user_id`),
@@ -130,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `dns`.`zone_users` (
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `dns`.`error_log` (
+CREATE TABLE IF NOT EXISTS `error_log` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
     `channel` VARCHAR(255), 
     `level` INT(3),

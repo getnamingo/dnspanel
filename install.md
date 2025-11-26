@@ -1,45 +1,45 @@
-# Installation Guide (Ubuntu 22.04/Ubuntu 24.04/Debian 12)
+# 📦 Installation Guide (Ubuntu 22.04/Ubuntu 24.04/Debian 12)
 
 ## 1. Install the required packages:
 
 ```bash
 apt install -y curl software-properties-common ufw
 add-apt-repository ppa:ondrej/php
-apt update
 apt install -y bzip2 composer git net-tools php8.3 php8.3-bcmath php8.3-bz2 php8.3-cli php8.3-common php8.3-curl php8.3-ds php8.3-fpm php8.3-gd php8.3-gmp php8.3-igbinary php8.3-imap php8.3-intl php8.3-mbstring php8.3-opcache php8.3-readline php8.3-redis php8.3-soap php8.3-swoole php8.3-uuid php8.3-xml php8.3-zip unzip wget whois
 ```
 
-### Configure PHP:
+### Configure PHP Settings:
 
-Edit the PHP Configuration Files:
+1. Open the PHP-FPM configuration file:
 
 ```bash
-nano /etc/php/8.3/cli/php.ini
 nano /etc/php/8.3/fpm/php.ini
 ```
 
-Locate or add these lines in ```php.ini```, also replace ```example.com``` with your registrar domain name:
+Add or uncomment the following session security settings:
 
-```bash
-opcache.enable=1
-opcache.enable_cli=1
-opcache.jit_buffer_size=100M
-opcache.jit=1255
-
+```ini
 session.cookie_secure = 1
 session.cookie_httponly = 1
 session.cookie_samesite = "Strict"
-session.cookie_domain = example.com
 ```
 
-In ```/etc/php/8.3/mods-available/opcache.ini``` make one additional change:
+2. Open the OPCache configuration file:
 
 ```bash
+nano /etc/php/8.3/mods-available/opcache.ini
+```
+
+Verify or add the following OPCache and JIT settings:
+
+```ini
+opcache.enable=1
+opcache.enable_cli=1
 opcache.jit=1255
 opcache.jit_buffer_size=100M
 ```
 
-After configuring PHP, restart the service to apply changes:
+3. Restart PHP-FPM to apply the changes:
 
 ```bash
 systemctl restart php8.3-fpm
@@ -60,7 +60,7 @@ apt install -y caddy
 2. Edit `/etc/caddy/Caddyfile` and place the following content:
 
 ```bash
-dns.example.com {
+DNS.DOMAIN {
     bind YOUR_IPV4_ADDRESS YOUR_IPV6_ADDRESS
     root * /var/www/dns/public
     php_fastcgi unix//run/php/php8.3-fpm.sock
@@ -92,6 +92,8 @@ dns.example.com {
 Activate and reload Caddy:
 
 ```bash
+mkdir -p /var/log/dns
+chown caddy:caddy /var/log/dns
 systemctl enable caddy
 systemctl restart caddy
 ```
@@ -115,13 +117,12 @@ curl -o /etc/apt/keyrings/mariadb-keyring.pgp 'https://mariadb.org/mariadb_relea
 Place the following in ```/etc/apt/sources.list.d/mariadb.sources```:
 
 ```bash
-# MariaDB 10.11 repository list - created 2023-12-02 22:16 UTC
+# MariaDB 11 Rolling repository list - created 2025-04-08 06:39 UTC
 # https://mariadb.org/download/
 X-Repolib-Name: MariaDB
 Types: deb
-# deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
-# URIs: https://deb.mariadb.org/10.11/ubuntu
-URIs: https://mirrors.chroot.ro/mariadb/repo/10.11/ubuntu
+# URIs: https://deb.mariadb.org/11/ubuntu
+URIs: https://distrohub.kyiv.ua/mariadb/repo/11.rolling/ubuntu
 Suites: jammy
 Components: main main/debug
 Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
@@ -129,12 +130,18 @@ Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
 
 ### 3.2. Ubuntu 24.04
 
-Place the following in ```/etc/apt/sources.list.d/mariadb.list```:
+Place the following in ```/etc/apt/sources.list.d/mariadb.sources```:
 
 ```bash
-# MariaDB 11.4 repository list - created 2024-07-23 18:24 UTC
+# MariaDB 11 Rolling repository list - created 2025-04-08 06:40 UTC
 # https://mariadb.org/download/
-deb [signed-by=/etc/apt/keyrings/mariadb-keyring.pgp] https://fastmirror.pp.ua/mariadb/repo/11.4/ubuntu noble main
+X-Repolib-Name: MariaDB
+Types: deb
+# URIs: https://deb.mariadb.org/11/ubuntu
+URIs: https://distrohub.kyiv.ua/mariadb/repo/11.rolling/ubuntu
+Suites: noble
+Components: main main/debug
+Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
 ```
 
 ### 3.3. Debian 12
@@ -142,13 +149,12 @@ deb [signed-by=/etc/apt/keyrings/mariadb-keyring.pgp] https://fastmirror.pp.ua/m
 Place the following in ```/etc/apt/sources.list.d/mariadb.sources```:
 
 ```bash
-# MariaDB 10.11 repository list - created 2024-01-05 12:23 UTC
+# MariaDB 11 Rolling repository list - created 2025-04-08 06:40 UTC
 # https://mariadb.org/download/
 X-Repolib-Name: MariaDB
 Types: deb
-# deb.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
-# URIs: https://deb.mariadb.org/10.11/debian
-URIs: https://mirrors.chroot.ro/mariadb/repo/10.11/debian
+# URIs: https://deb.mariadb.org/11/ubuntu
+URIs: https://distrohub.kyiv.ua/mariadb/repo/11.rolling/debian
 Suites: bookworm
 Components: main
 Signed-By: /etc/apt/keyrings/mariadb-keyring.pgp
@@ -167,59 +173,43 @@ mysql_secure_installation
 2. Access MariaDB:
 
 ```bash
-mysql -u root -p
+mariadb -u root -p
 ```
 
 3. Execute the following queries:
 
 ```bash
 CREATE DATABASE dns;
-CREATE USER 'dns_panel_user'@'localhost' IDENTIFIED BY 'RANDOM_STRONG_PASSWORD';
-GRANT ALL PRIVILEGES ON dns.* TO 'dns_panel_user'@'localhost';
+CREATE USER 'dns'@'localhost' IDENTIFIED BY 'RANDOM_STRONG_PASSWORD';
+GRANT ALL PRIVILEGES ON dns.* TO 'dns'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-Replace `dns_panel_user` with your desired username and `RANDOM_STRONG_PASSWORD` with a secure password of your choice.
+Replace `dns` with your desired username and `RANDOM_STRONG_PASSWORD` with a secure password of your choice.
 
 [Tune your MariaDB](https://github.com/major/MySQLTuner-perl)
 
-## 5. Download DNS Panel:
-
-First, clone the project repository into the `/var/www/dns` directory:
+## 5. Download Domain Manager:
 
 ```bash
 git clone https://github.com/getnamingo/dnspanel /var/www/dns
 ```
 
-Next, prepare the directories for logs and cache:
-
-```bash
-mkdir -p /var/log/dns
-chown -R www-data:www-data /var/log/dns
-chown -R www-data:www-data /var/www/dns/cache/
-```
-
-## 6. Import Database:
-
-```bash
-mysql -u dns_panel_user -pRANDOM_STRONG_PASSWORD < /var/www/dns/db.sql
-```
-
-## 7. Setup DNS Panel:
+## 6. Setup Domain Manager:
 
 ```bash
 cd /var/www/dns
 composer install
-mv env-sample .env
+cp env-sample .env
+chmod -R 775 logs cache
+chown -R www-data:www-data logs cache
 ```
 
-Edit the `.env` with the appropriate database details and preferences as required.
+Configure your `.env` with database and app settings, and set your admin credentials in `bin/create-admin-user.php`.
 
-## 8. Create admin user
-
-Edit file first !
+## 7. Install Database and Create Administrator:
 
 ```bash
-cd /var/www/dns/bin
-php create_admin_user.php
+php bin/install-db.php
+php bin/create-admin-user.php
 ```
