@@ -2,17 +2,13 @@
 
 namespace App\Controllers;
 
-use App\Models\Domain;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Container\ContainerInterface;
-use Selective\XmlDSig\PublicKeyStore;
-use Selective\XmlDSig\CryptoVerifier;
-use Selective\XmlDSig\XmlSignatureVerifier;
 use League\ISO3166\ISO3166;
 use PlexDNS\Service;
 use PlexDNS\Exceptions\ProviderException;
-use Net_DNS2_Resolver;
+use NetDNS2\Resolver as DNSResolver;
 
 class ZonesController extends Controller
 {
@@ -48,7 +44,7 @@ class ZonesController extends Controller
                     return $response->withHeader('Location', '/zone/check')->withStatus(302);
                 }
                 
-                $resolver = new Net_DNS2_Resolver();
+                $resolver = new DNSResolver();
 
                 try {
                     $nsResponse = $resolver->query($domainName, 'NS');
@@ -58,7 +54,7 @@ class ZonesController extends Controller
                         'error'      => "NS lookup failed: " . $e->getMessage(),
                         'soa_serial' => null
                     ];
-                } catch (Net_DNS2_Exception $e) {
+                } catch (\NetDns2\Exception $e) {
                     $nsCheck = [
                         'healthy'    => false,
                         'error'      => "NS lookup failed: " . $e->getMessage(),
@@ -103,18 +99,18 @@ class ZonesController extends Controller
                     $nsServer = rtrim($nsRecord->nsdname, '.');
 
                     try {
-                        $resolver = new Net_DNS2_Resolver();
+                        $resolver = new DNSResolver();
                         $nsRecord = (object) ['nsdname' => $nsServer]; 
 
                         // Clean the NS name
                         $nsServer = rtrim($nsRecord->nsdname, '.');
 
                         // Resolve NS hostname to an IP address
-                        $resolverTemp = new Net_DNS2_Resolver();
+                        $resolverTemp = new DNSResolver();
                         $nsIpResponse = $resolverTemp->query($nsServer, 'A'); // Get IPv4 address (use 'AAAA' for IPv6)
 
                         if (!empty($nsIpResponse->answer)) {
-                            $nsIp = $nsIpResponse->answer[0]->address; // Get the first IP address
+                            $nsIp = strval($nsIpResponse->answer[0]->address);
                         } else {
                             throw new Exception("Could not resolve nameserver IP.");
                         }
@@ -145,11 +141,11 @@ class ZonesController extends Controller
                     'soa_serial' => $soaSerial
                 ];
 
-                $humanReadableMessage = $healthy
-                    ? "✅ Zone is healthy. SOA Serial: $soaSerial"
-                    : "❌ Zone issues found: " . implode(", ", $issues);
-
-                $this->container->get('flash')->addMessage('info', $humanReadableMessage);
+                if ($healthy) {
+                    $this->container->get('flash')->addMessage('success', "Zone is healthy. SOA Serial: $soaSerial");
+                } else {
+                    $this->container->get('flash')->addMessage('warning', "Zone issues found: " . implode(", ", $issues));
+                }
                 return $response->withHeader('Location', '/zone/check')->withStatus(302);
             }
         }

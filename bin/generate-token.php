@@ -11,6 +11,10 @@
  * @link       https://github.com/getargora/foundry
  */
 
-require __DIR__ . '/../bootstrap/app.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$app->run();
+use Ramsey\Uuid\Uuid;
+
+$uniqueIdentifier = Uuid::uuid4()->toString();
+
+echo $uniqueIdentifier . PHP_EOL;

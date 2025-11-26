@@ -1,4 +1,15 @@
 <?php
+/**
+ * Argora Foundry
+ *
+ * A modular PHP boilerplate for building SaaS applications, admin panels, and control systems.
+ *
+ * @package    App
+ * @author     Taras Kondratyuk <help@argora.org>
+ * @copyright  Copyright (c) 2025 Argora
+ * @license    MIT License
+ * @link       https://github.com/getargora/foundry
+ */
 
 namespace App\Auth;
 
@@ -17,11 +28,6 @@ use Pinga\Auth\UnknownIdException;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 
-/**
- * Auth
- *
- * @author    Hezekiah O. <support@hezecom.com>
- */
 class Auth
 {
     static protected $auth;
@@ -55,7 +61,7 @@ class Auth
                 // send message
                 Mail::send($subject, $message, $from, $to);
             });
-            //$auth->admin()->addRoleForUserById($userId, Role::ADMIN);
+            $auth->admin()->addRoleForUserById($userId, \Pinga\Auth\Role::COLLABORATOR);
             return $userId;
         }
         catch (InvalidEmailException $e) {
@@ -65,7 +71,7 @@ class Auth
             redirect()->route('register')->with('error','Invalid password');
         }
         catch (UserAlreadyExistsException $e) {
-            redirect()->route('register')->with('error','User already exists test');
+            redirect()->route('register')->with('error','User already exists');
         }
         catch (TooManyRequestsException $e) {
             redirect()->route('register')->with('error','Too many requests, try again later');
@@ -81,7 +87,6 @@ class Auth
         $auth = self::$auth;
         try {
             $auth->confirmEmail($selector, $token);
-            //echo 'Email address has been verified';
             redirect()->route('login')->with('success','Email address has been verified');
         }
         catch (InvalidSelectorTokenPairException $e) {
@@ -133,6 +138,12 @@ class Auth
      */
     public static function login($email, $password, $remember=null, $code=null){
         $auth = self::$auth;
+
+        if (empty($email) || empty($password)) {
+            redirect()->route('login')->with('error', 'Please enter both email and password');
+            return;
+        }
+
         try {
             if ($remember !='') {
                 // keep logged in for one year
@@ -172,7 +183,7 @@ class Auth
                     // If tfa_secret exists and is not empty, verify the 2FA code
                     $qrCodeProvider = new BaconQRCodeProvider($borderWidth = 0, $backgroundColour = '#ffffff', $foregroundColour = '#000000', $format = 'svg');
                     $tfaService = new TwoFactorAuth(
-                        issuer: "Namingo",
+                        issuer: "NDM",
                         qrcodeprovider: $qrCodeProvider,
                     );
                     if ($tfaService->verifyCode($tfa_secret, $code, 0) === true) {
@@ -349,13 +360,13 @@ class Auth
         $auth = self::$auth;
         try {
             $auth->admin()->logInAsUserById($userId);
-            redirect()->route('home')->with('success','Registrar impersonation started');
+            redirect()->route('home')->with('success','User impersonation started');
         }
         catch (UnknownIdException $e) {
-            redirect()->route('registrars')->with('error','Unknown ID');
+            redirect()->route('listUsers')->with('error','Unknown ID');
         }
         catch (EmailNotVerifiedException $e) {
-            redirect()->route('registrars')->with('error','Email address not verified');
+            redirect()->route('listUsers')->with('error','Email address not verified');
         }
     }
 
@@ -367,7 +378,7 @@ class Auth
         $auth = self::$auth;
         if (self::$auth->isLoggedIn()) {
             $auth->leaveImpersonation();
-            redirect()->route('registrars')->with('success','Left registrar panel successfully');
+            redirect()->route('listUsers')->with('success','Left user account successfully');
         }
         else {
             return false;

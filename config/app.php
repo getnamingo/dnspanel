@@ -1,5 +1,17 @@
 <?php
-require __DIR__.'/../vendor/autoload.php';
+/**
+ * Argora Foundry
+ *
+ * A modular PHP boilerplate for building SaaS applications, admin panels, and control systems.
+ *
+ * @package    App
+ * @author     Taras Kondratyuk <help@argora.org>
+ * @copyright  Copyright (c) 2025 Argora
+ * @license    MIT License
+ * @link       https://github.com/getargora/foundry
+ */
+
+require __DIR__ . '/../vendor/autoload.php';
 
 use Dotenv\Dotenv;
 
@@ -10,11 +22,10 @@ if (file_exists(__DIR__.'/.env')) {
 
 return [
     'env' => $_ENV['APP_ENV'] ?? 'production',
-    'name' => $_ENV['APP_NAME'] ?? 'CP',
+    'name' => $_ENV['APP_NAME'] ?? 'Foundry',
     'url' => $_ENV['APP_URL'] ?? 'http://localhost',
     'domain' => $_ENV['APP_DOMAIN'] ?? 'example.com',
-    'root' => $_ENV['APP_ROOT'] ?? '/var/www/cp',
-    'minimum_data' => $_ENV['MINIMUM_DATA'] ?? false,
+    'root' => $_ENV['APP_ROOT'] ?? '/var/www/panel',
     'timezone' => $_ENV['TIME_ZONE'] ?? 'UTC',
     'default' => $_ENV['DB_DRIVER'] ?? 'mysql',
     'connections' => [
@@ -22,9 +33,9 @@ return [
             'driver' => 'mysql',
             'host' => $_ENV['DB_HOST'] ?? '127.0.0.1',
             'port' => $_ENV['DB_PORT'] ?? '3306',
-            'database' => $_ENV['DB_DATABASE'] ?? 'db_username',
-            'username' => $_ENV['DB_USERNAME'] ?? 'db_password',
-            'password' => $_ENV['DB_PASSWORD'] ?? '',
+            'database' => $_ENV['DB_DATABASE'] ?? 'foundry',
+            'username' => $_ENV['DB_USERNAME'] ?? 'db_username',
+            'password' => $_ENV['DB_PASSWORD'] ?? 'db_password',
             'unix_socket' => $_ENV['DB_SOCKET'] ?? '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
@@ -34,16 +45,17 @@ return [
         ],
         'sqlite' => [
             'driver' => 'sqlite',
-            'database' => $_ENV['DB_DATABASE'] ?? __DIR__.'/registry.db',
+            'database' => $_ENV['DB_DATABASE'] ?? __DIR__.'/database.sqlite',
             'prefix' => '',
         ],
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => $_ENV['DB_HOST'] ?? '127.0.0.1',
             'port' => $_ENV['DB_PORT'] ?? '5432',
-            'database' => $_ENV['DB_DATABASE'] ?? 'db_username',
-            'username' => $_ENV['DB_USERNAME'] ?? 'db_password',
-            'password' => $_ENV['DB_PASSWORD'] ?? '',
+            'database' => $_ENV['DB_DATABASE'] ?? 'foundry',
+            'username' => $_ENV['DB_USERNAME'] ?? 'db_username',
+            'password' => $_ENV['DB_PASSWORD'] ?? 'db_password',
+            'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',
             'sslmode' => 'prefer',

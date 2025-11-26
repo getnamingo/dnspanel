@@ -1,9 +1,18 @@
-<?php namespace App\Lib;
+<?php
 /**
- * Config
+ * Argora Foundry
  *
- * @author    Hezekiah O. <support@hezecom.com>
+ * A modular PHP boilerplate for building SaaS applications, admin panels, and control systems.
+ *
+ * @package    App
+ * @author     Taras Kondratyuk <help@argora.org>
+ * @copyright  Copyright (c) 2025 Argora
+ * @license    MIT License
+ * @link       https://github.com/getargora/foundry
  */
+
+namespace App\Lib;
+
 class Config
 {
     private static $config;

@@ -1,4 +1,15 @@
 <?php
+/**
+ * Argora Foundry
+ *
+ * A modular PHP boilerplate for building SaaS applications, admin panels, and control systems.
+ *
+ * @package    App
+ * @author     Taras Kondratyuk <help@argora.org>
+ * @copyright  Copyright (c) 2025 Argora
+ * @license    MIT License
+ * @link       https://github.com/getargora/foundry
+ */
 
 namespace App\Controllers\Auth;
 
@@ -9,19 +20,76 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Pinga\Session;
 
-/**
- * AuthController
- *
- * @author    Hezekiah O. <support@hezecom.com>
- */
 class AuthController extends Controller
 {
     private $webAuthn;
 
     public function __construct() {
-        $rpName = 'Namingo';
+        $rpName = 'Foundry';
         $rpId = envi('APP_DOMAIN');
         $this->webAuthn = new \lbuchs\WebAuthn\WebAuthn($rpName, $rpId, ['android-key', 'android-safetynet', 'apple', 'fido-u2f', 'packed', 'tpm']);
+    }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return mixed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    public function createRegister(Request $request, Response $response){
+        return view($response,'auth/register.twig');
+    }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \Pinga\Auth\AuthError
+     */
+    public function register(Request $request, Response $response){
+        global $container;
+        $validator = $container->get('validator');
+
+        $validation = $validator->validate($request, [
+            'email' => v::noWhitespace()->notEmpty()->email(),
+            'username' => v::noWhitespace()->notEmpty()->alnum(),
+            'password' => v::notEmpty()->stringType()->length(8),
+        ]);
+
+        if ($validation->failed()) {
+            redirect()->route('register');
+        }
+        $data = $request->getParsedBody();
+        $auth = Auth::create($data['email'],$data['password'],$data['username']);
+        if($auth) {
+            $msg = '<a href="'.route('verify.email.resend',[],['email'=>$data['email']]).'">Resend email</a>';
+            $container->get('flash')->addMessage('success', 'We have send you a verification link to '.$data['email'].' <br>'.$msg);
+            return $response->withHeader('Location', '/login')->withStatus(302);
+        }
+
+    }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     */
+    public function verifyEmailResend(Request $request, Response $response){
+        $data = $request->getQueryParams();
+        Auth::ResendVerification($data['email']);
+    }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @throws \Pinga\Auth\AuthError
+     */
+    public function verifyEmail(Request $request, Response $response){
+        //confirm email
+        $data = $request->getQueryParams();
+        Auth::verifyEmail($data['selector'], $data['token']);
     }
 
     /**

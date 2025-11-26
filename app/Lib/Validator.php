@@ -1,15 +1,21 @@
 <?php
+/**
+ * Argora Foundry
+ *
+ * A modular PHP boilerplate for building SaaS applications, admin panels, and control systems.
+ *
+ * @package    App
+ * @author     Taras Kondratyuk <help@argora.org>
+ * @copyright  Copyright (c) 2025 Argora
+ * @license    MIT License
+ * @link       https://github.com/getargora/foundry
+ */
 
 namespace App\Lib;
 
 use Respect\Validation\Validator as Respect;
 use Respect\Validation\Exceptions\NestedValidationException;
 
-/**
- * Validator
- *
- * @author  Hezekiah O. <support@hezecom.com>
- */
 class Validator
 {
 	protected $errors;

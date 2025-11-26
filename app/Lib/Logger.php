@@ -1,4 +1,15 @@
 <?php
+/**
+ * Argora Foundry
+ *
+ * A modular PHP boilerplate for building SaaS applications, admin panels, and control systems.
+ *
+ * @package    App
+ * @author     Taras Kondratyuk <help@argora.org>
+ * @copyright  Copyright (c) 2025 Argora
+ * @license    MIT License
+ * @link       https://github.com/getargora/foundry
+ */
 
 namespace App\Lib;
 
@@ -17,9 +28,6 @@ use Whoops\Run;
 use Dotenv\Dotenv;
 use ZipArchive;
 
-/**
- * Namingo CP Logger
- */
 class Logger extends \Monolog\Logger
 {
     private static $loggers = [];
@@ -34,19 +42,19 @@ class Logger extends \Monolog\Logger
     {
         parent::__construct($key);
 
-        $LOG_PATH = '/var/log/namingo';
+        $LOG_PATH = __DIR__ . '/../../logs';
         $maxFiles = 30; // Number of days to keep logs
 
         if (empty($config)) {
             $config = [
-                'logFile' => "{$LOG_PATH}/dns.log", // Base log name
+                'logFile' => "{$LOG_PATH}/foundry.log", // Base log name
                 'logLevel' => \Monolog\Logger::DEBUG,
                 'maxFiles' => $maxFiles,
             ];
         }
 
         // Load Environment Variables from .env
-        $dotenv = Dotenv::createImmutable('/var/www/dns/');
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
         $dotenv->load();
 
         // Console Logging (For Real-Time Debugging)
@@ -74,6 +82,8 @@ class Logger extends \Monolog\Logger
             try {
                 $mail = new PHPMailer(true);
                 $mail->isSMTP();
+                $mailToAddress = $_ENV['MAIL_TO_ADDRESS'] ?? null;
+
                 $mail->Host       = $_ENV['MAIL_HOST'];
                 $mail->SMTPAuth   = true;
                 $mail->Username   = $_ENV['MAIL_USERNAME'];
@@ -81,7 +91,11 @@ class Logger extends \Monolog\Logger
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port       = $_ENV['MAIL_PORT'];
                 $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'], $_ENV['MAIL_FROM_NAME']);
-                $mail->addAddress($_ENV['MAIL_FROM_ADDRESS']); // Send to admin email
+                if (!$mailToAddress) {
+                    error_log("MAIL_TO_ADDRESS is missing, skipping recipient.");
+                } else {
+                    $mail->addAddress($mailToAddress);
+                }
 
                 // Attach PHPMailer to Monolog
                 $mailerHandler = new PHPMailerHandler($mail);
@@ -120,8 +134,37 @@ class Logger extends \Monolog\Logger
         if ($enable) {
             self::htmlError();
         } else {
-            $logger = new Logger('errors');
+            $logger = new Logger('Foundry');
             ErrorHandler::register($logger);
+
+            set_exception_handler(function ($e) use ($logger) {
+                http_response_code(500);
+
+                $logger->error("Unhandled exception", [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+
+                include __DIR__ . '/../../resources/error.html';
+            });
+
+            register_shutdown_function(function () use ($logger) {
+                $error = error_get_last();
+                if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+                    http_response_code(500);
+
+                    $logger->error("Fatal error", [
+                        'message' => $error['message'],
+                        'file' => $error['file'],
+                        'line' => $error['line'],
+                        'type' => $error['type']
+                    ]);
+
+                    include __DIR__ . '/../../resources/error.html';
+                }
+            });
         }
     }
 
