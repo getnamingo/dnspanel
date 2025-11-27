@@ -1,4 +1,15 @@
 <?php
+/**
+ * Argora Foundry
+ *
+ * A modular PHP boilerplate for building SaaS applications, admin panels, and control systems.
+ *
+ * @package    App
+ * @author     Taras Kondratyuk <help@argora.org>
+ * @copyright  Copyright (c) 2025 Argora
+ * @license    MIT License
+ * @link       https://github.com/getargora/foundry
+ */
 
 namespace App\Controllers;
 
@@ -7,6 +18,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Container\ContainerInterface;
 use Respect\Validation\Validator as v;
+use App\Auth\Auth;
 
 class UsersController extends Controller
 {
@@ -20,7 +32,7 @@ class UsersController extends Controller
         $users = $userModel->getAllUsers();
         return view($response,'admin/users/listUsers.twig', compact('users'));
     }
-    
+
     public function createUser(Request $request, Response $response)
     {
         // Registrars can not create new users, then need to ask the registry
@@ -48,7 +60,7 @@ class UsersController extends Controller
                 'password' => v::stringType()->notEmpty()->length(6, 255)->setName('Password'),
                 'password_confirmation' => v::equals($data['password'] ?? '')->setName('Password Confirmation'),
                 'status' => v::in(['0', '4'])->setName('Status'),
-                'role' => v::in(['admin', 'zone'])->setName('Role'),
+                'role' => v::in(['admin', 'client'])->setName('Role'),
             ];
 
             // Add registrar_id validation if role is registrar
@@ -88,96 +100,71 @@ class UsersController extends Controller
                 return $response->withHeader('Location', '/user/create')->withStatus(302);
             }
 
-            if ($_SESSION["auth_roles"] != 0) {
-                $registrar = true;
+            if ($email) {
+                $roles = [
+                    'admin' => 0,
+                    'zone' => 4,
+                ];
+
+                $role = $role ?? (!empty($zone_id) ? 'zone' : 'admin');
+                $roles_mask = $roles[$role] ?? 4;
+
+                $password_hashed = password_hash($password, PASSWORD_ARGON2ID, [
+                    'memory_cost' => 1024 * 128,
+                    'time_cost'   => 6,
+                    'threads'     => 4
+                ]);
+
+                try {
+                    $db->beginTransaction();
+
+                    $db->insert('users', [
+                        'email'                => $email,
+                        'password'             => $password_hashed,
+                        'username'             => $username,
+                        'verified'             => $verified,
+                        'roles_mask'           => $roles_mask,
+                        'status'               => $status,
+                        'registered'           => \time(),
+                        'password_last_updated'=> date('Y-m-d H:i:s'),
+                    ]);
+                    
+                    $user_id = $db->getLastInsertId();
+
+                    if ($roles_mask === $roles['zone'] && !empty($zone_id)) {
+                        $db->insert('zone_users', [
+                            'zone_id' => $zone_id,
+                            'user_id' => $user_id,
+                        ]);
+                    }
+
+                    $db->commit();
+
+                    $this->container->get('flash')->addMessage('success', 'User ' . $email . ' has been created successfully');
+                    return $response->withHeader('Location', '/users')->withStatus(302);
+                } catch (Exception $e) {
+                    $this->container->get('flash')->addMessage('error', 'Database failure: ' . $e->getMessage());
+                    return $response->withHeader('Location', '/user/create')->withStatus(302);
+                }        
             } else {
-                $registrar = null;
-            }
-
-            if ($email) {                
-                if ($zone_id) {                   
-                    $db->beginTransaction();
-
-                    $password_hashed = password_hash($password, PASSWORD_ARGON2ID, ['memory_cost' => 1024 * 128, 'time_cost' => 6, 'threads' => 4]);
-
-                    try {
-                        $db->insert(
-                            'users',
-                            [
-                                'email' => $email,
-                                'password' => $password_hashed,
-                                'username' => $username,
-                                'verified' => $verified,
-                                'roles_mask' => 4,
-                                'status' => $status,
-                                'registered' => \time()
-                            ]
-                        );
-                        $user_id = $db->getLastInsertId();
-
-                        $db->insert(
-                            'zone_users',
-                            [
-                                'zone_id' => $zone_id,
-                                'user_id' => $user_id
-                            ]
-                        );
-
-                        $db->commit();
-                    } catch (Exception $e) {
-                        $db->rollBack();
-                        $this->container->get('flash')->addMessage('error', 'Database failure: ' . $e->getMessage());
-                        return $response->withHeader('Location', '/user/create')->withStatus(302);
-                    }
-
-                    $this->container->get('flash')->addMessage('success', 'User ' . $email . ' has been created successfully');
-                    return $response->withHeader('Location', '/users')->withStatus(302);
-                } else {
-                    $db->beginTransaction();
-
-                    $password_hashed = password_hash($password, PASSWORD_ARGON2ID, ['memory_cost' => 1024 * 128, 'time_cost' => 6, 'threads' => 4]);
-
-                    try {
-                        $db->insert(
-                            'users',
-                            [
-                                'email' => $email,
-                                'password' => $password_hashed,
-                                'username' => $username,
-                                'verified' => $verified,
-                                'roles_mask' => 0,
-                                'status' => $status,
-                                'registered' => \time()
-                            ]
-                        );
-                        $userId = $db->getlastInsertId();
-
-                        $db->commit();
-                    } catch (Exception $e) {
-                        $db->rollBack();
-                        $this->container->get('flash')->addMessage('error', 'Database failure: ' . $e->getMessage());
-                        return $response->withHeader('Location', '/user/create')->withStatus(302);
-                    }
-
-                    $db->exec('UPDATE users SET password_last_updated = NOW() WHERE id = ?', [$userId]);
-                    $this->container->get('flash')->addMessage('success', 'User ' . $email . ' has been created successfully');
-                    return $response->withHeader('Location', '/users')->withStatus(302);
-                }
+                $this->container->get('flash')->addMessage('error', 'An unexpected error occurred. Please try again later');
+                return $response->withHeader('Location', '/user/create')->withStatus(302);
             }
         }
 
         $db = $this->container->get('db');
         $zones = $db->select("SELECT id, domain_name FROM zones");
+
         if ($_SESSION["auth_roles"] != 0) {
-            $registrar = true;
+            $user = true;
         } else {
-            $registrar = null;
+            $user = null;
         }
 
         // Default view for GET requests or if POST data is not set
         return view($response,'admin/users/createUser.twig', [
             'zones' => $zones,
-            'registrar' => $registrar,
+            'user' => $user,
         ]);
     }
 
@@ -212,7 +199,7 @@ class UsersController extends Controller
                 $_SESSION['user_to_update'] = [$args];
 
                 $roles_new = [
-                    '4'  => ($user['roles_mask'] & 4)  ? true : false, // Zone
+                    '4'  => ($user['roles_mask'] & 4)  ? true : false, // Client
                     '8'  => ($user['roles_mask'] & 8)  ? true : false, // Accountant
                     '16' => ($user['roles_mask'] & 16) ? true : false, // Support
                     '32' => ($user['roles_mask'] & 32) ? true : false, // Auditor
@@ -351,7 +338,7 @@ class UsersController extends Controller
 
                 // Prevent elevating privileges to 4 unless the user was already 4
                 if ($roles_mask == 4 && $currentRolesMask != 4) {
-                    $errors[] = 'You cannot elevate role to registrar unless the user was already registrar';
+                    $errors[] = 'You cannot elevate role to client administrator unless the user was already client administrator';
                 }
             }
 
@@ -391,6 +378,7 @@ class UsersController extends Controller
                 if (!empty($password)) {
                     $password_hashed = password_hash($password, PASSWORD_ARGON2ID, ['memory_cost' => 1024 * 128, 'time_cost' => 6, 'threads' => 4]);
                     $updateData['password'] = $password_hashed;
+                    $updateData['password_last_updated'] = date('Y-m-d H:i:s');
                 }
 
                 $db->update(
@@ -410,10 +398,42 @@ class UsersController extends Controller
 
             $userId = $db->selectValue('SELECT id from users WHERE username = ?', [ $username ]);
             unset($_SESSION['user_to_update']);
-            $db->exec('UPDATE users SET password_last_updated = NOW() WHERE id = ?', [$userId]);
             $this->container->get('flash')->addMessage('success', 'User ' . $username . ' has been updated successfully on ' . $update);
             return $response->withHeader('Location', '/user/update/'.$username)->withStatus(302);
         }
     }
-    
+
+    public function impersonateUser(Request $request, Response $response, $args)
+    {
+        if ($_SESSION["auth_roles"] != 0) {
+            return $response->withHeader('Location', '/dashboard')->withStatus(302);
+        }
+
+        $db = $this->container->get('db');
+
+        if ($args) {
+            $args = trim($args);
+            
+            if (!preg_match('/^[a-z0-9_-]+$/', $args)) {
+                $this->container->get('flash')->addMessage('error', 'Invalid user name');
+                return $response->withHeader('Location', '/users')->withStatus(302);
+            }
+
+            $user_id = $db->selectValue('SELECT id FROM users WHERE username = ? AND status = 0', [ $args ]);
+            if (!$user_id) {
+                $this->container->get('flash')->addMessage('error', 'The specified user does not exist or is no longer active');
+                return $response->withHeader('Location', '/users')->withStatus(302);
+            }
+
+            Auth::impersonateUser($user_id);
+        } else {
+            // Redirect to the users view
+            return $response->withHeader('Location', '/users')->withStatus(302);
+        }
+    }
+
+    public function leave_impersonation(Request $request, Response $response)
+    {
+        Auth::leaveImpersonation();
+    }
 }
