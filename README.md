@@ -21,7 +21,7 @@ Namingo Domain Manager supports the following **DNS providers**, each requiring 
 | Provider    | Required Credentials |
 |------------|---------------------|
 | **AnycastDNS** | `API_KEY` |
-| **Bind9** | `API_KEY`, `BIND_IP` |
+| **Bind9** | `API_KEY`, `BIND_IP` — requires a running [bind9-api-server](https://github.com/getnamingo/bind9-api-server) or [bind9-api-server-sqlite](https://github.com/getnamingo/bind9-api-server-sqlite) |
 | **Cloudflare** | `EMAIL:API_KEY` |
 | **ClouDNS** | `AUTH_ID`, `AUTH_PASSWORD` |
 | **Desec** | `API_KEY` |
