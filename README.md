@@ -30,8 +30,27 @@ Namingo Domain Manager supports the following **DNS providers**, each requiring 
 | **PowerDNS** | `API_KEY`, `POWERDNS_IP` |
 | **Vultr** | `API_KEY` |
 
-## Installation
-To install and configure **Namingo Domain Manager**, refer to the [installation guide](install.md) for detailed instructions.
+## Documentation
+
+### Installation
+
+**Minimum requirement:** a VPS running Ubuntu 22.04/24.04 or Debian 12/13, with at least 1 CPU core, 2 GB RAM, and 10 GB hard drive space.
+
+To get started, copy the command below and paste it into your server terminal:
+
+```bash
+bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/dnspanel/refs/heads/main/docs/install.sh)
+```
+
+For detailed installation steps, see [install.md](docs/install.md)
+
+### Update
+
+To get started, copy the command below and paste it into your server terminal:
+
+```bash
+bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/dnspanel/refs/heads/main/docs/update.sh)
+```
 
 ## Contributing
 Contributions are welcome! Feel free to submit a pull request or open an issue.
