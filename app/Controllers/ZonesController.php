@@ -637,6 +637,9 @@ class ZonesController extends Controller
                 return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
             }
 
+            $currentDateTime = new \DateTime();
+            $update = $currentDateTime->format('Y-m-d H:i:s.v');
+
             $service = new Service($pdo);
             if ($data['action'] == 'delete') {
                 $deleteData = [
@@ -659,6 +662,10 @@ class ZonesController extends Controller
                     $deleteData['cloudns_auth_password'] = $cloudnsAuthPassword;
                 }
                 $service->delRecord($deleteData);
+                unset($_SESSION['domains_to_update']);
+                unset($_SESSION['record_id']);
+                $this->container->get('flash')->addMessage('error', 'Record has been deleted successfully on ' . $update);
+                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
             } else {
                 $updateData = [
                     'domain_name' => $domainName,
@@ -685,6 +692,10 @@ class ZonesController extends Controller
                     $updateData['cloudns_auth_password'] = $cloudnsAuthPassword;
                 }
                 $service->updateRecord($updateData);
+                unset($_SESSION['domains_to_update']);
+                unset($_SESSION['record_id']);
+                $this->container->get('flash')->addMessage('success', 'Record has been updated successfully on ' . $update);
+                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
             }
         } catch (\RuntimeException $e) {
             $this->container->get('flash')->addMessage('error', $e->getMessage());
@@ -693,14 +704,6 @@ class ZonesController extends Controller
             $this->container->get('flash')->addMessage('error', 'Unexpected failure during update: ' . $e->getMessage());
             return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
         }
-
-        $currentDateTime = new \DateTime();
-        $update = $currentDateTime->format('Y-m-d H:i:s.v'); // Current timestamp
-
-        unset($_SESSION['domains_to_update']);
-        unset($_SESSION['record_id']);
-        $this->container->get('flash')->addMessage('success', 'Zone ' . $domainName . ' has been updated successfully on ' . $update);
-        return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
     }
 
     public function deleteZone(Request $request, Response $response, $args)
