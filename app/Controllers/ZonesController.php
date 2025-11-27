@@ -431,6 +431,9 @@ class ZonesController extends Controller
                     'provider' => $providerDisplay,
                     'apikey' => $apiKey
                 ];
+                if ($providerDisplay === 'Desec' && $record_ttl < 3600) {
+                    $recordData['record_ttl'] = 3600;
+                }
                 if ($bindip !== '127.0.0.1' && isValidIP($bindip)) {
                     $recordData['bindip'] = $bindip;
                 }
@@ -549,6 +552,9 @@ class ZonesController extends Controller
                         'provider' => $providerDisplay,
                         'apikey' => $apiKey
                     ];
+                    if ($providerDisplay === 'Desec' && $record_ttl < 3600) {
+                        $updateData['record_ttl'] = 3600;
+                    }
                     if ($bindip !== '127.0.0.1' && isValidIP($bindip)) {
                         $updateData['bindip'] = $bindip;
                     }
@@ -577,8 +583,8 @@ class ZonesController extends Controller
             $this->container->get('flash')->addMessage('success', 'Zone ' . $domainName . ' has been updated successfully on ' . $update);
             return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
         } else {
-            $this->container->get('flash')->addMessage('error', 'Database failure during update: ' . $e->getMessage());
-            return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+            $this->container->get('flash')->addMessage('error', 'Unimplemented update function');
+            return $response->withHeader('Location', '/zone/update/'.$_SESSION['domains_to_update'][0])->withStatus(302);
         }
     }
     
