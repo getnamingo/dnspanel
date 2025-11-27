@@ -449,7 +449,7 @@ class ZonesController extends Controller
                 $this->container->get('flash')->addMessage('error', 'Unexpected failure during creation: ' . $e->getMessage());
                 return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
             }
-            
+
             $currentDateTime = new \DateTime();
             $update = $currentDateTime->format('Y-m-d H:i:s.v'); // Current timestamp
 
