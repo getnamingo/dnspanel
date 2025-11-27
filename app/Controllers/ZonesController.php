@@ -385,11 +385,71 @@ class ZonesController extends Controller
             }
             $domain_id = $db->selectValue('SELECT id FROM zones WHERE domain_name = ?', [$domainName]);
 
-            $record_type = $data['record_type'] ?? null;
-            $record_name = $data['record_name'] ?? null;
-            $record_value = $data['record_value'] ?? null;
+            $record_type = strtoupper($data['record_type'] ?? '');
+            $record_name = $data['record_name']   ?? "";
+            $record_value = trim((string)($data['record_value'] ?? ''));
             $record_ttl = $data['record_ttl'] ?? null;
             $record_priority = $data['record_priority'] ?? null;
+            
+            if ($record_type === '') {
+                $this->container->get('flash')->addMessage('error', 'Record type is required');
+                return $response->withHeader('Location', '/zone/create')->withStatus(302);
+            }
+
+            if ($record_value === '' && !in_array($record_type, ['NS', 'SOA'], true)) {
+                $this->container->get('flash')->addMessage('error', 'Record value is required.');
+                return $response->withHeader('Location', '/zone/create')->withStatus(302);
+            }
+
+            if ($record_ttl === null || !ctype_digit((string)$record_ttl) || (int)$record_ttl <= 0) {
+                $this->container->get('flash')->addMessage('error', 'TTL must be a positive integer');
+                return $response->withHeader('Location', '/zone/create')->withStatus(302);
+            }
+            $record_ttl = (int)$record_ttl;
+
+            $record_priority = (
+                in_array($record_type, ['MX', 'SRV'], true) &&
+                ctype_digit((string)$record_priority)
+            ) ? (int)$record_priority : 0;
+
+            if ($record_name !== '') {
+                if (!isHostname($record_name)) {
+                    $this->container->get('flash')->addMessage('error', 'Invalid record name. Use only valid DNS labels (letters, digits, hyphens, dots) or IDN');
+                    return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                }
+            }
+
+            switch ($record_type) {
+                case 'A':
+                    if (!filter_var($record_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                        $this->container->get('flash')->addMessage('error', 'Invalid IPv4 address for A record');
+                        return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                    }
+                    break;
+
+                case 'AAAA':
+                    if (!filter_var($record_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                        $this->container->get('flash')->addMessage('error', 'Invalid IPv6 address for AAAA record');
+                        return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                    }
+                    break;
+
+                case 'TXT':
+                case 'SPF':
+                    // Auto-wrap in quotes if not already quoted
+                    if (!(str_starts_with($record_value, '"') && str_ends_with($record_value, '"'))) {
+                        $record_value = '"' . $record_value . '"';
+                    }
+                    break;
+
+                default:
+                    // For other types just ensure no control chars
+                    if (preg_match('/[\x00-\x1F]/', $record_value)) {
+                        $this->container->get('flash')->addMessage('error', 'Record value contains invalid control characters');
+                        return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                    }
+                    break;
+            }
 
             try {
                 $configJson = $db->selectValue('SELECT config FROM zones WHERE domain_name = ?', [$domainName]);
@@ -469,199 +529,252 @@ class ZonesController extends Controller
         $data = $request->getParsedBody();
         $uri = $request->getUri()->getPath();
 
-        if ($data['record_name']) {
-            if (!empty($_SESSION['domains_to_update'])) {
-                $domainName = $_SESSION['domains_to_update'][0];
-            } else {
-                $this->container->get('flash')->addMessage('error', 'No zone specified for update');
-                return $response->withHeader('Location', '/zones')->withStatus(302);
-            }
-
-            $record_type = $data['record_type'] ?? null;
-            $record_name = $data['record_name'] ?? null;
-            $record_value = $data['record_value'] ?? null;
-            $record_ttl = $data['record_ttl'] ?? null;
-            $record_priority = $data['record_priority'] ?? null;
-
-            $zone_id = $db->selectValue('SELECT id FROM zones WHERE domain_name = ? LIMIT 1',[$domainName]);
-            $record_id = $db->selectValue(
-                'SELECT recordId FROM records WHERE domain_id = ? AND type = ? AND host = ? LIMIT 1',
-                [$zone_id, $record_type, $record_name]
-            );
-
-            try {
-                $configJson = $db->selectValue('SELECT config FROM zones WHERE domain_name = ?', [$domainName]);
-                $configArray = json_decode($configJson, true);
-                $provider = strtoupper($configArray['provider']) ?? null;
-                $providerDisplay = getProviderDisplayName($provider);
-
-                if (!$provider) {
-                    $this->container->get('flash')->addMessage('error', 'Error: Missing required environment variables in .env file (PROVIDER)');
-                    return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
-                }
-
-                $credentials = getProviderCredentials($provider);
-
-                if (empty($credentials)) {
-                    $this->container->get('flash')->addMessage('error', "Error: Missing required credentials for provider ($providerDisplay) in .env file.");
-                    return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
-                }
-
-                $apiKey = $credentials['API_KEY'] ?? null;
-                $bindip = $credentials['BIND_IP'] ?? '127.0.0.1';
-                $powerdnsip = $credentials['POWERDNS_IP'] ?? '127.0.0.1';
-                $cloudnsAuthId = $credentials['AUTH_ID'] ?? null;
-                $cloudnsAuthPassword = $credentials['AUTH_PASSWORD'] ?? null;
-
-                if ($providerDisplay === 'ClouDNS' && (empty($cloudnsAuthId) || empty($cloudnsAuthPassword))) {
-                    $this->container->get('flash')->addMessage('error', 'Error: Invalid ClouDNS credentials (AUTH_ID and AUTH_PASSWORD) in .env');
-                    return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
-                }
-
-                $service = new Service($pdo);
-                if ($data['action'] == 'delete') {
-                    $deleteData = [
-                        'domain_name' => $domainName,
-                        'record_id' => $record_id,
-                        'record_name' => $record_name,
-                        'record_type' => $record_type,
-                        'record_value' => $record_value,
-                        'provider' => $providerDisplay,
-                        'apikey' => $apiKey
-                    ];
-                    if ($bindip !== '127.0.0.1' && isValidIP($bindip)) {
-                        $deleteData['bindip'] = $bindip;
-                    }
-                    if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
-                        $deleteData['powerdnsip'] = $powerdnsip;
-                    }
-                    if ($providerDisplay === 'ClouDNS') {
-                        $deleteData['cloudns_auth_id'] = $cloudnsAuthId;
-                        $deleteData['cloudns_auth_password'] = $cloudnsAuthPassword;
-                    }
-                    $service->delRecord($deleteData);
-                } else {
-                    $updateData = [
-                        'domain_name' => $domainName,
-                        'record_id' => $record_id,
-                        'record_name' => $record_name,
-                        'record_type' => $record_type,
-                        'record_value' => $record_value,
-                        'record_ttl' => $record_ttl,
-                        'record_priority' => $record_priority,
-                        'provider' => $providerDisplay,
-                        'apikey' => $apiKey
-                    ];
-                    if ($providerDisplay === 'Desec' && $record_ttl < 3600) {
-                        $updateData['record_ttl'] = 3600;
-                    }
-                    if ($bindip !== '127.0.0.1' && isValidIP($bindip)) {
-                        $updateData['bindip'] = $bindip;
-                    }
-                    if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
-                        $updateData['powerdnsip'] = $powerdnsip;
-                    }
-                    if ($providerDisplay === 'ClouDNS') {
-                        $updateData['cloudns_auth_id'] = $cloudnsAuthId;
-                        $updateData['cloudns_auth_password'] = $cloudnsAuthPassword;
-                    }
-                    $service->updateRecord($updateData);
-                }
-            } catch (\RuntimeException $e) {
-                $this->container->get('flash')->addMessage('error', $e->getMessage());
-                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
-            } catch (\Throwable $e) {
-                $this->container->get('flash')->addMessage('error', 'Unexpected failure during update: ' . $e->getMessage());
-                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
-            }
-
-            $currentDateTime = new \DateTime();
-            $update = $currentDateTime->format('Y-m-d H:i:s.v'); // Current timestamp
-
-            unset($_SESSION['domains_to_update']);
-            unset($_SESSION['record_id']);
-            $this->container->get('flash')->addMessage('success', 'Zone ' . $domainName . ' has been updated successfully on ' . $update);
-            return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+        if (!empty($_SESSION['domains_to_update'])) {
+            $domainName = $_SESSION['domains_to_update'][0];
         } else {
-            $this->container->get('flash')->addMessage('error', 'Unimplemented update function');
-            return $response->withHeader('Location', '/zone/update/'.$_SESSION['domains_to_update'][0])->withStatus(302);
+            $this->container->get('flash')->addMessage('error', 'No zone specified for update');
+            return $response->withHeader('Location', '/zones')->withStatus(302);
         }
-    }
-    
-    public function deleteZone(Request $request, Response $response, $args)
-    {
-       // if ($request->getMethod() === 'POST') {
-            $db = $this->container->get('db');
-            $pdo = $this->container->get('pdo');
 
-            // Get the current URI
-            $uri = $request->getUri()->getPath();
+        $record_type   = strtoupper($data['record_type'] ?? '');
+        $record_name   = $data['record_name']   ?? "";
+        $record_value  = trim((string)($data['record_value'] ?? ''));
+        $record_ttl    = $data['record_ttl']    ?? null;
+        $record_priority = $data['record_priority'] ?? null;
 
-            if ($args) {
-                $args = strtolower(trim($args));
+        if ($record_type === '') {
+            $this->container->get('flash')->addMessage('error', 'Record type is required');
+            return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+        }
 
-                if (!preg_match('/^([a-z0-9]([-a-z0-9]*[a-z0-9])?\.)*[a-z0-9]([-a-z0-9]*[a-z0-9])?$/', $args)) {
-                    $this->container->get('flash')->addMessage('error', 'Invalid zone format');
-                    return $response->withHeader('Location', '/zones')->withStatus(302);
+        if ($record_value === '' && !in_array($record_type, ['NS', 'SOA'], true)) {
+            $this->container->get('flash')->addMessage('error', 'Record value is required.');
+            return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+        }
+
+        if ($record_ttl === null || !ctype_digit((string)$record_ttl) || (int)$record_ttl <= 0) {
+            $this->container->get('flash')->addMessage('error', 'TTL must be a positive integer');
+            return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+        }
+        $record_ttl = (int)$record_ttl;
+
+        $record_priority = (
+            in_array($record_type, ['MX', 'SRV'], true) &&
+            ctype_digit((string)$record_priority)
+        ) ? (int)$record_priority : 0;
+
+        if ($record_name !== '') {
+            if (!isHostname($record_name)) {
+                $this->container->get('flash')->addMessage('error', 'Invalid record name. Use only valid DNS labels (letters, digits, hyphens, dots) or IDN');
+                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+            }
+        }
+
+        switch ($record_type) {
+            case 'A':
+                if (!filter_var($record_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                    $this->container->get('flash')->addMessage('error', 'Invalid IPv4 address for A record');
+                    return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
                 }
+                break;
 
-                $configJson = $db->selectValue('SELECT config FROM zones WHERE domain_name = ?', [$args]);
-                $configArray = json_decode($configJson, true);
-                $provider = strtoupper($configArray['provider']) ?? null;
-                $providerDisplay = getProviderDisplayName($provider);
-
-                if (!$provider) {
-                    $this->container->get('flash')->addMessage('error', 'Error: Missing required environment variables in .env file (PROVIDER)');
-                    return $response->withHeader('Location', '/zones')->withStatus(302);
+            case 'AAAA':
+                if (!filter_var($record_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                    $this->container->get('flash')->addMessage('error', 'Invalid IPv6 address for AAAA record');
+                    return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
                 }
+                break;
 
-                $credentials = getProviderCredentials($provider);
-
-                if (empty($credentials)) {
-                    $this->container->get('flash')->addMessage('error', "Error: Missing required credentials for provider ($providerDisplay) in .env file.");
-                    return $response->withHeader('Location', '/zones')->withStatus(302);
+            case 'TXT':
+            case 'SPF':
+                // Auto-wrap in quotes if not already quoted
+                if (!(str_starts_with($record_value, '"') && str_ends_with($record_value, '"'))) {
+                    $record_value = '"' . $record_value . '"';
                 }
+                break;
 
-                $apiKey = $credentials['API_KEY'] ?? null;
-                $bindip = $credentials['BIND_IP'] ?? '127.0.0.1';
-                $powerdnsip = $credentials['POWERDNS_IP'] ?? '127.0.0.1';
-                $cloudnsAuthId = $credentials['AUTH_ID'] ?? null;
-                $cloudnsAuthPassword = $credentials['AUTH_PASSWORD'] ?? null;
-
-                if ($providerDisplay === 'ClouDNS' && (empty($cloudnsAuthId) || empty($cloudnsAuthPassword))) {
-                    $this->container->get('flash')->addMessage('error', 'Error: Invalid ClouDNS credentials (AUTH_ID and AUTH_PASSWORD) in .env');
-                    return $response->withHeader('Location', '/zones')->withStatus(302);
+            default:
+                // For other types just ensure no control chars
+                if (preg_match('/[\x00-\x1F]/', $record_value)) {
+                    $this->container->get('flash')->addMessage('error', 'Record value contains invalid control characters');
+                    return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
                 }
+                break;
+        }
 
-                $config = [
-                    'domain_name' => $args,
+        $zone_id = $db->selectValue('SELECT id FROM zones WHERE domain_name = ? LIMIT 1',[$domainName]);
+        $record_id = $db->selectValue(
+            'SELECT recordId FROM records WHERE domain_id = ? AND type = ? AND host = ? LIMIT 1',
+            [$zone_id, $record_type, $record_name]
+        );
+
+        try {
+            $configJson = $db->selectValue('SELECT config FROM zones WHERE domain_name = ?', [$domainName]);
+            $configArray = json_decode($configJson, true);
+            $provider = strtoupper($configArray['provider']) ?? null;
+            $providerDisplay = getProviderDisplayName($provider);
+
+            if (!$provider) {
+                $this->container->get('flash')->addMessage('error', 'Error: Missing required environment variables in .env file (PROVIDER)');
+                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+            }
+
+            $credentials = getProviderCredentials($provider);
+
+            if (empty($credentials)) {
+                $this->container->get('flash')->addMessage('error', "Error: Missing required credentials for provider ($providerDisplay) in .env file.");
+                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+            }
+
+            $apiKey = $credentials['API_KEY'] ?? null;
+            $bindip = $credentials['BIND_IP'] ?? '127.0.0.1';
+            $powerdnsip = $credentials['POWERDNS_IP'] ?? '127.0.0.1';
+            $cloudnsAuthId = $credentials['AUTH_ID'] ?? null;
+            $cloudnsAuthPassword = $credentials['AUTH_PASSWORD'] ?? null;
+
+            if ($providerDisplay === 'ClouDNS' && (empty($cloudnsAuthId) || empty($cloudnsAuthPassword))) {
+                $this->container->get('flash')->addMessage('error', 'Error: Invalid ClouDNS credentials (AUTH_ID and AUTH_PASSWORD) in .env');
+                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+            }
+
+            $service = new Service($pdo);
+            if ($data['action'] == 'delete') {
+                $deleteData = [
+                    'domain_name' => $domainName,
+                    'record_id' => $record_id,
+                    'record_name' => $record_name,
+                    'record_type' => $record_type,
+                    'record_value' => $record_value,
                     'provider' => $providerDisplay,
-                    'apikey' => $apiKey,
+                    'apikey' => $apiKey
                 ];
                 if ($bindip !== '127.0.0.1' && isValidIP($bindip)) {
-                    $config['bindip'] = $bindip;
+                    $deleteData['bindip'] = $bindip;
                 }
                 if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
-                    $config['powerdnsip'] = $powerdnsip;
+                    $deleteData['powerdnsip'] = $powerdnsip;
                 }
                 if ($providerDisplay === 'ClouDNS') {
-                    $config['cloudns_auth_id'] = $cloudnsAuthId;
-                    $config['cloudns_auth_password'] = $cloudnsAuthPassword;
+                    $deleteData['cloudns_auth_id'] = $cloudnsAuthId;
+                    $deleteData['cloudns_auth_password'] = $cloudnsAuthPassword;
                 }
-
-                $service = new Service($pdo);
-                $domainOrder = [
-                    'config' => json_encode($config),
-                ];
-                $service->deleteDomain($domainOrder);
-
-                $this->container->get('flash')->addMessage('success', 'Zone ' . $args . ' deleted successfully');
-                return $response->withHeader('Location', '/zones')->withStatus(302);
+                $service->delRecord($deleteData);
             } else {
-                // Redirect to the domains view
+                $updateData = [
+                    'domain_name' => $domainName,
+                    'record_id' => $record_id,
+                    'record_name' => $record_name,
+                    'record_type' => $record_type,
+                    'record_value' => $record_value,
+                    'record_ttl' => $record_ttl,
+                    'record_priority' => $record_priority,
+                    'provider' => $providerDisplay,
+                    'apikey' => $apiKey
+                ];
+                if ($providerDisplay === 'Desec' && $record_ttl < 3600) {
+                    $updateData['record_ttl'] = 3600;
+                }
+                if ($bindip !== '127.0.0.1' && isValidIP($bindip)) {
+                    $updateData['bindip'] = $bindip;
+                }
+                if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
+                    $updateData['powerdnsip'] = $powerdnsip;
+                }
+                if ($providerDisplay === 'ClouDNS') {
+                    $updateData['cloudns_auth_id'] = $cloudnsAuthId;
+                    $updateData['cloudns_auth_password'] = $cloudnsAuthPassword;
+                }
+                $service->updateRecord($updateData);
+            }
+        } catch (\RuntimeException $e) {
+            $this->container->get('flash')->addMessage('error', $e->getMessage());
+            return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+        } catch (\Throwable $e) {
+            $this->container->get('flash')->addMessage('error', 'Unexpected failure during update: ' . $e->getMessage());
+            return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+        }
+
+        $currentDateTime = new \DateTime();
+        $update = $currentDateTime->format('Y-m-d H:i:s.v'); // Current timestamp
+
+        unset($_SESSION['domains_to_update']);
+        unset($_SESSION['record_id']);
+        $this->container->get('flash')->addMessage('success', 'Zone ' . $domainName . ' has been updated successfully on ' . $update);
+        return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+    }
+
+    public function deleteZone(Request $request, Response $response, $args)
+    {
+        $db = $this->container->get('db');
+        $pdo = $this->container->get('pdo');
+
+        // Get the current URI
+        $uri = $request->getUri()->getPath();
+
+        if ($args) {
+            $args = strtolower(trim($args));
+
+            if (!preg_match('/^([a-z0-9]([-a-z0-9]*[a-z0-9])?\.)*[a-z0-9]([-a-z0-9]*[a-z0-9])?$/', $args)) {
+                $this->container->get('flash')->addMessage('error', 'Invalid zone format');
                 return $response->withHeader('Location', '/zones')->withStatus(302);
             }
-        //}
+
+            $configJson = $db->selectValue('SELECT config FROM zones WHERE domain_name = ?', [$args]);
+            $configArray = json_decode($configJson, true);
+            $provider = strtoupper($configArray['provider']) ?? null;
+            $providerDisplay = getProviderDisplayName($provider);
+
+            if (!$provider) {
+                $this->container->get('flash')->addMessage('error', 'Error: Missing required environment variables in .env file (PROVIDER)');
+                return $response->withHeader('Location', '/zones')->withStatus(302);
+            }
+
+            $credentials = getProviderCredentials($provider);
+
+            if (empty($credentials)) {
+                $this->container->get('flash')->addMessage('error', "Error: Missing required credentials for provider ($providerDisplay) in .env file.");
+                return $response->withHeader('Location', '/zones')->withStatus(302);
+            }
+
+            $apiKey = $credentials['API_KEY'] ?? null;
+            $bindip = $credentials['BIND_IP'] ?? '127.0.0.1';
+            $powerdnsip = $credentials['POWERDNS_IP'] ?? '127.0.0.1';
+            $cloudnsAuthId = $credentials['AUTH_ID'] ?? null;
+            $cloudnsAuthPassword = $credentials['AUTH_PASSWORD'] ?? null;
+
+            if ($providerDisplay === 'ClouDNS' && (empty($cloudnsAuthId) || empty($cloudnsAuthPassword))) {
+                $this->container->get('flash')->addMessage('error', 'Error: Invalid ClouDNS credentials (AUTH_ID and AUTH_PASSWORD) in .env');
+                return $response->withHeader('Location', '/zones')->withStatus(302);
+            }
+
+            $config = [
+                'domain_name' => $args,
+                'provider' => $providerDisplay,
+                'apikey' => $apiKey,
+            ];
+            if ($bindip !== '127.0.0.1' && isValidIP($bindip)) {
+                $config['bindip'] = $bindip;
+            }
+            if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
+                $config['powerdnsip'] = $powerdnsip;
+            }
+            if ($providerDisplay === 'ClouDNS') {
+                $config['cloudns_auth_id'] = $cloudnsAuthId;
+                $config['cloudns_auth_password'] = $cloudnsAuthPassword;
+            }
+
+            $service = new Service($pdo);
+            $domainOrder = [
+                'config' => json_encode($config),
+            ];
+            $service->deleteDomain($domainOrder);
+
+            $this->container->get('flash')->addMessage('success', 'Zone ' . $args . ' deleted successfully');
+            return $response->withHeader('Location', '/zones')->withStatus(302);
+        } else {
+            // Redirect to the domains view
+            return $response->withHeader('Location', '/zones')->withStatus(302);
+        }
     }
 
 }

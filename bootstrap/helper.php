@@ -684,3 +684,51 @@ function validate_label($domain, $db) {
 
     return null; // No errors
 }
+
+function isHostname(string $host): bool
+{
+    // Allow apex: "" or "@"
+    if ($host === '' || $host === '@') {
+        return true;
+    }
+
+    // Length limit per RFC
+    if (strlen($host) > 253) {
+        return false;
+    }
+
+    $labels = explode('.', $host);
+
+    foreach ($labels as $label) {
+
+        // Allow wildcard "*"
+        if ($label === '*') {
+            continue;
+        }
+
+        // Empty label (e.g., double dots "..") → invalid
+        if ($label === '') {
+            return false;
+        }
+
+        // ASCII/punycode xn--
+        if (preg_match('/^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$/i', $label)) {
+            if (strlen($label) <= 63) {
+                continue;
+            }
+            return false;
+        }
+
+        // IDN: any unicode letter/number plus "-" or "_"
+        if (preg_match('/^[\p{L}\p{N}_\-]+$/u', $label)) {
+            if (strlen($label) <= 63) {
+                continue;
+            }
+            return false;
+        }
+
+        return false;
+    }
+
+    return true;
+}
