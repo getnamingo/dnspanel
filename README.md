@@ -18,7 +18,7 @@ Namingo Domain Manager is a powerful and flexible tool for managing **DNS zones*
 ## Supported Providers & Requirements
 Namingo Domain Manager supports the following **DNS providers**, each requiring specific credentials:
 
-| Provider    | Credentials | Requirements  | Status |
+| Provider    | Credentials in .env | Requirements  | Status |
 |------------|---------------------|------------|---------------------|
 | **AnycastDNS** | `API_KEY` | | 🚧 |
 | **Bind9** | `API_KEY:BIND_IP` | [bind9-api-server](https://github.com/getnamingo/bind9-api-server) or [bind9-api-server-sqlite](https://github.com/getnamingo/bind9-api-server-sqlite) | 🚧 |
