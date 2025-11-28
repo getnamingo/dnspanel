@@ -604,21 +604,18 @@ class ZonesController extends Controller
 
         $zone_id = $db->selectValue('SELECT id FROM zones WHERE domain_name = ? LIMIT 1', [$domainName]);
 
-        if ($record_name === '') {
-            $recordRow = $db->selectRow(
-                'SELECT recordId, priority 
-                 FROM records 
-                 WHERE domain_id = ? AND type = ? AND host = ? AND value = ?',
-                [$zone_id, $record_type, $record_name, $record_value]
-            );
-        } else {
-            $recordRow = $db->selectRow(
-                'SELECT recordId, priority 
-                 FROM records 
-                 WHERE domain_id = ? AND type = ? AND host = ?',
-                [$zone_id, $record_type, $record_name]
-            );
-        }
+        $oldValue = $data['old_value'] ?? null;
+
+        $recordRow = $db->selectRow(
+            'SELECT recordId, priority 
+             FROM records 
+             WHERE domain_id = ? 
+               AND type = ? 
+               AND host = ? 
+               AND value = ?
+             LIMIT 1',
+            [$zone_id, $record_type, $record_name, $oldValue]
+        );
 
         if (!$recordRow) {
             $this->container->get('flash')->addMessage('error', 'Record not found for update');
@@ -667,6 +664,7 @@ class ZonesController extends Controller
                     'record_name' => $record_name,
                     'record_type' => $record_type,
                     'record_value' => $record_value,
+                    'old_value' => $oldValue,
                     'provider' => $providerDisplay,
                     'apikey' => $apiKey
                 ];
@@ -692,6 +690,7 @@ class ZonesController extends Controller
                     'record_name' => $record_name,
                     'record_type' => $record_type,
                     'record_value' => $record_value,
+                    'old_value' => $oldValue,
                     'record_ttl' => $record_ttl,
                     'record_priority' => $record_priority,
                     'provider' => $providerDisplay,

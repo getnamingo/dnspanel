@@ -132,7 +132,7 @@
                                             {% else %}bg-default
                                             {% endif %}">{{ dns_type }}</span>
                                         </td>
-                                        <td><strong>{{ record.host }}</strong></td>
+                                        <td><strong>{{ record.host }}</strong><input type="hidden" name="old_value" value="{{ record.value }}"></td>
                                         <td><input type="text" class="form-control" placeholder="127.0.0.1" name="record_value" value="{{ record.value }}" style="min-width:200px;" required></td>
                                         <td><input type="text" class="form-control" placeholder="600" name="record_ttl" value="{{ record.ttl }}" style="min-width:100px;" required></td>
                                         <td>{% if record.type in ['MX', 'SRV'] %}<input type="text" class="form-control" name="record_priority" value="{{ record.priority }}">{% endif %}</td>
