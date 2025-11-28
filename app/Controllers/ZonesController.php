@@ -602,11 +602,30 @@ class ZonesController extends Controller
                 break;
         }
 
-        $zone_id = $db->selectValue('SELECT id FROM zones WHERE domain_name = ? LIMIT 1',[$domainName]);
-        $record_id = $db->selectValue(
-            'SELECT recordId FROM records WHERE domain_id = ? AND type = ? AND host = ? LIMIT 1',
-            [$zone_id, $record_type, $record_name]
-        );
+        $zone_id = $db->selectValue('SELECT id FROM zones WHERE domain_name = ? LIMIT 1', [$domainName]);
+
+        if ($record_name === '') {
+            $recordRow = $db->selectRow(
+                'SELECT recordId, priority 
+                 FROM records 
+                 WHERE domain_id = ? AND type = ? AND host = ? AND value = ?',
+                [$zone_id, $record_type, $record_name, $record_value]
+            );
+        } else {
+            $recordRow = $db->selectRow(
+                'SELECT recordId, priority 
+                 FROM records 
+                 WHERE domain_id = ? AND type = ? AND host = ?',
+                [$zone_id, $record_type, $record_name]
+            );
+        }
+
+        if (!$recordRow) {
+            $this->container->get('flash')->addMessage('error', 'Record not found for update');
+            return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
+        }
+
+        $record_id = $recordRow['recordId'];
 
         try {
             $configJson = $db->selectValue('SELECT config FROM zones WHERE domain_name = ?', [$domainName]);
