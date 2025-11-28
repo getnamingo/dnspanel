@@ -517,7 +517,7 @@ class ZonesController extends Controller
             $update = $currentDateTime->format('Y-m-d H:i:s.v'); // Current timestamp
 
             unset($_SESSION['domains_to_update']);
-            $this->container->get('flash')->addMessage('success', 'Zone ' . $domainName . ' has been updated successfully on ' . $update);
+            $this->container->get('flash')->addMessage('success', 'Record with value ' . $record_value . ' has been created successfully on ' . $update);
             return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
         }
     }
