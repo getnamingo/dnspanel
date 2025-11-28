@@ -287,7 +287,27 @@ class ZonesController extends Controller
             [ $args ]);
 
             if ($domain) {
-                $records = $db->select('SELECT recordId, type, host, value, ttl, priority FROM records WHERE domain_id = ?', [$domain['id']]);
+                $records = $db->select(
+                    'SELECT recordId, type, host, value, ttl, priority
+                     FROM records
+                     WHERE domain_id = ?
+                     ORDER BY
+                        CASE type
+                            WHEN \'SOA\'   THEN 1
+                            WHEN \'NS\'    THEN 2
+                            WHEN \'A\'     THEN 3
+                            WHEN \'AAAA\'  THEN 4
+                            WHEN \'CNAME\' THEN 5
+                            WHEN \'MX\'    THEN 6
+                            WHEN \'TXT\'   THEN 7
+                            WHEN \'SPF\'   THEN 8
+                            WHEN \'SRV\'   THEN 9
+                            ELSE 99
+                        END,
+                        host,
+                        value',
+                    [$domain['id']]
+                );
 
                 $users = $db->selectRow('SELECT id, email, username FROM users WHERE id = ?', [$domain['client_id']]);
 
@@ -339,7 +359,27 @@ class ZonesController extends Controller
             [ $args ]);
 
             if ($domain) {
-                $records = $db->select('SELECT recordId, type, host, value, ttl, priority FROM records WHERE domain_id = ?', [$domain['id']]);
+                $records = $db->select(
+                    'SELECT recordId, type, host, value, ttl, priority
+                     FROM records
+                     WHERE domain_id = ?
+                     ORDER BY
+                        CASE type
+                            WHEN \'SOA\'   THEN 1
+                            WHEN \'NS\'    THEN 2
+                            WHEN \'A\'     THEN 3
+                            WHEN \'AAAA\'  THEN 4
+                            WHEN \'CNAME\' THEN 5
+                            WHEN \'MX\'    THEN 6
+                            WHEN \'TXT\'   THEN 7
+                            WHEN \'SPF\'   THEN 8
+                            WHEN \'SRV\'   THEN 9
+                            ELSE 99
+                        END,
+                        host,
+                        value',
+                    [$domain['id']]
+                );
 
                 $users = $db->selectRow('SELECT id, email, username FROM users WHERE id = ?', [$domain['client_id']]);
 
@@ -493,6 +533,15 @@ class ZonesController extends Controller
                 ];
                 if ($providerDisplay === 'Desec' && $record_ttl < 3600) {
                     $recordData['record_ttl'] = 3600;
+                }
+                if (
+                    $providerDisplay === 'Desec' &&
+                    in_array($record_type, ['MX', 'CNAME'], true)
+                ) {
+                    if (!str_ends_with($record_value, '.')) {
+                        $record_value .= '.'; // add trailing dot
+                        $recordData['record_value'] = $record_value;
+                    }
                 }
                 if ($bindip !== '127.0.0.1' && isValidIP($bindip)) {
                     $recordData['bindip'] = $bindip;
