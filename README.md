@@ -18,17 +18,17 @@ Namingo Domain Manager is a powerful and flexible tool for managing **DNS zones*
 ## Supported Providers & Requirements
 Namingo Domain Manager supports the following **DNS providers**, each requiring specific credentials:
 
-| Provider    | Required Credentials |
-|------------|---------------------|
-| **AnycastDNS** | `API_KEY` |
-| **Bind9** | `API_KEY:BIND_IP` (requires [bind9-api-server](https://github.com/getnamingo/bind9-api-server) or [bind9-api-server-sqlite](https://github.com/getnamingo/bind9-api-server-sqlite)) |
-| **Cloudflare** | `EMAIL:API_KEY` |
-| **ClouDNS** | `AUTH_ID:AUTH_PASSWORD` |
-| **Desec** | `API_KEY` |
-| **DNSimple** | `API_KEY` |
-| **Hetzner** | `API_KEY` |
-| **PowerDNS** | `API_KEY:POWERDNS_IP` |
-| **Vultr** | `API_KEY` |
+| Provider    | Credentials | Requirements  | Status |
+|------------|---------------------|------------|---------------------|
+| **AnycastDNS** | `API_KEY` | | 🚧 |
+| **Bind9** | `API_KEY:BIND_IP` | [bind9-api-server](https://github.com/getnamingo/bind9-api-server) or [bind9-api-server-sqlite](https://github.com/getnamingo/bind9-api-server-sqlite)) | 🚧 |
+| **Cloudflare** | `EMAIL:API_KEY` | | ✅ |
+| **ClouDNS** | `AUTH_ID:AUTH_PASSWORD` | | ✅ |
+| **Desec** | `API_KEY` | | ✅ |
+| **DNSimple** | `API_KEY` | | 🚧 |
+| **Hetzner** | `API_KEY` | | 🚧 |
+| **PowerDNS** | `API_KEY:POWERDNS_IP` | | 🚧 |
+| **Vultr** | `API_KEY` | | ✅ |
 
 ## Documentation
 
