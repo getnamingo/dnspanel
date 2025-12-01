@@ -732,3 +732,7 @@ function isHostname(string $host): bool
 
     return true;
 }
+
+function isValidIP($ip) {
+    return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6);
+}

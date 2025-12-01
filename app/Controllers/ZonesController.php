@@ -433,17 +433,17 @@ class ZonesController extends Controller
             
             if ($record_type === '') {
                 $this->container->get('flash')->addMessage('error', 'Record type is required');
-                return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
             }
 
             if ($record_value === '' && !in_array($record_type, ['NS', 'SOA'], true)) {
                 $this->container->get('flash')->addMessage('error', 'Record value is required.');
-                return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
             }
 
             if ($record_ttl === null || !ctype_digit((string)$record_ttl) || (int)$record_ttl <= 0) {
                 $this->container->get('flash')->addMessage('error', 'TTL must be a positive integer');
-                return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
             }
             $record_ttl = (int)$record_ttl;
 
@@ -455,7 +455,7 @@ class ZonesController extends Controller
             if ($record_name !== '') {
                 if (!isHostname($record_name)) {
                     $this->container->get('flash')->addMessage('error', 'Invalid record name. Use only valid DNS labels (letters, digits, hyphens, dots) or IDN');
-                    return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                    return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
                 }
             }
 
@@ -463,14 +463,14 @@ class ZonesController extends Controller
                 case 'A':
                     if (!filter_var($record_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
                         $this->container->get('flash')->addMessage('error', 'Invalid IPv4 address for A record');
-                        return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                        return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
                     }
                     break;
 
                 case 'AAAA':
                     if (!filter_var($record_value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
                         $this->container->get('flash')->addMessage('error', 'Invalid IPv6 address for AAAA record');
-                        return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                        return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
                     }
                     break;
 
@@ -486,7 +486,7 @@ class ZonesController extends Controller
                     // For other types just ensure no control chars
                     if (preg_match('/[\x00-\x1F]/', $record_value)) {
                         $this->container->get('flash')->addMessage('error', 'Record value contains invalid control characters');
-                        return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                        return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
                     }
                     break;
             }
@@ -499,14 +499,14 @@ class ZonesController extends Controller
 
                 if (!$provider) {
                     $this->container->get('flash')->addMessage('error', 'Error: Missing required environment variables in .env file (PROVIDER)');
-                    return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                    return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
                 }
 
                 $credentials = getProviderCredentials($provider);
 
                 if (empty($credentials)) {
                     $this->container->get('flash')->addMessage('error', "Error: Missing required credentials for provider ($providerDisplay) in .env file.");
-                    return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                    return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
                 }
 
                 $apiKey = $credentials['API_KEY'] ?? null;
@@ -517,7 +517,7 @@ class ZonesController extends Controller
 
                 if ($providerDisplay === 'ClouDNS' && (empty($cloudnsAuthId) || empty($cloudnsAuthPassword))) {
                     $this->container->get('flash')->addMessage('error', 'Error: Invalid ClouDNS credentials (AUTH_ID and AUTH_PASSWORD) in .env');
-                    return $response->withHeader('Location', '/zone/create')->withStatus(302);
+                    return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
                 }
 
                 $service = new Service($pdo);
@@ -563,7 +563,7 @@ class ZonesController extends Controller
             }
 
             $currentDateTime = new \DateTime();
-            $update = $currentDateTime->format('Y-m-d H:i:s.v'); // Current timestamp
+            $update = $currentDateTime->format('Y-m-d H:i:s.v');
 
             unset($_SESSION['domains_to_update']);
             $this->container->get('flash')->addMessage('success', 'Record with value ' . $record_value . ' has been created successfully on ' . $update);
