@@ -254,7 +254,7 @@ class ZonesController extends Controller
             );
             
             $this->container->get('flash')->addMessage('success', 'Zone ' . $domainName . ' has been created successfully on ' . $crdate);
-            return $response->withHeader('Location', '/zones')->withStatus(302);
+            return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
         }
 
         $db = $this->container->get('db');

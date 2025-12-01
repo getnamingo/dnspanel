@@ -27,7 +27,7 @@ Namingo Domain Manager supports the following **DNS providers**, each requiring 
 | **Desec** | `API_KEY` | | ✅ |
 | **DNSimple** | `API_KEY` | | 🚧 |
 | **Hetzner** | `API_KEY` | | 🚧 |
-| **PowerDNS** | `API_KEY:POWERDNS_IP` | | 🚧 |
+| **PowerDNS** | `API_KEY:POWERDNS_IP` | | ✅ |
 | **Vultr** | `API_KEY` | | ✅ |
 
 ## Documentation
