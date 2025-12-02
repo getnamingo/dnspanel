@@ -115,6 +115,8 @@ composer_update "$ndm_path"
 
 wget "http://www.adminer.org/latest.php" -O /usr/share/adminer/latest.php
 
+apt-get install -y php8.3-opentelemetry
+
 # Start services
 echo "Starting services..."
 systemctl start caddy

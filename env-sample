@@ -12,6 +12,8 @@ DB_USERNAME=root
 DB_PASSWORD=
 DB_PORT=3306
 
+DNS_RESOLVER=1.1.1.1
+
 #mailer settings (Driver = smtp, utopia or msg [for local message broker]; Api Provder = sendgrid or mailgun)
 
 MAIL_DRIVER=none

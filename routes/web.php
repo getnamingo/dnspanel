@@ -58,6 +58,7 @@ $app->group('', function ($route) {
     $route->map(['GET', 'POST'], '/zone/check', ZonesController::class . ':checkZone')->setName('checkZone');
     $route->map(['GET', 'POST'], '/zone/create', ZonesController::class . ':createZone')->setName('createZone');
     $route->get('/zone/view/{zone}', ZonesController::class . ':viewZone')->setName('viewZone');
+    $route->get('/zone/details/{zone}', ZonesController::class . ':zoneDetails')->setName('zoneDetails');
     $route->get('/zone/update/{zone}', ZonesController::class . ':updateZone')->setName('updateZone');
     $route->post('/zone/update', ZonesController::class . ':updateZoneProcess')->setName('updateZoneProcess');
     $route->post('/zone/updaterecord', ZonesController::class . ':zoneUpdateRecord')->setName('zoneUpdateRecord');

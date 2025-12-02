@@ -1,0 +1,164 @@
+{% extends "layouts/app.twig" %}
+
+{% block title %}{{ __('Zone Details for') }} {{ domain.domain_name }}{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+  <!-- Page header -->
+  <div class="page-header d-print-none">
+    <div class="container-xl">
+      <div class="row g-2 align-items-center">
+        <div class="col">
+          <div class="mb-1">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{{ route('home') }}">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                       viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                       stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <polyline points="5 12 3 12 12 3 21 12 19 12" />
+                    <path d="M5 12v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-8" />
+                    <rect x="10" y="12" width="4" height="4" />
+                  </svg>
+                </a>
+              </li>
+              <li class="breadcrumb-item">
+                <a href="{{ route('listZones') }}">{{ __('Zones') }}</a>
+              </li>
+              <li class="breadcrumb-item active">
+                {{ __('Zone Details') }}
+              </li>
+            </ol>
+          </div>
+          <h2 class="page-title">
+            {{ __('Zone Details') }} {{ __('for') }} {{ domain.domain_name }}
+          </h2>
+          <div class="text-muted mt-1 small">
+            {{ __('Resolved via DNS server') }}:
+            <code>{{ resolver }}</code>
+          </div>
+        </div>
+        <div class="col-auto ms-auto d-print-none">
+          <a href="{{ route('listZones') }}" class="btn btn-outline-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <polyline points="15 6 9 12 15 18" />
+            </svg>
+            {{ __('Back to Zones') }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page body -->
+  <div class="page-body">
+    <div class="container-xl">
+      {% include 'partials/flash.twig' %}
+
+      <div class="row row-cards">
+        <!-- Zone meta card - full width -->
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title mb-0">{{ __('Zone information') }}</h3>
+            </div>
+            <div class="card-body">
+              <div class="datagrid">
+                <div class="datagrid-item">
+                  <div class="datagrid-title">{{ __('Domain') }}</div>
+                  <div class="datagrid-content">{{ domain.domain_name }}</div>
+                </div>
+                <div class="datagrid-item">
+                  <div class="datagrid-title">{{ __('Client ID') }}</div>
+                  <div class="datagrid-content">{{ domain.client_id ?: '—' }}</div>
+                </div>
+                <div class="datagrid-item">
+                  <div class="datagrid-title">{{ __('Provider') }}</div>
+                  <div class="datagrid-content">{{ provider }}</div>
+                </div>
+                <div class="datagrid-item">
+                  <div class="datagrid-title">{{ __('Created at') }}</div>
+                  <div class="datagrid-content">{{ domain.created_at ? domain.created_at|date('Y-m-d H:i') : '—' }}</div>
+                </div>
+                <div class="datagrid-item">
+                  <div class="datagrid-title">{{ __('Last updated') }}</div>
+                  <div class="datagrid-content">{{ domain.updated_at ? domain.updated_at|date('Y-m-d H:i') : '—' }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          {% if recordsByType is empty %}
+            <div class="alert alert-info mb-0">
+              {{ __('No DNS records were returned for this zone.') }}
+            </div>
+          {% else %}
+            <div class="row row-cards">
+              {% for type, records in recordsByType %}
+                <div class="col-12 col-md-6 col-xl-4">
+                  <div class="card h-100">
+                    <div class="card-header">
+                      <div class="d-flex align-items-center">
+                        <span class="avatar bg-primary-lt me-2">
+                          {{ type|first }}
+                        </span>
+                        <div>
+                          <div class="card-title mb-0">
+                            {{ type }} {{ __('records') }}
+                          </div>
+                          <div class="small text-muted">
+                            {{ records|length }} {{ __('record') }}{{ records|length > 1 ? 's' : '' }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body p-0">
+                      <div class="table-responsive">
+                        <table class="table table-vcenter card-table mb-0">
+                          <thead class="thead-light">
+                            <tr>
+                              <th style="width: 30%;">{{ __('Name') }}</th>
+                              <th style="width: 12%;">{{ __('TTL') }}</th>
+                              <th style="width: 12%;">{{ __('Type') }}</th>
+                              <th>{{ __('Value') }}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for record in records %}
+                              <tr>
+                                <td class="text-muted">
+                                  <span class="badge bg-secondary-lt">{{ record.name }}</span>
+                                </td>
+                                <td>{{ record.ttl }}</td>
+                                <td>
+                                  <span class="badge bg-secondary-lt text-uppercase">
+                                    {{ record.type }}
+                                  </span>
+                                </td>
+                                <td>{{ record.value }}</td>
+                              </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  {% include 'partials/footer.twig' %}
+</div>
+{% endblock %}

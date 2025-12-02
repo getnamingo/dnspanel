@@ -64,7 +64,8 @@
         "argora/tabler-assets": "^1.4",
         "liqpay/liqpay": "^1.4",
         "namingo/plexdns": "^1.0.3",
-        "pear/net_dns2": "^2.0"
+        "pear/net_dns2": "^2.0",
+        "utopia-php/dns": "^1.3.0"
     },
     "autoload": {
         "psr-4": {

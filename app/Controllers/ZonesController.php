@@ -9,6 +9,10 @@ use League\ISO3166\ISO3166;
 use PlexDNS\Service;
 use PlexDNS\Exceptions\ProviderException;
 use NetDNS2\Resolver as DNSResolver;
+use Utopia\DNS\Client;
+use Utopia\DNS\Message;
+use Utopia\DNS\Message\Question;
+use Utopia\DNS\Message\Record;
 
 class ZonesController extends Controller
 {
@@ -335,7 +339,105 @@ class ZonesController extends Controller
         }
 
     }
-    
+
+    public function zoneDetails(Request $request, Response $response, $args) 
+    {
+        $db = $this->container->get('db');
+        $uri = $request->getUri()->getPath();
+
+        if (!$args) {
+            return $response->withHeader('Location', '/zones')->withStatus(302);
+        }
+
+        $zone = strtolower(trim($args));
+
+        if (!preg_match('/^([a-z0-9]([-a-z0-9]*[a-z0-9])?\.)*[a-z0-9]([-a-z0-9]*[a-z0-9])?$/', $zone)) {
+            $this->container->get('flash')->addMessage('error', 'Invalid zone format');
+            return $response->withHeader('Location', '/zones')->withStatus(302);
+        }
+
+        $domain = $db->selectRow('SELECT id, domain_name, client_id, created_at, updated_at, provider_id, zoneId, config FROM zones WHERE domain_name = ?',
+        [ $zone ]);
+        
+        if (!$domain) {
+            $this->container->get('flash')->addMessage('error', 'Zone not found');
+            return $response->withHeader('Location', '/zones')->withStatus(302);
+        }
+        
+        $resolverAddress = envi('DNS_RESOLVER') ?? '1.1.1.1';
+        $config = json_decode($domain['config'], true);
+        $provider = $config['provider'] ?? null;
+
+        $client = new Client($resolverAddress);
+
+        $types = [
+            Record::TYPE_A,
+            Record::TYPE_AAAA,
+            Record::TYPE_CNAME,
+            Record::TYPE_MX,
+            Record::TYPE_TXT,
+            Record::TYPE_NS,
+            Record::TYPE_SOA,
+            Record::TYPE_SRV,
+            Record::TYPE_CAA,
+        ];
+
+        $recordsByType = [];
+        $lookupErrors  = [];
+        
+        $typeNames = [
+            Record::TYPE_A     => 'A',
+            Record::TYPE_AAAA  => 'AAAA',
+            Record::TYPE_CNAME => 'CNAME',
+            Record::TYPE_MX    => 'MX',
+            Record::TYPE_TXT   => 'TXT',
+            Record::TYPE_NS    => 'NS',
+            Record::TYPE_SOA   => 'SOA',
+            Record::TYPE_SRV   => 'SRV',
+            Record::TYPE_CAA   => 'CAA',
+        ];
+
+        foreach ($types as $type) {
+            try {
+                $query = Message::query(
+                    new Question($domain['domain_name'], $type)
+                );
+
+                $dnsResponse = $client->query($query);
+
+                foreach ($dnsResponse->answers as $answer) {
+                    $typeName = $typeNames[$answer->type] ?? (string) $answer->type;
+
+                    $recordsByType[$typeName][] = [
+                        'name'  => rtrim($answer->name, '.'),
+                        'ttl'   => $answer->ttl,
+                        'type'  => $typeName,
+                        'value' => (string) $answer->rdata,
+                    ];
+                }
+            } catch (\Throwable $e) {
+                $typeName = $typeNames[$type] ?? (string) $type;
+                $lookupErrors[] = sprintf('%s lookup failed: %s', $typeName, $e->getMessage());
+            }
+        }
+
+        if (!empty($lookupErrors)) {
+            $this->container->get('flash')->addMessage(
+                'error',
+                'Unable to load DNS records for this zone (resolver error). Please try again later.'
+            );
+            return $response->withHeader('Location', '/zones')->withStatus(302);
+        }
+
+        return view($response, 'admin/zones/zoneDetails.twig', [
+            'domain'         => $domain,
+            'recordsByType'  => $recordsByType,
+            'resolver'       => $resolverAddress,
+            'currentUri'     => $uri,
+            'provider'       => $provider,
+        ]);
+    }
+
     public function updateZone(Request $request, Response $response, $args)
     {
         $db = $this->container->get('db');
