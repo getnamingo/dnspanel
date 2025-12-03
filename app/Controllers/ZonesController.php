@@ -47,23 +47,32 @@ class ZonesController extends Controller
                     $this->container->get('flash')->addMessage('error', 'Domain ' . $domainName . ' is not available: ' . $invalid_domain);
                     return $response->withHeader('Location', '/zone/check')->withStatus(302);
                 }
-                
-                $resolver = new DNSResolver();
+
+                $resolver = new DNSResolver([
+                    'nameservers' => [ envi('DNS_RESOLVER') ?: '1.1.1.1' ],
+                ]);
+                $nsResponse  = null;
+                $soaResponse = null;
 
                 try {
                     $nsResponse = $resolver->query($domainName, 'NS');
-                } catch (Exception $e) {
-                    $nsCheck = [
-                        'healthy'    => false,
-                        'error'      => "NS lookup failed: " . $e->getMessage(),
-                        'soa_serial' => null
-                    ];
                 } catch (\NetDns2\Exception $e) {
                     $nsCheck = [
                         'healthy'    => false,
                         'error'      => "NS lookup failed: " . $e->getMessage(),
                         'soa_serial' => null
                     ];
+                }
+                
+                if ($nsResponse === null || empty($nsResponse->answer)) {
+                    $nsCheck = [
+                        'healthy'    => false,
+                        'error'      => "No NS records found. Zone might not be properly delegated.",
+                        'soa_serial' => null
+                    ];
+
+                    $this->container->get('flash')->addMessage('error', $nsCheck['error']);
+                    return $response->withHeader('Location', '/zone/check')->withStatus(302);
                 }
 
                 if (empty($nsResponse->answer)) {
@@ -76,12 +85,32 @@ class ZonesController extends Controller
 
                 try {
                     $soaResponse = $resolver->query($domainName, 'SOA');
-                } catch (Exception $e) {
+                } catch (\NetDns2\Exception\DnsException $e) {
+                    $soaCheck = [
+                        'healthy'    => false,
+                        'error'      => "SOA lookup failed (DNS error): " . $e->getMessage(),
+                        'soa_serial' => null
+                    ];
+                    $soaResponse = null;
+                } catch (\NetDns2\Exception\RuntimeException $e) {
+                    $soaCheck = [
+                        'healthy'    => false,
+                        'error'      => "SOA lookup failed (resolver error): " . $e->getMessage(),
+                        'soa_serial' => null
+                    ];
+                    $soaResponse = null;
+                } catch (\Throwable $e) {
                     $soaCheck = [
                         'healthy'    => false,
                         'error'      => "SOA lookup failed: " . $e->getMessage(),
                         'soa_serial' => null
                     ];
+                    $soaResponse = null;
+                }
+
+                if ($soaResponse === null) {
+                    $this->container->get('flash')->addMessage('error', $soaCheck['error']);
+                    return $response->withHeader('Location', '/zone/check')->withStatus(302);
                 }
 
                 if (empty($soaResponse->answer)) {
