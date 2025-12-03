@@ -318,7 +318,7 @@ class ZonesController extends Controller
                     ['domain_name' => $domainName]
                 );
             } else {
-                $dnssecSupportedProviders = ['Bind', 'Cloudflare', 'ClouDNS', 'PowerDNS'];
+                $dnssecSupportedProviders = ['ClouDNS', 'PowerDNS'];
 
                 if (in_array($providerDisplay, $dnssecSupportedProviders, true)) {
                     $db->update(
