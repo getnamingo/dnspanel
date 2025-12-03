@@ -51,7 +51,13 @@ class UsersController extends Controller
             $status = $data['status'] ?? null;
             $verified = $data['verified'] ?? null;
             $role = $data['role'] ?? null;
-            $zone_id = $data['registrar_id'] ?? null;
+            $zoneIds = $data['zone_id'] ?? [];
+
+            if (!is_array($zoneIds)) {
+                $zoneIds = [$zoneIds];
+            }
+
+            $zoneIds = array_filter($zoneIds);
 
             // Define validation rules
             $validators = [
@@ -60,13 +66,8 @@ class UsersController extends Controller
                 'password' => v::stringType()->notEmpty()->length(6, 255)->setName('Password'),
                 'password_confirmation' => v::equals($data['password'] ?? '')->setName('Password Confirmation'),
                 'status' => v::in(['0', '4'])->setName('Status'),
-                'role' => v::in(['admin', 'client'])->setName('Role'),
+                'role' => v::in(['admin', 'zone'])->setName('Role'),
             ];
-
-            // Add registrar_id validation if role is registrar
-            if (($data['role'] ?? '') === 'zone') {
-                $validators['registrar_id'] = v::numericVal()->notEmpty()->setName('Registrar ID');
-            }
 
             // Validate data
             $errors = [];
@@ -106,7 +107,9 @@ class UsersController extends Controller
                     'zone' => 4,
                 ];
 
-                $role = $role ?? (!empty($zone_id) ? 'zone' : 'admin');
+                $hasZones = !empty($zoneIds);
+
+                $role = $role ?? ($hasZones ? 'zone' : 'admin');
                 $roles_mask = $roles[$role] ?? 4;
 
                 $password_hashed = password_hash($password, PASSWORD_ARGON2ID, [
@@ -131,11 +134,13 @@ class UsersController extends Controller
                     
                     $user_id = $db->getLastInsertId();
 
-                    if ($roles_mask === $roles['zone'] && !empty($zone_id)) {
-                        $db->insert('zone_users', [
-                            'zone_id' => $zone_id,
-                            'user_id' => $user_id,
-                        ]);
+                    if ($roles_mask === $roles['zone'] && $hasZones) {
+                        foreach ($zoneIds as $zoneId) {
+                            $db->insert('zone_users', [
+                                'zone_id' => (int)$zoneId,
+                                'user_id' => $user_id,
+                            ]);
+                        }
                     }
 
                     $db->commit();
@@ -185,10 +190,21 @@ class UsersController extends Controller
 
             $user = $db->selectRow('SELECT id,email,username,status,verified,roles_mask,registered,last_login FROM users WHERE username = ?',
             [ $args ]);
-            $user_asso = $db->selectValue('SELECT zone_id FROM zone_users WHERE user_id = ?',
-            [ $user['id'] ]);
-            $zone_name = $db->selectValue('SELECT domain_name FROM zones WHERE id = ?',
-            [ $user_asso ]);
+            $userZones = $db->select(
+                'SELECT z.id, z.domain_name
+                 FROM zone_users zu
+                 JOIN zones z ON z.id = zu.zone_id
+                 WHERE zu.user_id = ?',
+                [ $user['id'] ]
+            );
+
+            if (!is_array($userZones)) {
+                $userZones = [];
+            }
+
+            $user_zone_ids = array_map(static function ($row) {
+                return (int) $row['id'];
+            }, $userZones);
 
             if ($user) {
                 // Check if the user is not an admin (assuming role 0 is admin)
@@ -199,7 +215,7 @@ class UsersController extends Controller
                 $_SESSION['user_to_update'] = [$args];
 
                 $roles_new = [
-                    '4'  => ($user['roles_mask'] & 4)  ? true : false, // Client
+                    '4'  => ($user['roles_mask'] & 4)  ? true : false, // Zone
                     '8'  => ($user['roles_mask'] & 8)  ? true : false, // Accountant
                     '16' => ($user['roles_mask'] & 16) ? true : false, // Support
                     '32' => ($user['roles_mask'] & 32) ? true : false, // Auditor
@@ -209,10 +225,10 @@ class UsersController extends Controller
                 return view($response,'admin/users/updateUser.twig', [
                     'user' => $user,
                     'currentUri' => $uri,
-                    'zones' => $zones,
-                    'user_asso' => $user_asso,
-                    'zone_name' => $zone_name,
-                    'roles_new' => $roles_new
+                    'zones'         => $zones,
+                    'user_zone_ids' => $user_zone_ids,
+                    'user_zones'    => $userZones,
+                    'roles_new'     => $roles_new,
                 ]);
             } else {
                 // User does not exist, redirect to the users view
@@ -243,6 +259,14 @@ class UsersController extends Controller
             $status = $data['status'] ?? null;
             $verified = $data['verified'] ?? null;
             $roles_mask = isset($data['roles_mask']) ? (int)$data['roles_mask'] : null;
+            
+            $zoneIds = $data['registrar_id'] ?? [];
+
+            if (!is_array($zoneIds)) {
+                $zoneIds = [$zoneIds];
+            }
+
+            $zoneIds = array_filter($zoneIds);
 
             $allowedRoles = [0, 2, 4, 8, 16, 32, 64];
             $allowedRolesMask = array_sum($allowedRoles); // 124 (sum of allowed roles)
@@ -359,6 +383,16 @@ class UsersController extends Controller
                 $this->container->get('flash')->addMessage('error', 'No roles assigned. Please assign at least one role');
                 return $response->withHeader('Location', '/user/update/' . $old_username)->withStatus(302);
             }
+            
+            $userId = $db->selectValue(
+                'SELECT id FROM users WHERE username = ?',
+                [ $old_username ]
+            );
+
+            if (!$userId) {
+                $this->container->get('flash')->addMessage('error', 'User not found for update');
+                return $response->withHeader('Location', '/users')->withStatus(302);
+            }
 
             $db->beginTransaction();
 
@@ -388,6 +422,20 @@ class UsersController extends Controller
                         'username' => $old_username
                     ]
                 );
+                
+                if (($roles_mask & 4) === 4) {
+                    $db->exec('DELETE FROM zone_users WHERE user_id = ?', [ $userId ]);
+
+                    foreach ($zoneIds as $zoneId) {
+                        $db->insert('zone_users', [
+                            'zone_id' => (int) $zoneId,
+                            'user_id' => (int) $userId,
+                        ]);
+                    }
+                } else {
+                    // No Zone role anymore → ensure no zone associations remain
+                    $db->exec('DELETE FROM zone_users WHERE user_id = ?', [ $userId ]);
+                }
 
                 $db->commit();
             } catch (Exception $e) {

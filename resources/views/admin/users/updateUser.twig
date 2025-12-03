@@ -129,13 +129,26 @@
                                 {% endif %}
 
                                 {{ assigned_roles | join(', ') }}
-
-                                {# Show association if the user is associated with another registrar #}
-                                {% if user_asso is defined and user_asso is not null %}
-                                    - {{ __('Associated with Zone') }} {{ zone_name }}
-                                {% endif %}
                             {% endif %}
                           </div>
+
+                          {# Multiselect to update zone associations (only if Zone role is present) #}
+                          {% if roles_new['4'] %}
+                            <div class="mt-2">
+                              <label class="form-label mb-1">{{ __('Zone Association') }}</label>
+                              <select class="form-select" name="registrar_id[]" id="zone-association" multiple size="6">
+                                {% for zone in zones %}
+                                  <option value="{{ zone.id }}"
+                                    {% if zone.id in user_zone_ids %}selected{% endif %}
+                                  >{{ zone.domain_name }}</option>
+                                {% endfor %}
+                              </select>
+                              <div class="form-hint">
+                                {{ __('Hold Ctrl (Windows/Linux) or Cmd (macOS) to select multiple zones. On phones/tablets, tap to select.') }}
+                              </div>
+                            </div>
+                          {% endif %}
+
                         </div>
                       </div>
 
@@ -144,7 +157,7 @@
                         <div class="col-md-6">
                           <div class="mb-3">
                             <label class="form-label">{{ __('Roles') }}</label>
-                            <span class="badge bg-blue-lt">{{ __('Zone Administrator') }}</span>
+                            <span class="badge bg-indigo-lt">{{ __('Zone Administrator') }}</span>
                             <input type="hidden" name="roles_mask" value="4">
                           </div>
                         </div>

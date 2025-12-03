@@ -117,16 +117,20 @@
                     <div id="registrar-fields" style="display: none;">
                       <div class="mb-3">
                         <label class="form-label">{{ __('Zone Association') }}</label>
-                        <select class="form-select" name="registrar_id">
-                          <option value="" disabled selected>{{ __('Select zone') }}</option>
+
+                        <select class="form-select" name="zone_id[]" id="zone-association" multiple size="6">
                           {% for zone in zones %}
                             <option value="{{ zone.id }}">{{ zone.domain_name }}</option>
                           {% endfor %}
                         </select>
+
+                        <div class="form-hint">
+                          {{ __('Hold Ctrl (Windows/Linux) or Cmd (macOS) to select multiple zones. On phones/tablets, tap to select.') }}
+                        </div>
                       </div>
                     </div>
                   </div>
-                      
+
                   <div class="card-footer text-end">
                     <div class="d-flex">
                       <button type="submit" class="btn btn-primary">{{ __('Create User') }}</button>
