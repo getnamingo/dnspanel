@@ -245,10 +245,60 @@ class ZonesController extends Controller
                 ];
                 $domain = $service->createDomain($domainOrder);
             } catch (\RuntimeException $e) {
-                $this->container->get('flash')->addMessage('error', $e->getMessage());
+                $currentDateTime = new \DateTime();
+                $logdate = $currentDateTime->format('Y-m-d H:i:s.v');
+                $db->insert(
+                    'error_log',
+                    [
+                        'channel' => 'domain_manager',
+                        'level' => 400,
+                        'level_name' => 'ERROR',
+                        'message' => "Unexpected failure during zone creation: " . $e->getMessage(),
+                        'context' => json_encode([
+                            'user_id' => $_SESSION['auth_user_id'] ?? null, 
+                            'domain' => $domainName ?? null, 
+                            'provider' => $providerDisplay ?? null,
+                            'exception'    => [
+                                'class'   => get_class($e),
+                                'file'    => $e->getFile(),
+                                'line'    => $e->getLine(),
+                            ]
+                        ]),
+                        'extra'       => json_encode([
+                            'trace' => $e->getTraceAsString(),
+                        ]),
+                        'created_at' => $logdate
+                    ]
+                );
+                $this->container->get('flash')->addMessage('error', 'Zone creation failed. Please try again later');
                 return $response->withHeader('Location', '/zone/create')->withStatus(302);
             } catch (\Throwable $e) {
-                $this->container->get('flash')->addMessage('error', 'Unexpected failure during zone create: ' . $e->getMessage());
+                $currentDateTime = new \DateTime();
+                $logdate = $currentDateTime->format('Y-m-d H:i:s.v');
+                $db->insert(
+                    'error_log',
+                    [
+                        'channel' => 'domain_manager',
+                        'level' => 400,
+                        'level_name' => 'ERROR',
+                        'message' => "Unexpected failure during zone creation: " . $e->getMessage(),
+                        'context' => json_encode([
+                            'user_id' => $_SESSION['auth_user_id'] ?? null, 
+                            'domain' => $domainName ?? null, 
+                            'provider' => $providerDisplay ?? null,
+                            'exception'    => [
+                                'class'   => get_class($e),
+                                'file'    => $e->getFile(),
+                                'line'    => $e->getLine(),
+                            ]
+                        ]),
+                        'extra'       => json_encode([
+                            'trace' => $e->getTraceAsString(),
+                        ]),
+                        'created_at' => $logdate
+                    ]
+                );
+                $this->container->get('flash')->addMessage('error', 'Zone creation failed. Please try again later');
                 return $response->withHeader('Location', '/zone/create')->withStatus(302);
             }
 
@@ -657,10 +707,60 @@ class ZonesController extends Controller
                 }
                 $recordId = $service->addRecord($recordData);
             } catch (\RuntimeException  $e) {
-                $this->container->get('flash')->addMessage('error', $e->getMessage());
+                $currentDateTime = new \DateTime();
+                $logdate = $currentDateTime->format('Y-m-d H:i:s.v');
+                $db->insert(
+                    'error_log',
+                    [
+                        'channel' => 'domain_manager',
+                        'level' => 400,
+                        'level_name' => 'ERROR',
+                        'message' => "Unexpected failure during record creation: " . $e->getMessage(),
+                        'context' => json_encode([
+                            'user_id' => $_SESSION['auth_user_id'] ?? null, 
+                            'domain' => $domainName ?? null, 
+                            'provider' => $providerDisplay ?? null,
+                            'exception'    => [
+                                'class'   => get_class($e),
+                                'file'    => $e->getFile(),
+                                'line'    => $e->getLine(),
+                            ]
+                        ]),
+                        'extra'       => json_encode([
+                            'trace' => $e->getTraceAsString(),
+                        ]),
+                        'created_at' => $logdate
+                    ]
+                );
+                $this->container->get('flash')->addMessage('error', 'Record creation failed. Please try again later');
                 return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
             } catch (\Throwable  $e) {
-                $this->container->get('flash')->addMessage('error', 'Unexpected failure during creation: ' . $e->getMessage());
+                $currentDateTime = new \DateTime();
+                $logdate = $currentDateTime->format('Y-m-d H:i:s.v');
+                $db->insert(
+                    'error_log',
+                    [
+                        'channel' => 'domain_manager',
+                        'level' => 400,
+                        'level_name' => 'ERROR',
+                        'message' => "Unexpected failure during record creation: " . $e->getMessage(),
+                        'context' => json_encode([
+                            'user_id' => $_SESSION['auth_user_id'] ?? null, 
+                            'domain' => $domainName ?? null, 
+                            'provider' => $providerDisplay ?? null,
+                            'exception'    => [
+                                'class'   => get_class($e),
+                                'file'    => $e->getFile(),
+                                'line'    => $e->getLine(),
+                            ]
+                        ]),
+                        'extra'       => json_encode([
+                            'trace' => $e->getTraceAsString(),
+                        ]),
+                        'created_at' => $logdate
+                    ]
+                );
+                $this->container->get('flash')->addMessage('error', 'Record creation failed. Please try again later');
                 return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
             }
 
@@ -867,10 +967,60 @@ class ZonesController extends Controller
                 return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
             }
         } catch (\RuntimeException $e) {
-            $this->container->get('flash')->addMessage('error', $e->getMessage());
+            $currentDateTime = new \DateTime();
+            $logdate = $currentDateTime->format('Y-m-d H:i:s.v');
+            $db->insert(
+                'error_log',
+                [
+                    'channel' => 'domain_manager',
+                    'level' => 400,
+                    'level_name' => 'ERROR',
+                    'message' => "Unexpected failure during record " . $data['action'] . ": " . $e->getMessage(),
+                    'context' => json_encode([
+                        'user_id' => $_SESSION['auth_user_id'] ?? null, 
+                        'domain' => $domainName ?? null, 
+                        'provider' => $providerDisplay ?? null,
+                        'exception'    => [
+                        'class'   => get_class($e),
+                        'file'    => $e->getFile(),
+                        'line'    => $e->getLine(),
+                    ]
+                    ]),
+                    'extra'       => json_encode([
+                        'trace' => $e->getTraceAsString(),
+                    ]),
+                    'created_at' => $logdate
+                ]
+            );
+            $this->container->get('flash')->addMessage('error', 'Zone record ' . $data['action'] . ' failed. Please try again later');
             return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
         } catch (\Throwable $e) {
-            $this->container->get('flash')->addMessage('error', 'Unexpected failure during update: ' . $e->getMessage());
+            $currentDateTime = new \DateTime();
+            $logdate = $currentDateTime->format('Y-m-d H:i:s.v');
+            $db->insert(
+                'error_log',
+                [
+                    'channel' => 'domain_manager',
+                    'level' => 400,
+                    'level_name' => 'ERROR',
+                    'message' => "Unexpected failure during record " . $data['action'] . ": " . $e->getMessage(),
+                    'context' => json_encode([
+                        'user_id' => $_SESSION['auth_user_id'] ?? null, 
+                        'domain' => $domainName ?? null, 
+                        'provider' => $providerDisplay ?? null,
+                        'exception'    => [
+                        'class'   => get_class($e),
+                        'file'    => $e->getFile(),
+                        'line'    => $e->getLine(),
+                    ]
+                    ]),
+                    'extra'       => json_encode([
+                        'trace' => $e->getTraceAsString(),
+                    ]),
+                    'created_at' => $logdate
+                ]
+            );
+            $this->container->get('flash')->addMessage('error', 'Zone record ' . $data['action'] . ' failed. Please try again later');
             return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
         }
     }
@@ -935,11 +1085,69 @@ class ZonesController extends Controller
                 $config['cloudns_auth_password'] = $cloudnsAuthPassword;
             }
 
-            $service = new Service($pdo);
-            $domainOrder = [
-                'config' => json_encode($config),
-            ];
-            $service->deleteDomain($domainOrder);
+            try {
+                $service = new Service($pdo);
+                $domainOrder = [
+                    'config' => json_encode($config),
+                ];
+                $service->deleteDomain($domainOrder);
+            } catch (\RuntimeException $e) {
+                $currentDateTime = new \DateTime();
+                $logdate = $currentDateTime->format('Y-m-d H:i:s.v');
+                $db->insert(
+                    'error_log',
+                    [
+                        'channel' => 'domain_manager',
+                        'level' => 400,
+                        'level_name' => 'ERROR',
+                        'message' => "Unexpected failure during zone deletion: " . $e->getMessage(),
+                        'context' => json_encode([
+                            'user_id' => $_SESSION['auth_user_id'] ?? null, 
+                            'domain' => $args ?? null, 
+                            'provider' => $providerDisplay ?? null,
+                            'exception'    => [
+                                'class'   => get_class($e),
+                                'file'    => $e->getFile(),
+                                'line'    => $e->getLine(),
+                            ]
+                        ]),
+                        'extra'       => json_encode([
+                            'trace' => $e->getTraceAsString(),
+                        ]),
+                        'created_at' => $logdate
+                    ]
+                );
+                $this->container->get('flash')->addMessage('error', 'Zone deletion failed. Please try again later');
+                return $response->withHeader('Location', '/zones')->withStatus(302);
+            } catch (\Throwable $e) {
+                $currentDateTime = new \DateTime();
+                $logdate = $currentDateTime->format('Y-m-d H:i:s.v');
+                $db->insert(
+                    'error_log',
+                    [
+                        'channel' => 'domain_manager',
+                        'level' => 400,
+                        'level_name' => 'ERROR',
+                        'message' => "Unexpected failure during zone deletion: " . $e->getMessage(),
+                        'context' => json_encode([
+                            'user_id' => $_SESSION['auth_user_id'] ?? null, 
+                            'domain' => $args ?? null, 
+                            'provider' => $providerDisplay ?? null,
+                            'exception'    => [
+                                'class'   => get_class($e),
+                                'file'    => $e->getFile(),
+                                'line'    => $e->getLine(),
+                            ]
+                        ]),
+                        'extra'       => json_encode([
+                            'trace' => $e->getTraceAsString(),
+                        ]),
+                        'created_at' => $logdate
+                    ]
+                );
+                $this->container->get('flash')->addMessage('error', 'Zone deletion failed. Please try again later');
+                return $response->withHeader('Location', '/zones')->withStatus(302);
+            }
 
             $this->container->get('flash')->addMessage('success', 'Zone ' . $args . ' deleted successfully');
             return $response->withHeader('Location', '/zones')->withStatus(302);
