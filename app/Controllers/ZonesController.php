@@ -315,14 +315,8 @@ class ZonesController extends Controller
             return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
         }
 
-        $db = $this->container->get('db');
-        $users = $db->select("SELECT id, email, username FROM users");
-        $user = $_SESSION["auth_roles"] != 0 ? true : null;
-
         // Default view for GET requests or if POST data is not set
         return view($response,'admin/zones/createZone.twig', [
-            'users' => $users,
-            'user' => $user,
             'providers' => getActiveProviders()
         ]);
     }

@@ -45,6 +45,8 @@
                         <input type="text" class="form-control mb-2" placeholder="example.com" name="domainName" id="domainName" required="required" autocapitalize="none">
                       </div>
                     </div>
+                  </div>
+                  <div class="row">
                     <div class="col-md-6">
                       <div class="mb-3">
                         <label for="providerDropdown" class="form-label required">{{ __('Choose Provider') }}</label>
@@ -56,20 +58,6 @@
                         </select>
                       </div>
                     </div>
-                  </div>
-                  <div class="row">
-                    {% if users and not user %}
-                    <div class="col-md-6">
-                      <div class="mb-3">
-                        <label for="registrarDropdown" class="form-label">{{ __('Assign to User') }}</label>
-                        <select id="registrarDropdown" name="registrar" class="form-select">
-                          {% for user in users %}
-                          <option value="{{ user.id }}">{{ user.username }}</option>
-                          {% endfor %}
-                        </select>
-                      </div>
-                    </div>
-                    {% endif %}
                   </div>
                 </div>
                 <div class="card-footer">
