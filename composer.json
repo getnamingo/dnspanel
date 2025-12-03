@@ -63,7 +63,7 @@
         "adyen/php-api-library": "^28.1",
         "argora/tabler-assets": "^1.4",
         "liqpay/liqpay": "^1.4",
-        "namingo/plexdns": "^1.0.3",
+        "namingo/plexdns": "^1.0.6",
         "pear/net_dns2": "^2.0",
         "utopia-php/dns": "^1.3.0"
     },
