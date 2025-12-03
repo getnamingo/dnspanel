@@ -1,6 +1,5 @@
 <script src="/assets/js/tabulator.min.js" defer></script>
 <script src="/assets/js/tabler.min.js" defer></script>
-<script src="/assets/js/xlsx.full.min.js" defer></script>
 <script src="/assets/js/jspdf.umd.min.js" defer></script>
 <script src="/assets/js/jspdf.plugin.autotable.min.js" defer></script>
 <script>
@@ -58,14 +57,6 @@
         table.download("csv", "log.csv");
     }
 
-    function downloadJSON() {
-        table.download("json", "log.json");
-    }
-
-    function downloadXLSX() {
-        table.download("xlsx", "log.xlsx", {sheetName:"My Logs"});
-    }
-    
     function downloadPDF() {
         table.download("pdf", "log.pdf", {
             orientation:"portrait",

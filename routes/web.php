@@ -17,7 +17,6 @@ use App\Controllers\HomeController;
 use App\Controllers\ZonesController;
 use App\Controllers\ProfileController;
 use App\Controllers\UsersController;
-use App\Controllers\ProvidersController;
 use App\Controllers\SupportController;
 use App\Controllers\LogsController;
 use App\Controllers\SparkController;
@@ -72,15 +71,7 @@ $app->group('', function ($route) {
     $route->get('/user/impersonate/{user}', UsersController::class . ':impersonateUser')->setName('impersonateUser');
     $route->get('/leave_impersonation', UsersController::class . ':leave_impersonation')->setName('leave_impersonation');
 
-    $route->get('/providers', ProvidersController::class .':listProviders')->setName('listProviders');
-    $route->map(['GET', 'POST'], '/providers/create', ProvidersController::class . ':createProvider')->setName('createProvider');
-    $route->get('/providers/{provider}/edit', ProvidersController::class . ':editProvider')->setName('editProvider');
-    $route->post('/providers/{provider}/update', ProvidersController::class . ':updateProvider')->setName('updateProvider');
-    $route->get('/providers/{provider}/delete', ProvidersController::class . ':deleteProvider')->setName('deleteProvider');
-
     $route->get('/log', LogsController::class .':log')->setName('log');
-
-    $route->post('/clear-cache', HomeController::class .':clearCache')->setName('clearCache');
 
     $route->get('/support', SupportController::class .':view')->setName('ticketview');
     $route->map(['GET', 'POST'], '/support/new', SupportController::class .':newticket')->setName('newticket');
@@ -163,21 +154,6 @@ $app->any('/api[/{params:.*}]', function (
             $response->getBody()->rewind();
             $data = json_decode($bodyContent, true);
 
-            // Sample table overwrite
-            /* if ($tableName == 'domain') {
-                if (isset($data['records']) && is_array($data['records'])) {
-                    foreach ($data['records'] as &$record) {
-                        if (isset($record['name']) && stripos($record['name'], 'xn--') === 0) {
-                            $record['name_o'] = $record['name'];
-                            $record['name'] = idn_to_utf8($record['name'], 0, INTL_IDNA_VARIANT_UTS46);
-                        } else {
-                            $record['name_o'] = $record['name'];
-                        }
-                    }
-                    unset($record);
-                }
-            } */
-
             $modifiedBodyContent = json_encode($data, JSON_UNESCAPED_UNICODE);
             $stream = \Nyholm\Psr7\Stream::create($modifiedBodyContent);
             $response = $response->withBody($stream);
@@ -195,9 +171,6 @@ $app->any('/api[/{params:.*}]', function (
             }
 
             $columnMap = [
-                'services',
-                'invoices',
-                'statement',
                 'support_tickets',
                 'users_audit',
             ];

@@ -7,7 +7,7 @@
     <title>{% block title %}{% endblock %} | Domain Manager</title>
     <meta name="theme-color" content="#066fd1">
     <!-- CSS files -->
-{% if route_is('transactions') or route_is('users') or is_current_url('listZones') or route_is('providers') or is_current_url('ticketview') or route_is('log') or route_is('profile') %}{% include 'partials/css-tables.twig' %}{% else %}{% include 'partials/css.twig' %}{% endif %}
+{% if route_is('users') or is_current_url('listZones') or is_current_url('ticketview') or route_is('log') or route_is('profile') %}{% include 'partials/css-tables.twig' %}{% else %}{% include 'partials/css.twig' %}{% endif %}
   </head>
   <body>
     <div class="page">
@@ -143,14 +143,12 @@
     {% include 'partials/js-users.twig' %}
 {% elseif is_current_url('listZones') %}
     {% include 'partials/js-zones.twig' %}
-{% elseif route_is('providers') %}
-    {% include 'partials/js-providers.twig' %}
 {% elseif is_current_url('ticketview') %}
     {% include 'partials/js-support.twig' %}
 {% elseif route_is('profile') %}
     {% include 'partials/js-profile.twig' %}
-{% elseif route_is('deposit') %}
-    {% include 'partials/js-deposit.twig' %}
+{% elseif route_is('log') %}
+    {% include 'partials/js-log.twig' %}
 {% else %}
     {% include 'partials/js.twig' %}
 {% endif %}
