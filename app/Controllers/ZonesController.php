@@ -310,7 +310,25 @@ class ZonesController extends Controller
                 "SELECT created_at FROM zones WHERE domain_name = ? LIMIT 1",
                 [$domainName]
             );
-            
+
+            if ($providerDisplay === 'Desec') {
+                $db->update(
+                    'zones',
+                    ['provider_id' => 2],
+                    ['domain_name' => $domainName]
+                );
+            } else {
+                $dnssecSupportedProviders = ['Bind', 'Cloudflare', 'ClouDNS', 'PowerDNS'];
+
+                if (in_array($providerDisplay, $dnssecSupportedProviders, true)) {
+                    $db->update(
+                        'zones',
+                        ['provider_id' => 1],
+                        ['domain_name' => $domainName]
+                    );
+                }
+            }
+
             $this->container->get('flash')->addMessage('success', 'Zone ' . $domainName . ' has been created successfully on ' . $crdate);
             return $response->withHeader('Location', '/zone/update/'.$domainName)->withStatus(302);
         }
@@ -486,9 +504,161 @@ class ZonesController extends Controller
         ]);
     }
 
+    public function zoneDNSSEC(Request $request, Response $response, $args) 
+    {
+        $db = $this->container->get('db');
+        $uri = $request->getUri()->getPath();
+        $pdo = $this->container->get('pdo');
+
+        if (!$args) {
+            return $response->withHeader('Location', '/zones')->withStatus(302);
+        }
+
+        $zone = strtolower(trim($args));
+
+        if (!preg_match('/^([a-z0-9]([-a-z0-9]*[a-z0-9])?\.)*[a-z0-9]([-a-z0-9]*[a-z0-9])?$/', $zone)) {
+            $this->container->get('flash')->addMessage('error', 'Invalid zone format');
+            return $response->withHeader('Location', '/zones')->withStatus(302);
+        }
+
+        $domain = $db->selectRow('SELECT id, domain_name, client_id, created_at, updated_at, provider_id, zoneId, config FROM zones WHERE domain_name = ?',
+        [ $zone ]);
+        
+        if (!$domain) {
+            $this->container->get('flash')->addMessage('error', 'Zone not found');
+            return $response->withHeader('Location', '/zones')->withStatus(302);
+        }
+
+        // Map provider_id to DNSSEC status: 0 = not supported, 1 = supported (disabled), 2 = enabled
+        $dnssecStatus = isset($domain['provider_id']) ? (int)$domain['provider_id'] : 0;
+        $domain['dnssec_status'] = $dnssecStatus;
+
+        if ($dnssecStatus === 1) {
+            try {
+                $configJson = $db->selectValue('SELECT config FROM zones WHERE domain_name = ?', [$zone]);
+                $configArray = json_decode($configJson, true);
+                $provider = strtoupper($configArray['provider']) ?? null;
+                $providerDisplay = getProviderDisplayName($provider);
+
+                if (!$provider) {
+                    $this->container->get('flash')->addMessage('error', 'Error: Missing required environment variables in .env file (PROVIDER)');
+                    return $response->withHeader('Location', '/zone/update/'.$zone)->withStatus(302);
+                }
+
+                $credentials = getProviderCredentials($provider);
+
+                if (empty($credentials)) {
+                    $this->container->get('flash')->addMessage('error', "Error: Missing required credentials for provider ($providerDisplay) in .env file.");
+                    return $response->withHeader('Location', '/zone/update/'.$zone)->withStatus(302);
+                }
+
+                $apiKey = $credentials['API_KEY'] ?? null;
+                $bindip = $credentials['BIND_IP'] ?? '127.0.0.1';
+                $powerdnsip = $credentials['POWERDNS_IP'] ?? '127.0.0.1';
+                $cloudnsAuthId = $credentials['AUTH_ID'] ?? null;
+                $cloudnsAuthPassword = $credentials['AUTH_PASSWORD'] ?? null;
+
+                if ($providerDisplay === 'ClouDNS' && (empty($cloudnsAuthId) || empty($cloudnsAuthPassword))) {
+                    $this->container->get('flash')->addMessage('error', 'Error: Invalid ClouDNS credentials (AUTH_ID and AUTH_PASSWORD) in .env');
+                    return $response->withHeader('Location', '/zone/update/'.$zone)->withStatus(302);
+                }
+                    
+                $service = new Service($pdo);
+                $recordData = [
+                    'domain_name' => $args,
+                    'provider' => $providerDisplay,
+                    'apikey' => $apiKey
+                ];
+                if ($bindip !== '127.0.0.1' && isValidIP($bindip)) {
+                    $recordData['bindip'] = $bindip;
+                }
+                if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
+                    $recordData['powerdnsip'] = $powerdnsip;
+                }
+                if ($providerDisplay === 'ClouDNS') {
+                    $recordData['cloudns_auth_id'] = $cloudnsAuthId;
+                    $recordData['cloudns_auth_password'] = $cloudnsAuthPassword;
+                }
+                $ds = $service->enableDNSSEC($recordData);
+
+                $db->update(
+                    'zones',
+                    [
+                        'provider_id' => 2
+                    ],
+                    [
+                        'domain_name' => $zone
+                    ]
+                );
+            } catch (\RuntimeException  $e) {
+                $currentDateTime = new \DateTime();
+                $logdate = $currentDateTime->format('Y-m-d H:i:s.v');
+                $db->insert(
+                    'error_log',
+                    [
+                        'channel' => 'domain_manager',
+                        'level' => 400,
+                        'level_name' => 'ERROR',
+                        'message' => "Unexpected failure during DNSSEC enable: " . $e->getMessage(),
+                        'context' => json_encode([
+                           'user_id' => $_SESSION['auth_user_id'] ?? null, 
+                            'domain' => $zone ?? null, 
+                            'provider' => $providerDisplay ?? null,
+                            'exception'    => [
+                                'class'   => get_class($e),
+                                'file'    => $e->getFile(),
+                                'line'    => $e->getLine(),
+                            ]
+                        ]),
+                        'extra'       => json_encode([
+                            'trace' => $e->getTraceAsString(),
+                        ]),
+                        'created_at' => $logdate
+                    ]
+                );
+                $this->container->get('flash')->addMessage('error', 'DNSSEC enable failed. Please try again later');
+                return $response->withHeader('Location', '/zone/update/'.$zone)->withStatus(302);
+            } catch (\Throwable  $e) {
+                $currentDateTime = new \DateTime();
+                $logdate = $currentDateTime->format('Y-m-d H:i:s.v');
+                $db->insert(
+                    'error_log',
+                    [
+                        'channel' => 'domain_manager',
+                        'level' => 400,
+                        'level_name' => 'ERROR',
+                        'message' => "Unexpected failure during DNSSEC enable: " . $e->getMessage(),
+                        'context' => json_encode([
+                           'user_id' => $_SESSION['auth_user_id'] ?? null, 
+                            'domain' => $zone ?? null, 
+                            'provider' => $providerDisplay ?? null,
+                            'exception'    => [
+                                'class'   => get_class($e),
+                                'file'    => $e->getFile(),
+                                'line'    => $e->getLine(),
+                            ]
+                        ]),
+                        'extra'       => json_encode([
+                            'trace' => $e->getTraceAsString(),
+                        ]),
+                        'created_at' => $logdate
+                    ]
+                );
+                $this->container->get('flash')->addMessage('error', 'DNSSEC enable failed. Please try again later');
+                return $response->withHeader('Location', '/zone/update/'.$zone)->withStatus(302);
+            }
+        } else {
+            return $response->withHeader('Location', '/zone/update/'.$zone)->withStatus(302);
+        }
+
+        return $response->withHeader('Location', '/zone/update/'.$zone)->withStatus(302);
+    }
+
     public function updateZone(Request $request, Response $response, $args)
     {
         $db = $this->container->get('db');
+        $pdo = $this->container->get('pdo');
+
         if ($_SESSION["auth_roles"] != 0) {
             $registrar = true;
         } else {
@@ -541,12 +711,141 @@ class ZonesController extends Controller
                 }
                 $_SESSION['domains_to_update'] = [$domain['domain_name_o']];
                 
+                // Map provider_id to DNSSEC status: 0 = not supported, 1 = supported (disabled), 2 = enabled
+                $dnssecStatus = isset($domain['provider_id']) ? (int)$domain['provider_id'] : 0;
+                $domain['dnssec_status'] = $dnssecStatus;
+
+                $dsList = [];
+                if ($dnssecStatus === 2) {
+                    try {
+                        $configJson = $db->selectValue('SELECT config FROM zones WHERE domain_name = ?', [$args]);
+                        $configArray = json_decode($configJson, true);
+                        $provider = strtoupper($configArray['provider']) ?? null;
+                        $providerDisplay = getProviderDisplayName($provider);
+
+                        if (!$provider) {
+                            $this->container->get('flash')->addMessage('error', 'Error: Missing required environment variables in .env file (PROVIDER)');
+                            return $response->withHeader('Location', '/zones')->withStatus(302);
+                        }
+
+                        $credentials = getProviderCredentials($provider);
+
+                        if (empty($credentials)) {
+                            $this->container->get('flash')->addMessage('error', "Error: Missing required credentials for provider ($providerDisplay) in .env file.");
+                            return $response->withHeader('Location', '/zones')->withStatus(302);
+                        }
+
+                        $apiKey = $credentials['API_KEY'] ?? null;
+                        $bindip = $credentials['BIND_IP'] ?? '127.0.0.1';
+                        $powerdnsip = $credentials['POWERDNS_IP'] ?? '127.0.0.1';
+                        $cloudnsAuthId = $credentials['AUTH_ID'] ?? null;
+                        $cloudnsAuthPassword = $credentials['AUTH_PASSWORD'] ?? null;
+
+                        if ($providerDisplay === 'ClouDNS' && (empty($cloudnsAuthId) || empty($cloudnsAuthPassword))) {
+                            $this->container->get('flash')->addMessage('error', 'Error: Invalid ClouDNS credentials (AUTH_ID and AUTH_PASSWORD) in .env');
+                            return $response->withHeader('Location', '/zones')->withStatus(302);
+                        }
+                    
+                        $service = new Service($pdo);
+                        $recordData = [
+                            'domain_name' => $args,
+                            'provider' => $providerDisplay,
+                            'apikey' => $apiKey
+                        ];
+                        if ($bindip !== '127.0.0.1' && isValidIP($bindip)) {
+                            $recordData['bindip'] = $bindip;
+                        }
+                        if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
+                            $recordData['powerdnsip'] = $powerdnsip;
+                        }
+                        if ($providerDisplay === 'ClouDNS') {
+                            $recordData['cloudns_auth_id'] = $cloudnsAuthId;
+                            $recordData['cloudns_auth_password'] = $cloudnsAuthPassword;
+                        }
+                        $dsOnly = $service->getDSRecords($recordData);
+                        $dsOnly = $dsOnly ?? [];
+
+                        $dsList = [];
+
+                        foreach ($dsOnly as $ds) {
+                            $parts = explode(' ', $ds, 4);
+
+                            if (count($parts) === 4) {
+                                $dsList[] = [
+                                    'keytag'      => $parts[0],
+                                    'algorithm'   => $parts[1],
+                                    'digest_type' => $parts[2],
+                                    'digest'      => $parts[3],
+                                    'full'        => $ds,
+                                ];
+                            }
+                        }
+                    } catch (\RuntimeException  $e) {
+                        $currentDateTime = new \DateTime();
+                        $logdate = $currentDateTime->format('Y-m-d H:i:s.v');
+                        $db->insert(
+                            'error_log',
+                            [
+                                'channel' => 'domain_manager',
+                                'level' => 400,
+                                'level_name' => 'ERROR',
+                                'message' => "Unexpected failure during DS retrieval: " . $e->getMessage(),
+                                'context' => json_encode([
+                                    'user_id' => $_SESSION['auth_user_id'] ?? null, 
+                                    'domain' => $args ?? null, 
+                                    'provider' => $providerDisplay ?? null,
+                                    'exception'    => [
+                                        'class'   => get_class($e),
+                                        'file'    => $e->getFile(),
+                                        'line'    => $e->getLine(),
+                                    ]
+                                ]),
+                                'extra'       => json_encode([
+                                    'trace' => $e->getTraceAsString(),
+                                ]),
+                                'created_at' => $logdate
+                            ]
+                        );
+                        $this->container->get('flash')->addMessage('error', 'DS retrieval failed. Please try again later');
+                        return $response->withHeader('Location', '/zones')->withStatus(302);
+                    } catch (\Throwable  $e) {
+                        $currentDateTime = new \DateTime();
+                        $logdate = $currentDateTime->format('Y-m-d H:i:s.v');
+                        $db->insert(
+                            'error_log',
+                            [
+                                'channel' => 'domain_manager',
+                                'level' => 400,
+                                'level_name' => 'ERROR',
+                                'message' => "Unexpected failure during DS retrieval: " . $e->getMessage(),
+                                'context' => json_encode([
+                                    'user_id' => $_SESSION['auth_user_id'] ?? null, 
+                                    'domain' => $args ?? null, 
+                                    'provider' => $providerDisplay ?? null,
+                                    'exception'    => [
+                                        'class'   => get_class($e),
+                                        'file'    => $e->getFile(),
+                                        'line'    => $e->getLine(),
+                                    ]
+                                ]),
+                                'extra'       => json_encode([
+                                    'trace' => $e->getTraceAsString(),
+                                ]),
+                                'created_at' => $logdate
+                            ]
+                        );
+                        $this->container->get('flash')->addMessage('error', 'DS retrieval failed. Please try again later');
+                        return $response->withHeader('Location', '/zones')->withStatus(302);
+                    }
+                }
+
                 return view($response,'admin/zones/updateZone.twig', [
                     'domain' => $domain,
                     'records' => $records,
                     'users' => $users,
                     'registrar' => $registrar,
                     'currentUri' => $uri,
+                    'dsList'    => $dsList
                ]);
             } else {
                 // Domain does not exist, redirect to the zones view

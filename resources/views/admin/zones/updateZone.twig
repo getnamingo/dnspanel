@@ -26,6 +26,30 @@
                   {{ __('Updating Zone') }} {{ domain.domain_name }}
                 </h2>
               </div>
+              {% if domain.dnssec_status %}
+              <!-- Page title actions -->
+              <div class="col-auto ms-auto d-print-none">
+                <div class="btn-list">
+                  {% if domain.dnssec_status == 1 %}
+                  <a href="/zone/dnssec/{{ domain.domain_name_o }}" class="btn btn-outline-primary d-none d-sm-inline-block">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                    {{ __('Enable DNSSEC') }}
+                  </a>
+                  <a href="/zone/dnssec/{{ domain.domain_name_o }}" class="btn btn-outline-primary d-sm-none btn-icon" aria-label="{{ __('Enable DNSSEC') }}" title="{{ __('Enable DNSSEC') }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                  </a>
+                  {% elseif domain.dnssec_status == 2 %}
+                  <a href="#" class="btn btn-outline-danger d-none d-sm-inline-block disabled">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                    {{ __('Disable DNSSEC') }}
+                  </a>
+                  <a href="#" class="btn btn-outline-danger d-sm-none btn-icon disabled" aria-label="{{ __('Disable DNSSEC') }}" title="{{ __('Disable DNSSEC') }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                  </a>
+                  {% endif %}
+                </div>
+              </div>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -96,9 +120,9 @@
                   </div>
                 </div>
               </div>
-            
+
               <div class="col-12 mt-3">
-                <div class="card">
+                <div class="card mb-3">
                     <div class="table-responsive">
                         <table class="table table-vcenter card-table table-striped">
                             <thead>
@@ -161,6 +185,35 @@
                         </table>
                     </div>
               </div>
+            {% if dsList is not empty %}
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h3 class="card-title">DS Records</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-vcenter">
+                            <thead>
+                                <tr>
+                                    <th>Key Tag</th>
+                                    <th>Algo</th>
+                                    <th>Digest Type</th>
+                                    <th>Digest</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ds in dsList %}
+                                    <tr>
+                                        <td>{{ ds.keytag }}</td>
+                                        <td>{{ ds.algorithm }}</td>
+                                        <td>{{ ds.digest_type }}</td>
+                                        <td><code>{{ ds.digest }}</code></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
             </div>
           </div>
         </div>
