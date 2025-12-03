@@ -1,6 +1,6 @@
 {% extends "layouts/app.twig" %}
 
-{% block title %}{{ __('System Log') }}{% endblock %}
+{% block title %}{{ __('System Logs') }}{% endblock %}
 
 {% block content %}
       <div class="page-wrapper">
@@ -14,7 +14,7 @@
                   {{ __('Overview') }}
                 </div>
                 <h2 class="page-title">
-                  {{ __('System Log') }}
+                  {{ __('System Logs') }}
                 </h2>
               </div>
             </div>
@@ -28,8 +28,8 @@
                 <div class="card-body py-3">
                   <div class="d-flex align-items-center justify-content-between flex-nowrap gap-2 flex-wrap-sm">
                     <div class="d-flex align-items-center gap-2">
-                      <button class="btn btn-info btn-icon" onclick="downloadCSV()" title="Export page"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 15a1 1 0 0 0 1 1h2a1 1 0 0 0 1 -1v-2a1 1 0 0 0 -1 -1h-2a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1"></path><path d="M17 8l2 8l2 -8"></path><path d="M7 10a2 2 0 1 0 -4 0v4a2 2 0 1 0 4 0"></path></svg></button>
-                      <button class="btn btn-red btn-icon" onclick="downloadPDF()" title="Export page"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 8v8h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-2z"></path><path d="M3 12h2a2 2 0 1 0 0 -4h-2v8"></path><path d="M17 12h3"></path><path d="M21 8h-4v8"></path></svg></button>
+                      <button class="btn btn-ghost-info btn-icon" onclick="downloadCSV()" title="Export page"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 15a1 1 0 0 0 1 1h2a1 1 0 0 0 1 -1v-2a1 1 0 0 0 -1 -1h-2a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1"></path><path d="M17 8l2 8l2 -8"></path><path d="M7 10a2 2 0 1 0 -4 0v4a2 2 0 1 0 4 0"></path></svg></button>
+                      <button class="btn btn-ghost-red btn-icon" onclick="downloadPDF()" title="Export page"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 8v8h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-2z"></path><path d="M3 12h2a2 2 0 1 0 0 -4h-2v8"></path><path d="M17 12h3"></path><path d="M21 8h-4v8"></path></svg></button>
                     </div>
                     <div class="d-flex align-items-center gap-2">
                       <input id="search-input" type="text" class="form-control" placeholder="{{ __('Search logs') }}" aria-label="{{ __('Search logs') }}" autocapitalize="none">

@@ -478,8 +478,8 @@ msgstr "User Audit Log"
 msgid "Track and review all user activities in your account below. Monitor logins, profile changes, and other key actions to ensure security and transparency."
 msgstr "Track and review all user activities in your account below. Monitor logins, profile changes, and other key actions to ensure security and transparency."
 
-msgid "System Log"
-msgstr "System Log"
+msgid "System Logs"
+msgstr "System Logs"
 
 msgid "Search"
 msgstr "Search"

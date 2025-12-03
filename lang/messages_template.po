@@ -478,7 +478,7 @@ msgstr ""
 msgid "Track and review all user activities in your account below. Monitor logins, profile changes, and other key actions to ensure security and transparency."
 msgstr ""
 
-msgid "System Log"
+msgid "System Logs"
 msgstr ""
 
 msgid "Search"
