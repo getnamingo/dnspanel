@@ -342,9 +342,8 @@ class ZonesController extends Controller
     public function viewZone(Request $request, Response $response, $args) 
     {
         $db = $this->container->get('db');
-        // Get the current URI
         $uri = $request->getUri()->getPath();
-
+        
         if ($args) {
             $args = strtolower(trim($args));
 
@@ -352,7 +351,12 @@ class ZonesController extends Controller
                 $this->container->get('flash')->addMessage('error', 'Invalid zone format');
                 return $response->withHeader('Location', '/zones')->withStatus(302);
             }
-        
+
+            $zone_owner = $db->selectValue('SELECT client_id FROM zones WHERE domain_name = ?', [$args]);
+            if ($zone_owner != $_SESSION['auth_user_id'] && $_SESSION["auth_roles"] != 0) {
+                return $response->withHeader('Location', '/zones')->withStatus(302);
+            }
+
             $domain = $db->selectRow('SELECT id, domain_name, client_id, created_at, updated_at, provider_id, zoneId FROM zones WHERE domain_name = ?',
             [ $args ]);
 
@@ -419,6 +423,11 @@ class ZonesController extends Controller
 
         if (!preg_match('/^([a-z0-9]([-a-z0-9]*[a-z0-9])?\.)*[a-z0-9]([-a-z0-9]*[a-z0-9])?$/', $zone)) {
             $this->container->get('flash')->addMessage('error', 'Invalid zone format');
+            return $response->withHeader('Location', '/zones')->withStatus(302);
+        }
+
+        $zone_owner = $db->selectValue('SELECT client_id FROM zones WHERE domain_name = ?', [$zone]);
+        if ($zone_owner != $_SESSION['auth_user_id'] && $_SESSION["auth_roles"] != 0) {
             return $response->withHeader('Location', '/zones')->withStatus(302);
         }
 
@@ -518,6 +527,11 @@ class ZonesController extends Controller
 
         if (!preg_match('/^([a-z0-9]([-a-z0-9]*[a-z0-9])?\.)*[a-z0-9]([-a-z0-9]*[a-z0-9])?$/', $zone)) {
             $this->container->get('flash')->addMessage('error', 'Invalid zone format');
+            return $response->withHeader('Location', '/zones')->withStatus(302);
+        }
+
+        $zone_owner = $db->selectValue('SELECT client_id FROM zones WHERE domain_name = ?', [$zone]);
+        if ($zone_owner != $_SESSION['auth_user_id'] && $_SESSION["auth_roles"] != 0) {
             return $response->withHeader('Location', '/zones')->withStatus(302);
         }
 
@@ -672,6 +686,11 @@ class ZonesController extends Controller
 
             if (!preg_match('/^([a-z0-9]([-a-z0-9]*[a-z0-9])?\.)*[a-z0-9]([-a-z0-9]*[a-z0-9])?$/', $args)) {
                 $this->container->get('flash')->addMessage('error', 'Invalid zone format');
+                return $response->withHeader('Location', '/zones')->withStatus(302);
+            }
+
+            $zone_owner = $db->selectValue('SELECT client_id FROM zones WHERE domain_name = ?', [$args]);
+            if ($zone_owner != $_SESSION['auth_user_id'] && $_SESSION["auth_roles"] != 0) {
                 return $response->withHeader('Location', '/zones')->withStatus(302);
             }
 
@@ -873,6 +892,11 @@ class ZonesController extends Controller
                 return $response->withHeader('Location', '/zones')->withStatus(302);
             }
             $domain_id = $db->selectValue('SELECT id FROM zones WHERE domain_name = ?', [$domainName]);
+
+            $zone_owner = $db->selectValue('SELECT client_id FROM zones WHERE domain_name = ?', [$domainName]);
+            if ($zone_owner != $_SESSION['auth_user_id'] && $_SESSION["auth_roles"] != 0) {
+                return $response->withHeader('Location', '/zones')->withStatus(302);
+            }
 
             $record_type = strtoupper($data['record_type'] ?? '');
             $record_name = $data['record_name']   ?? "";
@@ -1081,6 +1105,11 @@ class ZonesController extends Controller
             $domainName = $_SESSION['domains_to_update'][0];
         } else {
             $this->container->get('flash')->addMessage('error', 'No zone specified for update');
+            return $response->withHeader('Location', '/zones')->withStatus(302);
+        }
+
+        $zone_owner = $db->selectValue('SELECT client_id FROM zones WHERE domain_name = ?', [$domainName]);
+        if ($zone_owner != $_SESSION['auth_user_id'] && $_SESSION["auth_roles"] != 0) {
             return $response->withHeader('Location', '/zones')->withStatus(302);
         }
 
@@ -1335,6 +1364,11 @@ class ZonesController extends Controller
 
             if (!preg_match('/^([a-z0-9]([-a-z0-9]*[a-z0-9])?\.)*[a-z0-9]([-a-z0-9]*[a-z0-9])?$/', $args)) {
                 $this->container->get('flash')->addMessage('error', 'Invalid zone format');
+                return $response->withHeader('Location', '/zones')->withStatus(302);
+            }
+
+            $zone_owner = $db->selectValue('SELECT client_id FROM zones WHERE domain_name = ?', [$args]);
+            if ($zone_owner != $_SESSION['auth_user_id'] && $_SESSION["auth_roles"] != 0) {
                 return $response->withHeader('Location', '/zones')->withStatus(302);
             }
 

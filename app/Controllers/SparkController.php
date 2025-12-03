@@ -119,13 +119,16 @@ class SparkController extends Controller
                 }
             }
         }
-        
-        // Check admin status and apply registrar filter if needed
-        $registrarCondition = '';
-        if ($_SESSION['auth_roles'] !== 0) { // not admin
-            $registrarId = $_SESSION['auth_registrar_id'];
-            $registrarCondition = "d.client_id = :registrarId";
-            $bindParams["registrarId"] = $registrarId;
+
+        // Check admin status and apply user filter if needed
+        $userCondition = '';
+
+        $userId   = isset($_SESSION['auth_user_id']) ? (int) $_SESSION['auth_user_id'] : 0;
+        $userRole = isset($_SESSION['auth_roles']) ? (int) $_SESSION['auth_roles'] : 0;
+
+        if ($userRole !== 0 && $userId > 0) {
+            $userCondition = "d.client_id = :userId";
+            $bindParams['userId'] = $userId;
         }
 
         // Base SQL
@@ -133,25 +136,25 @@ class SparkController extends Controller
             FROM zones d
         ";
 
-        // Combine registrar condition and search filters
+        // Combine user condition and search filters
         if (!empty($whereClauses)) {
             // We have search conditions
             $filtersCombined = "(" . implode(" OR ", $whereClauses) . ")";
-            if ($registrarCondition) {
-                // If registrarCondition exists and we have filters
-                // we do registrarCondition AND (filters OR...)
-                $sqlWhere = "WHERE $registrarCondition AND $filtersCombined";
+            if ($userCondition) {
+                // If userCondition exists and we have filters
+                // we do userCondition AND (filters OR...)
+                $sqlWhere = "WHERE $userCondition AND $filtersCombined";
             } else {
-                // No registrar restriction, just the filters
+                // No user restriction, just the filters
                 $sqlWhere = "WHERE $filtersCombined";
             }
         } else {
             // No search filters
-            if ($registrarCondition) {
-                // Only registrar condition
-                $sqlWhere = "WHERE $registrarCondition";
+            if ($userCondition) {
+                // Only user condition
+                $sqlWhere = "WHERE $userCondition";
             } else {
-                // No filters, no registrar condition
+                // No filters, no user condition
                 $sqlWhere = '';
             }
         }

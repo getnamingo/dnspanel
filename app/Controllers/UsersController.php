@@ -139,6 +139,11 @@ class UsersController extends Controller
                                 'zone_id' => (int)$zoneId,
                                 'user_id' => $user_id,
                             ]);
+                            $db->update(
+                                'zones',
+                                ['client_id' => $user_id],
+                                ['id' => $zoneId]
+                            );
                         }
                     }
 
@@ -427,6 +432,7 @@ class UsersController extends Controller
                 );
                 
                 if (($roles_mask & 4) === 4) {
+                    $db->exec('UPDATE zones SET client_id = 1 WHERE client_id = ?', [ $userId ]);
                     $db->exec('DELETE FROM zone_users WHERE user_id = ?', [ $userId ]);
 
                     foreach ($zoneIds as $zoneId) {
@@ -434,10 +440,16 @@ class UsersController extends Controller
                             'zone_id' => (int) $zoneId,
                             'user_id' => (int) $userId,
                         ]);
+                        $db->update(
+                            'zones',
+                            ['client_id' => $userId],
+                            ['id' => $zoneId]
+                        );
                     }
                 } else {
                     // No Zone role anymore → ensure no zone associations remain
                     $db->exec('DELETE FROM zone_users WHERE user_id = ?', [ $userId ]);
+                    $db->exec('UPDATE zones SET client_id = 1 WHERE client_id = ?', [ $userId ]);
                 }
 
                 $db->commit();
