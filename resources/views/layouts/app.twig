@@ -90,9 +90,9 @@
                     <a class="dropdown-item" href="{{route('checkZone')}}">
                       {{ __('Check Zone') }}
                     </a>
-                    <a class="dropdown-item" href="{{route('createZone')}}">
+                    {% if roles == 0 %}<a class="dropdown-item" href="{{route('createZone')}}">
                       {{ __('Create Zone') }}
-                    </a>
+                    </a>{% endif %}
                   </div>
                 </li>
                 {% if roles == 0 %}<li {{ is_current_url('listUsers') or is_current_url('createUser') or 'user/update/' in currentUri ? 'class="nav-item dropdown active"' : 'class="nav-item dropdown"' }}>

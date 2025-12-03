@@ -160,6 +160,10 @@ class ZonesController extends Controller
     
     public function createZone(Request $request, Response $response)
     {
+        if ($_SESSION["auth_roles"] != 0) {
+            return $response->withHeader('Location', '/dashboard')->withStatus(302);
+        }
+
         if ($request->getMethod() === 'POST') {
             // Retrieve POST data
             $data = $request->getParsedBody();
