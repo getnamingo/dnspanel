@@ -1,42 +1,3 @@
-msgid "Approve Transfer"
-msgstr "Approve Transfer"
-
-msgid "Cancel Transfer"
-msgstr "Cancel Transfer"
-
-msgid "Reject Transfer"
-msgstr "Reject Transfer"
-
-msgid "Completed"
-msgstr "Completed"
-
-msgid "Name"
-msgstr "Name"
-
-msgid "Initiated Date"
-msgstr "Initiated Date"
-
-msgid "Expiry Date"
-msgstr "Expiry Date"
-
-msgid "Status"
-msgstr "Status"
-
-msgid "Actions"
-msgstr "Actions"
-
-msgid "Are you sure you want to approve this transfer?"
-msgstr "Are you sure you want to approve this transfer?"
-
-msgid "Confirm"
-msgstr "Confirm"
-
-msgid "Are you sure you want to cancel this transfer?"
-msgstr "Are you sure you want to cancel this transfer?"
-
-msgid "Are you sure you want to reject this transfer?"
-msgstr "Are you sure you want to reject this transfer?"
-
 msgid "No Data"
 msgstr "No Data"
 
@@ -46,44 +7,146 @@ msgstr "Registrar"
 msgid "Date"
 msgstr "Date"
 
-msgid "Log"
-msgstr "Log"
-
-msgid "Command"
-msgstr "Command"
-
-msgid "Domain"
-msgstr "Domain"
-
-msgid "Length"
-msgstr "Length"
-
-msgid "From"
-msgstr "From"
-
-msgid "To"
-msgstr "To"
+msgid "Description"
+msgstr "Description"
 
 msgid "Amount"
 msgstr "Amount"
 
-msgid "Host Name"
-msgstr "Host Name"
+msgid "Update Zone"
+msgstr "Update Zone"
+
+msgid "Zone Details"
+msgstr "Zone Details"
+
+msgid "Delete Zone"
+msgstr "Delete Zone"
+
+msgid "Zone"
+msgstr "Zone"
+
+msgid "Provider"
+msgstr "Provider"
 
 msgid "Creation Date"
 msgstr "Creation Date"
 
-msgid "Are you sure you want to delete this host?"
-msgstr "Are you sure you want to delete this host?"
+msgid "Last Updated"
+msgstr "Last Updated"
 
-msgid "Message"
-msgstr "Message"
+msgid "Actions"
+msgstr "Actions"
 
-msgid "Message Type"
-msgstr "Message Type"
+msgid "Are you sure you want to delete this zone?"
+msgstr "Are you sure you want to delete this zone?"
 
-msgid "Object"
-msgstr "Object"
+msgid "Confirm"
+msgstr "Confirm"
+
+msgid "Manage User"
+msgstr "Manage User"
+
+msgid "Impersonate"
+msgstr "Impersonate"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "User Name"
+msgstr "User Name"
+
+msgid "Roles"
+msgstr "Roles"
+
+msgid "Verified"
+msgstr "Verified"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Channel"
+msgstr "Channel"
+
+msgid "Level"
+msgstr "Level"
+
+msgid "Log"
+msgstr "Log"
+
+msgid "Edit Provider"
+msgstr "Edit Provider"
+
+msgid "Delete Provider"
+msgstr "Delete Provider"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Endpoint"
+msgstr "Endpoint"
+
+msgid "Created"
+msgstr "Created"
+
+msgid "Are you sure you want to delete this provider?"
+msgstr "Are you sure you want to delete this provider?"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Service"
+msgstr "Service"
+
+msgid "Event"
+msgstr "Event"
+
+msgid "Actor"
+msgstr "Actor"
+
+msgid "No log data for user."
+msgstr "No log data for user."
+
+msgid "User Agent"
+msgstr "User Agent"
+
+msgid "IP"
+msgstr "IP"
+
+msgid "Location"
+msgstr "Location"
+
+msgid "Timestamp"
+msgstr "Timestamp"
+
+msgid "User Log"
+msgstr "User Log"
+
+msgid "View Ticket"
+msgstr "View Ticket"
+
+msgid "Open"
+msgstr "Open"
+
+msgid "In Progress"
+msgstr "In Progress"
+
+msgid "Resolved"
+msgstr "Resolved"
+
+msgid "Closed"
+msgstr "Closed"
+
+msgid "Low"
+msgstr "Low"
+
+msgid "Medium"
+msgstr "Medium"
+
+msgid "High"
+msgstr "High"
+
+msgid "Critical"
+msgstr "Critical"
 
 msgid "Subject"
 msgstr "Subject"
@@ -94,104 +157,170 @@ msgstr "Category"
 msgid "Priority"
 msgstr "Priority"
 
-msgid "Email"
-msgstr "Email"
+msgid "Enable dark mode"
+msgstr "Enable dark mode"
 
-msgid "Balance"
-msgstr "Balance"
-
-msgid "Description"
-msgstr "Description"
-
-msgid "Identifier"
-msgstr "Identifier"
-
-msgid "Phone"
-msgstr "Phone"
-
-msgid "Are you sure you want to delete this contact?"
-msgstr "Are you sure you want to delete this contact?"
-
-msgid "Object Type"
-msgstr "Object Type"
-
-msgid "Result"
-msgstr "Result"
-
-msgid "clTRID"
-msgstr "clTRID"
-
-msgid "Milliseconds"
-msgstr "Milliseconds"
-
-msgid "Registrant"
-msgstr "Registrant"
-
-msgid "Expiration Date"
-msgstr "Expiration Date"
-
-msgid "Are you sure you want to delete this domain?"
-msgstr "Are you sure you want to delete this domain?"
-
-msgid "Are you sure you want to restore this domain?"
-msgstr "Are you sure you want to restore this domain?"
-
-msgid "Are you sure you want to submit restore report for this domain?"
-msgstr "Are you sure you want to submit restore report for this domain?"
-
-msgid "Number"
-msgstr "Number"
-
-msgid "Total Domains"
-msgstr "Total Domains"
-
-msgid "Created Domains"
-msgstr "Created Domains"
-
-msgid "Renewed Domains"
-msgstr "Renewed Domains"
-
-msgid "Transferred Domains"
-msgstr "Transferred Domains"
-
-msgid "Deleted Domains"
-msgstr "Deleted Domains"
-
-msgid "Restored Domains"
-msgstr "Restored Domains"
-
-msgid "Script"
-msgstr "Script"
-
-msgid "Roles"
-msgstr "Roles"
-
-msgid "Verified"
-msgstr "Verified"
-
-msgid "Applicant"
-msgstr "Applicant"
-
-msgid "Phase"
-msgstr "Phase"
-
-msgid "Are you sure you want to delete this application?"
-msgstr "Are you sure you want to delete this application?"
+msgid "Enable light mode"
+msgstr "Enable light mode"
 
 msgid "My Profile"
 msgstr "My Profile"
 
+msgid "Leave Impersonation"
+msgstr "Leave Impersonation"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Zones"
+msgstr "Zones"
+
+msgid "List Zones"
+msgstr "List Zones"
+
+msgid "Check Zone"
+msgstr "Check Zone"
+
+msgid "Create Zone"
+msgstr "Create Zone"
+
+msgid "Users"
+msgstr "Users"
+
+msgid "List Users"
+msgstr "List Users"
+
+msgid "Create User"
+msgstr "Create User"
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Support Tickets"
+msgstr "Support Tickets"
+
+msgid "Create Ticket"
+msgstr "Create Ticket"
+
+msgid "Export page"
+msgstr "Export page"
+
+msgid "Search zones"
+msgstr "Search zones"
+
+msgid "Your Zone"
+msgstr "Your Zone"
+
+msgid "Choose Provider"
+msgstr "Choose Provider"
+
+msgid "Updating Zone"
+msgstr "Updating Zone"
+
+msgid "Enable DNSSEC"
+msgstr "Enable DNSSEC"
+
+msgid "Disable DNSSEC"
+msgstr "Disable DNSSEC"
+
+msgid "Created On"
+msgstr "Created On"
+
+msgid "Client"
+msgstr "Client"
+
+msgid "Enter the zone you want to check:"
+msgstr "Enter the zone you want to check:"
+
+msgid "Records"
+msgstr "Records"
+
+msgid "Zone Details for"
+msgstr "Zone Details for"
+
+msgid "for"
+msgstr "for"
+
+msgid "Resolved via DNS server"
+msgstr "Resolved via DNS server"
+
+msgid "Back to Zones"
+msgstr "Back to Zones"
+
+msgid "Zone information"
+msgstr "Zone information"
+
+msgid "Domain"
+msgstr "Domain"
+
+msgid "Client ID"
+msgstr "Client ID"
+
+msgid "Created at"
+msgstr "Created at"
+
+msgid "Last updated"
+msgstr "Last updated"
+
+msgid "No DNS records were returned for this zone."
+msgstr "No DNS records were returned for this zone."
+
+msgid "records"
+msgstr "records"
+
+msgid "record"
+msgstr "record"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "TTL"
+msgstr "TTL"
+
+msgid "Value"
+msgstr "Value"
+
 msgid "Overview"
 msgstr "Overview"
+
+msgid "Balance"
+msgstr "Balance"
 
 msgid "Details"
 msgstr "Details"
 
-msgid "User Name"
-msgstr "User Name"
+msgid "Security"
+msgstr "Security"
 
 msgid "Role"
 msgstr "Role"
+
+msgid "ID Number"
+msgstr "ID Number"
+
+msgid "VAT Number"
+msgstr "VAT Number"
+
+msgid "Account Type"
+msgstr "Account Type"
+
+msgid "Business Account"
+msgstr "Business Account"
+
+msgid "Personal Account"
+msgstr "Personal Account"
+
+msgid "Validation Status"
+msgstr "Validation Status"
+
+msgid "Validated"
+msgstr "Validated"
+
+msgid "Not Validated"
+msgstr "Not Validated"
 
 msgid "Change Password"
 msgstr "Change Password"
@@ -199,14 +328,71 @@ msgstr "Change Password"
 msgid "Old Password"
 msgstr "Old Password"
 
+msgid "Enter old password"
+msgstr "Enter old password"
+
 msgid "New Password"
 msgstr "New Password"
 
-msgid "Back"
-msgstr "Back"
+msgid "Enter new password"
+msgstr "Enter new password"
 
 msgid "Update"
 msgstr "Update"
+
+msgid "Select Theme"
+msgstr "Select Theme"
+
+msgid "Select"
+msgstr "Select"
+
+msgid "User Contacts"
+msgstr "User Contacts"
+
+msgid "Owner"
+msgstr "Owner"
+
+msgid "Billing"
+msgstr "Billing"
+
+msgid "Technical"
+msgstr "Technical"
+
+msgid "Abuse"
+msgstr "Abuse"
+
+msgid "Copy data to other contacts"
+msgstr "Copy data to other contacts"
+
+msgid "First Name"
+msgstr "First Name"
+
+msgid "Last Name"
+msgstr "Last Name"
+
+msgid "Organization"
+msgstr "Organization"
+
+msgid "Street Address"
+msgstr "Street Address"
+
+msgid "City"
+msgstr "City"
+
+msgid "State/Province"
+msgstr "State/Province"
+
+msgid "Postal Code"
+msgstr "Postal Code"
+
+msgid "Country"
+msgstr "Country"
+
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Update Contacts"
+msgstr "Update Contacts"
 
 msgid "Two-Factor Authentication"
 msgstr "Two-Factor Authentication"
@@ -253,8 +439,11 @@ msgstr "for your account. If you encounter any issues or need to disable 2FA, pl
 msgid "WebAuthn Authentication"
 msgstr "WebAuthn Authentication"
 
-msgid "Secure your account with WebAuthn. Click the button below to register your device for passwordless sign-in."
-msgstr "Secure your account with WebAuthn. Click the button below to register your device for passwordless sign-in."
+msgid "WebAuthn is currently"
+msgstr "WebAuthn is currently"
+
+msgid "for your account. If you encounter any issues or need to disable WebAuthn, please contact our support team for assistance."
+msgstr "for your account. If you encounter any issues or need to disable WebAuthn, please contact our support team for assistance."
 
 msgid "Connect WebAuthn Device"
 msgstr "Connect WebAuthn Device"
@@ -265,14 +454,23 @@ msgstr "Device/Browser Info"
 msgid "Registration Date"
 msgstr "Registration Date"
 
-msgid "Action"
-msgstr "Action"
-
-msgid "Edit"
-msgstr "Edit"
-
 msgid "No devices found."
 msgstr "No devices found."
+
+msgid "Secure your account with WebAuthn. Click the button below to register your device for passwordless sign-in."
+msgstr "Secure your account with WebAuthn. Click the button below to register your device for passwordless sign-in."
+
+msgid "Disabled"
+msgstr "Disabled"
+
+msgid "WebAuthn is currently disabled for this installation. To enable WebAuthn authentication, please contact the system administrator."
+msgstr "WebAuthn is currently disabled for this installation. To enable WebAuthn authentication, please contact the system administrator."
+
+msgid "If you\’ve logged in on multiple devices or browsers and want to ensure your account remains secure, you can log out from all other sessions except this one. This will end access from any other logged-in devices."
+msgstr "If you\’ve logged in on multiple devices or browsers and want to ensure your account remains secure, you can log out from all other sessions except this one. This will end access from any other logged-in devices."
+
+msgid "Log Out from All Devices"
+msgstr "Log Out from All Devices"
 
 msgid "User Audit Log"
 msgstr "User Audit Log"
@@ -280,1160 +478,41 @@ msgstr "User Audit Log"
 msgid "Track and review all user activities in your account below. Monitor logins, profile changes, and other key actions to ensure security and transparency."
 msgstr "Track and review all user activities in your account below. Monitor logins, profile changes, and other key actions to ensure security and transparency."
 
-msgid "Event"
-msgstr "Event"
-
-msgid "User Agent"
-msgstr "User Agent"
-
-msgid "Location"
-msgstr "Location"
-
-msgid "Timestamp"
-msgstr "Timestamp"
-
-msgid "No log data for user."
-msgstr "No log data for user."
-
-msgid "Documentation"
-msgstr "Documentation"
-
-msgid "Support Tickets"
-msgstr "Support Tickets"
-
-msgid "Media Kit"
-msgstr "Media Kit"
-
-msgid "Create New Ticket"
-msgstr "Create New Ticket"
+msgid "System Log"
+msgstr "System Log"
 
 msgid "Search"
 msgstr "Search"
 
+msgid "Search logs"
+msgstr "Search logs"
+
+msgid "Create New Ticket"
+msgstr "Create New Ticket"
+
 msgid "Search tickets"
 msgstr "Search tickets"
-
-msgid "Ticket Overview"
-msgstr "Ticket Overview"
-
-msgid "Ticket"
-msgstr "Ticket"
-
-msgid "Unknown Status"
-msgstr "Unknown Status"
-
-msgid "Ticket Details"
-msgstr "Ticket Details"
-
-msgid "Created On"
-msgstr "Created On"
-
-msgid "Conversation"
-msgstr "Conversation"
-
-msgid "Your Response"
-msgstr "Your Response"
-
-msgid "Submit Response"
-msgstr "Submit Response"
 
 msgid "New Support Ticket"
 msgstr "New Support Ticket"
 
-msgid "Support ticket can not be created"
-msgstr "Support ticket can not be created"
-
 msgid "Select a category"
 msgstr "Select a category"
 
-msgid "Create Ticket"
-msgstr "Create Ticket"
+msgid "Message"
+msgstr "Message"
 
-msgid "Create Domain"
-msgstr "Create Domain"
+msgid "Ticket Overview"
+msgstr "Ticket Overview"
 
-msgid "Your Domain Name"
-msgstr "Your Domain Name"
+msgid "DNS Records"
+msgstr "DNS Records"
 
-msgid "Select Registrar"
-msgstr "Select Registrar"
+msgid "WHOIS Lookup"
+msgstr "WHOIS Lookup"
 
-msgid "Registration Years"
-msgstr "Registration Years"
-
-msgid "Estimated Price"
-msgstr "Estimated Price"
-
-msgid "Contacts"
-msgstr "Contacts"
-
-msgid "Registrant Contact"
-msgstr "Registrant Contact"
-
-msgid "Admin Contact"
-msgstr "Admin Contact"
-
-msgid "Tech Contact"
-msgstr "Tech Contact"
-
-msgid "Billing Contact"
-msgstr "Billing Contact"
-
-msgid "Nameservers"
-msgstr "Nameservers"
-
-msgid "Nameserver"
-msgstr "Nameserver"
-
-msgid "Add DNSSEC Data"
-msgstr "Add DNSSEC Data"
-
-msgid "DS Record"
-msgstr "DS Record"
-
-msgid "Key Tag"
-msgstr "Key Tag"
-
-msgid "Select Algorithm"
-msgstr "Select Algorithm"
-
-msgid "Select Digest Type"
-msgstr "Select Digest Type"
-
-msgid "Digest"
-msgstr "Digest"
-
-msgid "DNSKEY Record"
-msgstr "DNSKEY Record"
-
-msgid "Flags"
-msgstr "Flags"
-
-msgid "Protocol"
-msgstr "Protocol"
-
-msgid "Public Key"
-msgstr "Public Key"
-
-msgid "Auth Info"
-msgstr "Auth Info"
-
-msgid "Statuses"
-msgstr "Statuses"
-
-msgid "Server Statuses"
-msgstr "Server Statuses"
-
-msgid "Phase Type"
-msgstr "Phase Type"
-
-msgid "Signed Mark Information"
-msgstr "Signed Mark Information"
-
-msgid "Paste SMD contents"
-msgstr "Paste SMD contents"
-
-msgid "Notice ID"
-msgstr "Notice ID"
-
-msgid "Not After Date"
-msgstr "Not After Date"
-
-msgid "Accepted Date"
-msgstr "Accepted Date"
-
-msgid "Allocation Token"
-msgstr "Allocation Token"
-
-msgid "Allocation token"
-msgstr "Allocation token"
-
-msgid "Domain Details"
-msgstr "Domain Details"
-
-msgid "Registered On"
-msgstr "Registered On"
-
-msgid "Last Updated"
-msgstr "Last Updated"
-
-msgid "contact"
-msgstr "contact"
-
-msgid "Auth Type"
-msgstr "Auth Type"
-
-msgid "DNSSEC Data"
-msgstr "DNSSEC Data"
-
-msgid "Domains"
-msgstr "Domains"
-
-msgid "Check Domain"
-msgstr "Check Domain"
-
-msgid "Search domains"
-msgstr "Search domains"
-
-msgid "Application Details"
-msgstr "Application Details"
-
-msgid "Application for"
-msgstr "Application for"
-
-msgid "Application ID"
-msgstr "Application ID"
-
-msgid "Launch Phase"
-msgstr "Launch Phase"
-
-msgid "Phase Name"
-msgstr "Phase Name"
-
-msgid "Updating Application"
-msgstr "Updating Application"
-
-msgid "Update Application"
-msgstr "Update Application"
-
-msgid "Create Application"
-msgstr "Create Application"
-
-msgid "Renew Domain"
-msgstr "Renew Domain"
-
-msgid "Domain Name"
-msgstr "Domain Name"
-
-msgid "Your domain is currently renewed to its maximum term. At this time, no additional renewal is possible."
-msgstr "Your domain is currently renewed to its maximum term. At this time, no additional renewal is possible."
-
-msgid "Applications"
-msgstr "Applications"
-
-msgid "Search applications"
-msgstr "Search applications"
-
-msgid "Updating Domain"
-msgstr "Updating Domain"
-
-msgid "Domain Security"
-msgstr "Domain Security"
-
-msgid "Update Domain"
-msgstr "Update Domain"
-
-msgid "Request Domain Transfer"
-msgstr "Request Domain Transfer"
-
-msgid "Gaining Registrar"
-msgstr "Gaining Registrar"
-
-msgid "Transfer And Renew"
-msgstr "Transfer And Renew"
-
-msgid "Request Transfer"
-msgstr "Request Transfer"
-
-msgid "Transfers"
-msgstr "Transfers"
-
-msgid "Search transfers"
-msgstr "Search transfers"
-
-msgid "Enter the domain name you want to check:"
-msgstr "Enter the domain name you want to check:"
-
-msgid "Check Availability"
-msgstr "Check Availability"
-
-msgid "Check claims"
-msgstr "Check claims"
-
-msgid "Create Contact"
-msgstr "Create Contact"
-
-msgid "General & Internationalized Info"
-msgstr "General & Internationalized Info"
-
-msgid "Disclose in WHOIS"
-msgstr "Disclose in WHOIS"
-
-msgid "Organization"
-msgstr "Organization"
-
-msgid "Street"
-msgstr "Street"
-
-msgid "City"
-msgstr "City"
-
-msgid "State/Province"
-msgstr "State/Province"
-
-msgid "Postal Code"
-msgstr "Postal Code"
-
-msgid "Country"
-msgstr "Country"
-
-msgid "Disclose Address in WHOIS"
-msgstr "Disclose Address in WHOIS"
-
-msgid "Contact Details"
-msgstr "Contact Details"
-
-msgid "Contact ID"
-msgstr "Contact ID"
-
-msgid "Voice"
-msgstr "Voice"
-
-msgid "Fax"
-msgstr "Fax"
-
-msgid "Contact AuthInfo"
-msgstr "Contact AuthInfo"
-
-msgid "Auto-generated authentication information for the contact"
-msgstr "Auto-generated authentication information for the contact"
-
-msgid "NIN - National Identification Number"
-msgstr "NIN - National Identification Number"
-
-msgid "This is a Business Contact"
-msgstr "This is a Business Contact"
-
-msgid "Verify by Phone"
-msgstr "Verify by Phone"
-
-msgid "Verify by Email"
-msgstr "Verify by Email"
-
-msgid "Verify by Postal Mail"
-msgstr "Verify by Postal Mail"
-
-msgid "Include Localized Info"
-msgstr "Include Localized Info"
-
-msgid "Localized Postal Info: Personal Details"
-msgstr "Localized Postal Info: Personal Details"
-
-msgid "Localized Postal Info: Address Details"
-msgstr "Localized Postal Info: Address Details"
-
-msgid "Search contacts"
-msgstr "Search contacts"
-
-msgid "Update Contact"
-msgstr "Update Contact"
-
-msgid "Authentication information for the contact"
-msgstr "Authentication information for the contact"
-
-msgid "Contact"
-msgstr "Contact"
-
-msgid "linked"
-msgstr "linked"
-
-msgid "Visible in Public"
-msgstr "Visible in Public"
-
-msgid "Hidden from Public"
-msgstr "Hidden from Public"
-
-msgid "International"
-msgstr "International"
-
-msgid "Localized"
-msgstr "Localized"
-
-msgid "International Contact Details"
-msgstr "International Contact Details"
-
-msgid "Localized Contact Details"
-msgstr "Localized Contact Details"
-
-msgid "No Localized Contact Information Available"
-msgstr "No Localized Contact Information Available"
-
-msgid "System Log"
-msgstr "System Log"
-
-msgid "Search logs"
-msgstr "Search logs"
-
-msgid "Message Queue"
-msgstr "Message Queue"
-
-msgid "Search queue"
-msgstr "Search queue"
-
-msgid "EPP History"
-msgstr "EPP History"
-
-msgid "List Users"
-msgstr "List Users"
-
-msgid "Search users"
-msgstr "Search users"
-
-msgid "Host Details"
-msgstr "Host Details"
-
-msgid "Hosts"
-msgstr "Hosts"
-
-msgid "Create Host"
-msgstr "Create Host"
-
-msgid "Search hosts"
-msgstr "Search hosts"
-
-msgid "Update Host"
-msgstr "Update Host"
-
-msgid "The host you're trying to update"
-msgstr "The host you're trying to update"
-
-msgid "is external to the registry. Consequently, it does not store any IP addresses within our system, and therefore, does not require any updates from your end. This means there are no associated IP addresses under our management that need your attention."
-msgstr "is external to the registry. Consequently, it does not store any IP addresses within our system, and therefore, does not require any updates from your end. This means there are no associated IP addresses under our management that need your attention."
-
-msgid "IPv4 Address"
-msgstr "IPv4 Address"
-
-msgid "Please enter a valid IPv4 address."
-msgstr "Please enter a valid IPv4 address."
-
-msgid "IPv6 Address"
-msgstr "IPv6 Address"
-
-msgid "Please enter a valid IPv6 address."
-msgstr "Please enter a valid IPv6 address."
-
-msgid "Optional"
-msgstr "Optional"
-
-msgid "Deposit Payment Unsuccessful"
-msgstr "Deposit Payment Unsuccessful"
-
-msgid "We've noticed that your deposit payment process was not completed. It appears that the payment was either cancelled or failed during the transaction. If this was an error, or if you have any questions, please don't hesitate to contact us. We're here to help ensure your transaction is smooth and secure."
-msgstr "We've noticed that your deposit payment process was not completed. It appears that the payment was either cancelled or failed during the transaction. If this was an error, or if you have any questions, please don't hesitate to contact us. We're here to help ensure your transaction is smooth and secure."
-
-msgid "Ready to try again? When you're set to proceed with your deposit, simply return to the"
-msgstr "Ready to try again? When you're set to proceed with your deposit, simply return to the"
-
-msgid "Deposit Page"
-msgstr "Deposit Page"
-
-msgid "to initiate a new payment. We value your partnership and are committed to assisting you every step of the way."
-msgstr "to initiate a new payment. We value your partnership and are committed to assisting you every step of the way."
-
-msgid "Registrar Deposit"
-msgstr "Registrar Deposit"
-
-msgid "Choose Registrar..."
-msgstr "Choose Registrar..."
-
-msgid "Current Balance for"
-msgstr "Current Balance for"
-
-msgid "Enter deposit amount"
-msgstr "Enter deposit amount"
-
-msgid "Optional deposit description"
-msgstr "Optional deposit description"
-
-msgid "Add Deposit"
-msgstr "Add Deposit"
-
-msgid "Account Overview"
-msgstr "Account Overview"
-
-msgid "Search account"
-msgstr "Search account"
-
-msgid "View Invoice"
-msgstr "View Invoice"
-
-msgid "Invoice"
-msgstr "Invoice"
-
-msgid "Print Invoice"
-msgstr "Print Invoice"
-
-msgid "Provider"
-msgstr "Provider"
-
-msgid "Registry"
-msgstr "Registry"
-
-msgid "Client"
-msgstr "Client"
-
-msgid "Invoice Issued On"
-msgstr "Invoice Issued On"
-
-msgid "Due Date"
-msgstr "Due Date"
-
-msgid "Product"
-msgstr "Product"
-
-msgid "No items found."
-msgstr "No items found."
-
-msgid "Subtotal"
-msgstr "Subtotal"
-
-msgid "Vat Rate"
-msgstr "Vat Rate"
-
-msgid "Vat Due"
-msgstr "Vat Due"
-
-msgid "Total Due"
-msgstr "Total Due"
-
-msgid "Notes"
-msgstr "Notes"
-
-msgid "Thank you very much for doing business with us. We look forward to working with you again!"
-msgstr "Thank you very much for doing business with us. We look forward to working with you again!"
-
-msgid "Transactions"
-msgstr "Transactions"
-
-msgid "Search transactions"
-msgstr "Search transactions"
-
-msgid "Invoices"
-msgstr "Invoices"
-
-msgid "Search invoices"
-msgstr "Search invoices"
-
-msgid "Deposit with Stripe"
-msgstr "Deposit with Stripe"
-
-msgid "Registrar Details"
-msgstr "Registrar Details"
-
-msgid "Contact Email"
-msgstr "Contact Email"
-
-msgid "Website"
-msgstr "Website"
-
-msgid "Abuse Phone"
-msgstr "Abuse Phone"
-
-msgid "Abuse Email"
-msgstr "Abuse Email"
-
-msgid "WHOIS Server"
-msgstr "WHOIS Server"
-
-msgid "RDAP Server"
-msgstr "RDAP Server"
-
-msgid "Currency"
-msgstr "Currency"
-
-msgid "Account Balance"
-msgstr "Account Balance"
-
-msgid "Credit Limit"
-msgstr "Credit Limit"
-
-msgid "Credit Threshold"
-msgstr "Credit Threshold"
-
-msgid "Threshold Type"
-msgstr "Threshold Type"
-
-msgid "IP Whitelisting"
-msgstr "IP Whitelisting"
-
-msgid "No data available."
-msgstr "No data available."
-
-msgid "Registrar User"
-msgstr "Registrar User"
-
-msgid "EPP Username/CLID"
-msgstr "EPP Username/CLID"
-
-msgid "Panel Login Email"
-msgstr "Panel Login Email"
-
-msgid "Operational Test and Evaluation (OTE)"
-msgstr "Operational Test and Evaluation (OTE)"
-
-msgid "Successfully passing the Operational Test and Evaluation (OTE) is a mandatory requirement for registrars. The OTE process evaluates the interaction and compliance of the registrar's system with registry operations through a series of EPP command tests in a controlled environment. Below you can find the results of these essential EPP command tests for your account:"
-msgstr "Successfully passing the Operational Test and Evaluation (OTE) is a mandatory requirement for registrars. The OTE process evaluates the interaction and compliance of the registrar's system with registry operations through a series of EPP command tests in a controlled environment. Below you can find the results of these essential EPP command tests for your account:"
-
-msgid "Pending"
-msgstr "Pending"
-
-msgid "Failed"
-msgstr "Failed"
-
-msgid "Update Registrar"
-msgstr "Update Registrar"
-
-msgid "The official name of the registrar."
-msgstr "The official name of the registrar."
-
-msgid "Unique identifier assigned by IANA."
-msgstr "Unique identifier assigned by IANA."
-
-msgid "Primary contact email of the registrar."
-msgstr "Primary contact email of the registrar."
-
-msgid "URL"
-msgstr "URL"
-
-msgid "Registrar's official website URL."
-msgstr "Registrar's official website URL."
-
-msgid "Address of the registrar's WHOIS server."
-msgstr "Address of the registrar's WHOIS server."
-
-msgid "Address of the registrar's RDAP server."
-msgstr "Address of the registrar's RDAP server."
-
-msgid "Email address for reporting abuse."
-msgstr "Email address for reporting abuse."
-
-msgid "Phone number for reporting abuse."
-msgstr "Phone number for reporting abuse."
-
-msgid "Financial Information"
-msgstr "Financial Information"
-
-msgid "Current balance in the registrar's account."
-msgstr "Current balance in the registrar's account."
-
-msgid "Maximum credit limit for the registrar."
-msgstr "Maximum credit limit for the registrar."
-
-msgid "Credit threshold triggering alerts or actions."
-msgstr "Credit threshold triggering alerts or actions."
-
-msgid "Type of threshold: fixed value or percentage."
-msgstr "Type of threshold: fixed value or percentage."
-
-msgid "Registrar Contacts"
-msgstr "Registrar Contacts"
-
-msgid "Owner"
-msgstr "Owner"
-
-msgid "Billing"
-msgstr "Billing"
-
-msgid "Abuse"
-msgstr "Abuse"
-
-msgid "Copy data to other contacts"
-msgstr "Copy data to other contacts"
-
-msgid "First Name"
-msgstr "First Name"
-
-msgid "Last Name"
-msgstr "Last Name"
-
-msgid "Street Address"
-msgstr "Street Address"
-
-msgid "Whitelist IP addresses for secure access. Up to 5 IP addresses (IPv4 or IPv6) can be added."
-msgstr "Whitelist IP addresses for secure access. Up to 5 IP addresses (IPv4 or IPv6) can be added."
-
-msgid "For an existing registrar user, you can view the current EPP username (also known as CLID) and panel access email. Additionally, you have the option to reset the passwords for EPP and panel access as needed."
-msgstr "For an existing registrar user, you can view the current EPP username (also known as CLID) and panel access email. Additionally, you have the option to reset the passwords for EPP and panel access as needed."
-
-msgid "Username/CLID"
-msgstr "Username/CLID"
-
-msgid "Login Email"
-msgstr "Login Email"
-
-msgid "Panel Password"
-msgstr "Panel Password"
-
-msgid "EPP Password"
-msgstr "EPP Password"
-
-msgid "Update Panel Password"
-msgstr "Update Panel Password"
-
-msgid "Update EPP Password"
-msgstr "Update EPP Password"
-
-msgid "Operational Test and Evaluation (OTE) assesses the functionality of EPP commands in a simulated environment, ensuring effective communication between the registrar's system and the registry. Below are key EPP commands and their test statuses:"
-msgstr "Operational Test and Evaluation (OTE) assesses the functionality of EPP commands in a simulated environment, ensuring effective communication between the registrar's system and the registry. Below are key EPP commands and their test statuses:"
-
-msgid "Create Registrar"
-msgstr "Create Registrar"
-
-msgid "Fixed"
-msgstr "Fixed"
-
-msgid "Percent"
-msgstr "Percent"
-
-msgid "Create a registrar user by specifying the username (also known as CLID), email, and passwords for EPP and panel access."
-msgstr "Create a registrar user by specifying the username (also known as CLID), email, and passwords for EPP and panel access."
-
-msgid "Registrars"
-msgstr "Registrars"
-
-msgid "Search registrars"
-msgstr "Search registrars"
-
-msgid "Managed Reserved Names"
-msgstr "Managed Reserved Names"
-
-msgid "Manage Reserved Names"
-msgstr "Manage Reserved Names"
-
-msgid "Update Reserved Names"
-msgstr "Update Reserved Names"
-
-msgid "Manage TLD"
-msgstr "Manage TLD"
-
-msgid "General Details"
-msgstr "General Details"
-
-msgid "TLD Extension"
-msgstr "TLD Extension"
-
-msgid "TLD Type"
-msgstr "TLD Type"
-
-msgid "Supported Script"
-msgstr "Supported Script"
-
-msgid "Pricing"
-msgstr "Pricing"
-
-msgid "Setup Fee"
-msgstr "Setup Fee"
-
-msgid "Year"
-msgstr "Year"
-
-msgid "Years"
-msgstr "Years"
-
-msgid "Create"
-msgstr "Create"
-
-msgid "Renew"
-msgstr "Renew"
-
-msgid "Transfer"
-msgstr "Transfer"
-
-msgid "When you type a price for 1 Year above, it will automatically get multiplied for subsequent years."
-msgstr "When you type a price for 1 Year above, it will automatically get multiplied for subsequent years."
-
-msgid "Restore Price"
-msgstr "Restore Price"
-
-msgid "Enter the price for restoring the TLD."
-msgstr "Enter the price for restoring the TLD."
-
-msgid "Premium Names"
-msgstr "Premium Names"
-
-msgid "Upload CSV File"
-msgstr "Upload CSV File"
-
-msgid "Please upload a CSV file containing premium names. Each row should include a name and its corresponding pricing category, separated by a comma. Note: If one or more names in the file already exist in our system, they will be overwritten with the new information provided in the upload."
-msgstr "Please upload a CSV file containing premium names. Each row should include a name and its corresponding pricing category, separated by a comma. Note: If one or more names in the file already exist in our system, they will be overwritten with the new information provided in the upload."
-
-msgid "Set Premium Name Price Categories"
-msgstr "Set Premium Name Price Categories"
-
-msgid "Category Name"
-msgstr "Category Name"
-
-msgid "Price"
-msgstr "Price"
-
-msgid "Update existing premium categories as needed. Please note: currently, deletion of categories is not available. All updates will modify existing information without removing any categories."
-msgstr "Update existing premium categories as needed. Please note: currently, deletion of categories is not available. All updates will modify existing information without removing any categories."
-
-msgid "Update TLD"
-msgstr "Update TLD"
-
-msgid "Manage Promotions"
-msgstr "Manage Promotions"
-
-msgid "Promotion Name"
-msgstr "Promotion Name"
-
-msgid "Start Date"
-msgstr "Start Date"
-
-msgid "End Date"
-msgstr "End Date"
-
-msgid "Discount"
-msgstr "Discount"
-
-msgid "Discount Amount"
-msgstr "Discount Amount"
-
-msgid "No promotions found."
-msgstr "No promotions found."
-
-msgid "Create New Promotion"
-msgstr "Create New Promotion"
-
-msgid "Promotion Start Date"
-msgstr "Promotion Start Date"
-
-msgid "Please Note:"
-msgstr "Please Note:"
-
-msgid "All times displayed are in"
-msgstr "All times displayed are in"
-
-msgid "Promotion End Date"
-msgstr "Promotion End Date"
-
-msgid "Discount Type"
-msgstr "Discount Type"
-
-msgid "Percentage"
-msgstr "Percentage"
-
-msgid "Fixed Amount"
-msgstr "Fixed Amount"
-
-msgid "Free Domains"
-msgstr "Free Domains"
-
-msgid "Discount Value"
-msgstr "Discount Value"
-
-msgid "Enter discount value"
-msgstr "Enter discount value"
-
-msgid "Maximum Discounted Items"
-msgstr "Maximum Discounted Items"
-
-msgid "Conditions"
-msgstr "Conditions"
-
-msgid "Enter conditions"
-msgstr "Enter conditions"
-
-msgid "Enter description"
-msgstr "Enter description"
-
-msgid "Update Promotions"
-msgstr "Update Promotions"
-
-msgid "Manage Launch Phases"
-msgstr "Manage Launch Phases"
-
-msgid "Phase Category"
-msgstr "Phase Category"
-
-msgid "Phase Description"
-msgstr "Phase Description"
-
-msgid "No launch phases found."
-msgstr "No launch phases found."
-
-msgid "Create New Phase"
-msgstr "Create New Phase"
-
-msgid "Single application only."
-msgstr "Single application only."
-
-msgid "Multiple applications allowed."
-msgstr "Multiple applications allowed."
-
-msgid "Enter phase description"
-msgstr "Enter phase description"
-
-msgid "Phase Start Date"
-msgstr "Phase Start Date"
-
-msgid "Phase End Date"
-msgstr "Phase End Date"
-
-msgid "Update Phases"
-msgstr "Update Phases"
-
-msgid "Registry Configuration"
-msgstr "Registry Configuration"
-
-msgid "System Settings"
-msgstr "System Settings"
-
-msgid "Registry Operator Name"
-msgstr "Registry Operator Name"
-
-msgid "Enter registry operator's name"
-msgstr "Enter registry operator's name"
-
-msgid "The official name of the organization operating the registry."
-msgstr "The official name of the organization operating the registry."
-
-msgid "Registry Handle"
-msgstr "Registry Handle"
-
-msgid "Enter registry handle"
-msgstr "Enter registry handle"
-
-msgid "A unique identifier for the registry which will be appended to each object handle."
-msgstr "A unique identifier for the registry which will be appended to each object handle."
-
-msgid "Enter registry whois server"
-msgstr "Enter registry whois server"
-
-msgid "Enter the URL of the registry's WHOIS server. Example:"
-msgstr "Enter the URL of the registry's WHOIS server. Example:"
-
-msgid "Enter registry RDAP server"
-msgstr "Enter registry RDAP server"
-
-msgid "Enter the URL of the registry's RDAP server. Example:"
-msgstr "Enter the URL of the registry's RDAP server. Example:"
-
-msgid "Features"
-msgstr "Features"
-
-msgid "Require Launch Phases"
-msgstr "Require Launch Phases"
-
-msgid "Operator Details"
-msgstr "Operator Details"
-
-msgid "Registry VAT/Company Number"
-msgstr "Registry VAT/Company Number"
-
-msgid "Enter registry operator's VAT number"
-msgstr "Enter registry operator's VAT number"
-
-msgid "Enter the VAT number of the organization operating the registry, or company number if VAT is unavailable."
-msgstr "Enter the VAT number of the organization operating the registry, or company number if VAT is unavailable."
-
-msgid "Contact Address"
-msgstr "Contact Address"
-
-msgid "Enter contact address"
-msgstr "Enter contact address"
-
-msgid "The contact address of the registry."
-msgstr "The contact address of the registry."
-
-msgid "Enter contact email"
-msgstr "Enter contact email"
-
-msgid "The email address for general inquiries to the registry."
-msgstr "The email address for general inquiries to the registry."
-
-msgid "Contact Phone"
-msgstr "Contact Phone"
-
-msgid "Enter contact phone"
-msgstr "Enter contact phone"
-
-msgid "The phone number for general inquiries to the registry."
-msgstr "The phone number for general inquiries to the registry."
-
-msgid "Update Details"
-msgstr "Update Details"
-
-msgid "TLD Management"
-msgstr "TLD Management"
-
-msgid "Create New TLD"
-msgstr "Create New TLD"
-
-msgid "Search TLDs"
-msgstr "Search TLDs"
-
-msgid "Enter the desired top-level domain (TLD) name, like"
-msgstr "Enter the desired top-level domain (TLD) name, like"
-
-msgid "or"
-msgstr "or"
-
-msgid "DNSSEC is currently activated manually. This option is for display purposes only."
-msgstr "DNSSEC is currently activated manually. This option is for display purposes only."
-
-msgid "Select the type of TLD: ccTLD (Country Code Top-Level Domain) or gTLD (Generic Top-Level Domain)."
-msgstr "Select the type of TLD: ccTLD (Country Code Top-Level Domain) or gTLD (Generic Top-Level Domain)."
-
-msgid "Cyrillic"
-msgstr "Cyrillic"
-
-msgid "Japanese"
-msgstr "Japanese"
-
-msgid "Korean"
-msgstr "Korean"
-
-msgid "Choose the script type that the TLD will support. Options include ASCII, Cyrillic, Japanese, and Korean."
-msgstr "Choose the script type that the TLD will support. Options include ASCII, Cyrillic, Japanese, and Korean."
-
-msgid "Upload a CSV file with premium names. Each row should contain a name and its pricing category, separated by a comma."
-msgstr "Upload a CSV file with premium names. Each row should contain a name and its pricing category, separated by a comma."
-
-msgid "Create TLD"
-msgstr "Create TLD"
-
-msgid "Reports"
-msgstr "Reports"
-
-msgid "Search reports"
-msgstr "Search reports"
-
-msgid "Dashboard"
-msgstr "Dashboard"
-
-msgid "View Reports"
-msgstr "View Reports"
-
-msgid "Create new domain"
-msgstr "Create new domain"
-
-msgid "Enable dark mode"
-msgstr "Enable dark mode"
-
-msgid "Enable light mode"
-msgstr "Enable light mode"
-
-msgid "Logout"
-msgstr "Logout"
-
-msgid "List Domains"
-msgstr "List Domains"
-
-msgid "List Applications"
-msgstr "List Applications"
-
-msgid "List Contacts"
-msgstr "List Contacts"
-
-msgid "List Hosts"
-msgstr "List Hosts"
-
-msgid "List Registrars"
-msgstr "List Registrars"
-
-msgid "Financials"
-msgstr "Financials"
-
-msgid "Configuration"
-msgstr "Configuration"
-
-msgid "TLDs"
-msgstr "TLDs"
-
-msgid "Support"
-msgstr "Support"
-
-msgid "Registry Currency"
-msgstr "Registry Currency"
-
-msgid "Choose the currency for all transactions. This impacts billing and financial reports. Inform stakeholders of changes."
-msgstr "Choose the currency for all transactions. This impacts billing and financial reports. Inform stakeholders of changes."
-
-msgid "Contact Validation"
-msgstr "Contact Validation"
-
-msgid "Validate by Phone"
-msgstr "Validate by Phone"
-
-msgid "Validated by Phone"
-msgstr "Validated by Phone"
-
-msgid "Phone Validation"
-msgstr "Phone Validation"
-
-msgid "Validated by Email"
-msgstr "Validated by Email"
-
-msgid "Validate by Email"
-msgstr "Validate by Email"
-
-msgid "Email Validation"
-msgstr "Email Validation"
-
-msgid "Validate by Postal Mail"
-msgstr "Validate by Postal Mail"
-
-msgid "Validated by Postal Mail"
-msgstr "Validated by Postal Mail"
-
-msgid "Postal Mail Validation"
-msgstr "Postal Mail Validation"
-
-msgid "Pending Validation"
-msgstr "Pending Validation"
-
-msgid "Back to Contact Update"
-msgstr "Back to Contact Update"
-
-msgid "Validate Contact"
-msgstr "Validate Contact"
-
-msgid "Settings"
-msgstr "Settings"
-
-msgid "Manage Settings"
-msgstr "Manage Settings"
-
-msgid "Not signed"
-msgstr "Not signed"
-
-msgid "Signed"
-msgstr "Signed"
-
-msgid "These domain names are subject to special regulations or registration requirements. They might be available for registration but under specific conditions, such as proof of eligibility or additional documentation."
-msgstr "These domain names are subject to special regulations or registration requirements. They might be available for registration but under specific conditions, such as proof of eligibility or additional documentation."
-
-msgid "Enter each"
-msgstr "Enter each"
-
-msgid "name on a new line, without the extension. For instance, use \"example\" in place of \"example.com\"."
-msgstr "name on a new line, without the extension. For instance, use \"example\" in place of \"example.com\"."
-
-msgid "View Ticket"
-msgstr "View Ticket"
-
-msgid "Open"
-msgstr "Open"
-
-msgid "In Progress"
-msgstr "In Progress"
-
-msgid "Resolved"
-msgstr "Resolved"
-
-msgid "Low"
-msgstr "Low"
-
-msgid "Medium"
-msgstr "Medium"
-
-msgid "High"
-msgstr "High"
-
-msgid "Critical"
-msgstr "Critical"
+msgid "Ticket"
+msgstr "Ticket"
 
 msgid "Close Ticket"
 msgstr "Close Ticket"
@@ -1444,134 +523,41 @@ msgstr "Escalate Ticket"
 msgid "Reopen Ticket"
 msgstr "Reopen Ticket"
 
-msgid "Enter old password"
-msgstr "Enter old password"
+msgid "Date of Incident"
+msgstr "Date of Incident"
 
-msgid "Enter new password"
-msgstr "Enter new password"
+msgid "Unknown Status"
+msgstr "Unknown Status"
 
-msgid "Recent Domains"
-msgstr "Recent Domains"
+msgid "Unknown"
+msgstr "Unknown"
 
-msgid "Recent Support Tickets"
-msgstr "Recent Support Tickets"
+msgid "Nature of Abuse"
+msgstr "Nature of Abuse"
 
-msgid "Company Number"
-msgstr "Company Number"
+msgid "Evidence"
+msgstr "Evidence"
 
-msgid "Official registration number provided by the relevant authority."
-msgstr "Official registration number provided by the relevant authority."
+msgid "Relevant URLs"
+msgstr "Relevant URLs"
 
-msgid "VAT Number"
-msgstr "VAT Number"
+msgid "Your Response"
+msgstr "Your Response"
 
-msgid "VAT number for tax purposes, if registered for VAT."
-msgstr "VAT number for tax purposes, if registered for VAT."
+msgid "Submit Response"
+msgstr "Submit Response"
 
-msgid "Manage Registrar"
-msgstr "Manage Registrar"
+msgid "Update User"
+msgstr "Update User"
 
-msgid "Manage Custom Pricing"
-msgstr "Manage Custom Pricing"
-
-msgid "Last 7 Days: Domain Registrations"
-msgstr "Last 7 Days: Domain Registrations"
-
-msgid "Top Registrars by Domains"
-msgstr "Top Registrars by Domains"
-
-msgid "Support Tickets: Last Week"
-msgstr "Support Tickets: Last Week"
-
-msgid "Registrar Statistics"
-msgstr "Registrar Statistics"
-
-msgid "Export Domains"
-msgstr "Export Domains"
-
-msgid "Search reports"
-msgstr "Search reports"
-
-msgid "Number of Domains"
-msgstr "Number of Domains"
-
-msgid "Market Share"
-msgstr "Market Share"
-
-msgid "Earnings"
-msgstr "Earnings"
-
-msgid "Open website"
-msgstr "Open website"
-
-msgid "Close"
-msgstr "Close"
-
-msgid "Delete Domain"
-msgstr "Delete Domain"
-
-msgid "Approve Application"
-msgstr "Approve Application"
-
-msgid "Reject Application"
-msgstr "Reject Application"
-
-msgid "Delete Application"
-msgstr "Delete Application"
-
-msgid "Validated"
-msgstr "Validated"
-
-msgid "Invalid"
-msgstr "Invalid"
-
-msgid "Delete Contact"
-msgstr "Delete Contact"
-
-msgid "Delete Host"
-msgstr "Delete Host"
-
-msgid "Impersonate"
-msgstr "Impersonate"
-
-msgid "Choose the currency for all registrar transactions."
-msgstr "Choose the currency for all registrar transactions."
-
-msgid "Notify Registrars"
-msgstr "Notify Registrars"
-
-msgid "Send Registrar Notification"
-msgstr "Send Registrar Notification"
-
-msgid "Select Registrars"
-msgstr "Select Registrars"
-
-msgid "Select All"
-msgstr "Select All"
-
-msgid "Deselect All"
-msgstr "Deselect All"
-
-msgid "Last Login:"
-msgstr "Last Login:"
-
-msgid "Not Available"
-msgstr "Not Available"
-
-msgid "Enter Subject"
-msgstr "Enter Subject"
-
-msgid "Type your message..."
-msgstr "Type your message..."
-
-msgid "Create User"
-msgstr "Create User"
-
-msgid "Create New User"
-msgstr "Create New User"
+msgid "Enter email"
+msgstr "Enter email"
 
 msgid "Username"
 msgstr "Username"
+
+msgid "Enter username"
+msgstr "Enter username"
 
 msgid "Password"
 msgstr "Password"
@@ -1582,8 +568,17 @@ msgstr "Confirm Password"
 msgid "Active"
 msgstr "Active"
 
+msgid "Archived"
+msgstr "Archived"
+
+msgid "Banned"
+msgstr "Banned"
+
 msgid "Pending Review"
 msgstr "Pending Review"
+
+msgid "Suspended"
+msgstr "Suspended"
 
 msgid "Yes"
 msgstr "Yes"
@@ -1591,74 +586,102 @@ msgstr "Yes"
 msgid "No"
 msgstr "No"
 
-msgid "Type"
-msgstr "Type"
-
 msgid "Admin"
 msgstr "Admin"
 
-msgid "Registrar Association"
-msgstr "Registrar Association"
+msgid "Zone Association"
+msgstr "Zone Association"
 
-msgid "Manage User"
-msgstr "Manage User"
+msgid "Hold Ctrl (Windows/Linux) or Cmd (macOS) to select multiple zones. On phones/tablets, tap to select."
+msgstr "Hold Ctrl (Windows/Linux) or Cmd (macOS) to select multiple zones. On phones/tablets, tap to select."
 
-msgid "Update User"
-msgstr "Update User"
+msgid "Zone User"
+msgstr "Zone User"
 
-msgid "Send Notification"
-msgstr "Send Notification"
+msgid "Manage Roles"
+msgstr "Manage Roles"
 
-msgid "Server Health"
-msgstr "Server Health"
+msgid "Accountant"
+msgstr "Accountant"
 
-msgid "Clear Cache"
-msgstr "Clear Cache"
+msgid "Auditor"
+msgstr "Auditor"
 
-msgid "CPU Usage"
-msgstr "CPU Usage"
+msgid "Sales"
+msgstr "Sales"
 
-msgid "CPU Cores"
-msgstr "CPU Cores"
+msgid "Create New User"
+msgstr "Create New User"
 
-msgid "Memory Usage"
-msgstr "Memory Usage"
+msgid "Search users"
+msgstr "Search users"
 
-msgid "Memory"
-msgstr "Memory"
+msgid "Create New Zone"
+msgstr "Create New Zone"
 
-msgid "free of"
-msgstr "free of"
+msgid "Tickets"
+msgstr "Tickets"
 
-msgid "Disk Usage"
-msgstr "Disk Usage"
+msgid "unanswered"
+msgstr "unanswered"
 
-msgid "Disk"
-msgstr "Disk"
+msgid "Create Provider"
+msgstr "Create Provider"
 
-msgid "EPP Server"
-msgstr "EPP Server"
+msgid "Providers"
+msgstr "Providers"
 
-msgid "Running"
-msgstr "Running"
+msgid "Provider Name"
+msgstr "Provider Name"
 
-msgid "Stopped"
-msgstr "Stopped"
+msgid "Service Type"
+msgstr "Service Type"
 
-msgid "Problem? Restart:"
-msgstr "Problem? Restart:"
+msgid "Select type"
+msgstr "Select type"
 
-msgid "DAS Server"
-msgstr "DAS Server"
+msgid "Domain Registry"
+msgstr "Domain Registry"
 
-msgid "Message Producer"
-msgstr "Message Producer"
+msgid "Hosting Provider"
+msgstr "Hosting Provider"
 
-msgid "Message Worker"
-msgstr "Message Worker"
+msgid "Email Platform"
+msgstr "Email Platform"
 
-msgid "Choose Contact to Assign"
-msgstr "Choose Contact to Assign"
+msgid "External API"
+msgstr "External API"
 
-msgid "Assign Contact"
-msgstr "Assign Contact"
+msgid "Custom/Internal"
+msgstr "Custom/Internal"
+
+msgid "API Endpoint or Host:Port"
+msgstr "API Endpoint or Host:Port"
+
+msgid "Credentials / Configuration (JSON)"
+msgstr "Credentials / Configuration (JSON)"
+
+msgid "Include any connection details or configuration here as valid JSON."
+msgstr "Include any connection details or configuration here as valid JSON."
+
+msgid "Pricing / Product Definitions (JSON)"
+msgstr "Pricing / Product Definitions (JSON)"
+
+msgid "Define service types and their prices as valid JSON. For example: domain, hosting, etc."
+msgstr "Define service types and their prices as valid JSON. For example: domain, hosting, etc."
+
+msgid "Inactive"
+msgstr "Inactive"
+
+msgid "Testing"
+msgstr "Testing"
+
+msgid "Update Provider"
+msgstr "Update Provider"
+
+msgid "Create New Provider"
+msgstr "Create New Provider"
+
+msgid "Search providers"
+msgstr "Search providers"
+
