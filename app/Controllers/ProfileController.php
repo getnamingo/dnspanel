@@ -43,7 +43,7 @@ class ProfileController extends Controller
         $username = $session['auth_username'];
 
         // Determine role
-        $roleMap = [0 => 'Administrator', 4 => 'Client'];
+        $roleMap = [0 => 'Administrator', 4 => 'Zone Administrator'];
         $role = $roleMap[$session['auth_roles']] ?? 'Unknown';
 
         // Determine status
@@ -89,15 +89,6 @@ class ProfileController extends Controller
             $data['qrcodeDataUri'] = $qrcodeDataUri;
             $data['secret'] = $secret;
             $data['isWebaEnabled'] = $isWebAuthnEnabled;
-        }
-
-        $contacts = $db->select("SELECT * FROM users_contact WHERE user_id = ?", [ $userId ]);
-        if ($contacts) {
-            $data['contacts'] = $contacts;
-
-            $iso3166 = new ISO3166();
-            $countries = $iso3166->all();
-            $data['countries'] = $countries;
         }
 
         return view($response, 'admin/profile/profile.twig', $data);
@@ -307,166 +298,6 @@ class ProfileController extends Controller
         // Write response body and return with JSON header
         $response->getBody()->write($csrfResponse);
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-    }
-
-    public function updateContacts(Request $request, Response $response)
-    {
-        if ($request->getMethod() === 'POST') {
-            // Retrieve POST data
-            $data = $request->getParsedBody();
-            $db = $this->container->get('db');
-            $userId = $_SESSION['auth_user_id'];
-            $username = $_SESSION['auth_username'];
-
-            $data['owner']['cc'] = strtoupper($data['owner']['cc']);
-            $data['billing']['cc'] = strtoupper($data['billing']['cc']);
-            $data['tech']['cc'] = strtoupper($data['tech']['cc']);
-            $data['abuse']['cc'] = strtoupper($data['abuse']['cc']);
-
-            $phoneValidator = v::regex('/^\+\d{1,3}\.\d{2,12}$/');
-
-            // Define validation for nested fields
-            $contactValidator = [
-                v::key('first_name', v::stringType()->notEmpty()->length(1, 255), true),
-                v::key('last_name', v::stringType()->notEmpty()->length(1, 255), true),
-                v::key('org', v::optional(v::stringType()->length(1, 255)), false),
-                v::key('street1', v::optional(v::stringType()), false),
-                v::key('city', v::stringType()->notEmpty(), true),
-                v::key('sp', v::optional(v::stringType()), false),
-                v::key('pc', v::optional(v::stringType()), false),
-                v::key('cc', v::countryCode(), true),
-                v::key('voice', v::optional($phoneValidator), false),
-                v::key('fax', v::optional(v::phone()), false),
-                v::key('email', v::email(), true)
-            ];
-            
-            $validators = [
-                'owner' => v::optional(v::keySet(...$contactValidator)),
-                'billing' => v::optional(v::keySet(...$contactValidator)),
-                'tech' => v::optional(v::keySet(...$contactValidator)),
-                'abuse' => v::optional(v::keySet(...$contactValidator))
-            ];
-
-            $errors = [];
-            foreach ($validators as $field => $validator) {
-                try {
-                    $validator->assert(isset($data[$field]) ? $data[$field] : []);
-                } catch (\Respect\Validation\Exceptions\NestedValidationException $e) {
-                    $errors[$field] = $e->getMessages();
-                }
-            }
-
-            if (!empty($errors)) {
-                // Handle errors
-                $errorText = '';
-
-                foreach ($errors as $field => $messages) {
-                    $errorText .= ucfirst($field) . ' errors: ' . implode(', ', $messages) . '; ';
-                }
-
-                // Trim the final semicolon and space
-                $errorText = rtrim($errorText, '; ');
-                
-                $this->container->get('flash')->addMessage('error', $errorText);
-                return $response->withHeader('Location', '/profile')->withStatus(302);
-            }
-
-            $db->beginTransaction();
-
-            try {
-                $currentDateTime = new \DateTime();
-                $update = $currentDateTime->format('Y-m-d H:i:s.v');
-
-                $db->update(
-                    'users_contact',
-                    [
-                        'first_name' => $data['owner']['first_name'],
-                        'last_name' => $data['owner']['last_name'],
-                        'org' => $data['owner']['org'],
-                        'street1' => $data['owner']['street1'],
-                        'city' => $data['owner']['city'],
-                        'sp' => $data['owner']['sp'],
-                        'pc' => $data['owner']['pc'],
-                        'cc' => strtolower($data['owner']['cc']),
-                        'voice' => $data['owner']['voice'],
-                        'email' => $data['owner']['email']
-                    ],
-                    [
-                        'user_id' => $userId,
-                        'type' => 'owner'
-                    ]
-                );
-
-                $db->update(
-                    'users_contact',
-                    [
-                        'first_name' => $data['billing']['first_name'],
-                        'last_name' => $data['billing']['last_name'],
-                        'org' => $data['billing']['org'],
-                        'street1' => $data['billing']['street1'],
-                        'city' => $data['billing']['city'],
-                        'sp' => $data['billing']['sp'],
-                        'pc' => $data['billing']['pc'],
-                        'cc' => strtolower($data['billing']['cc']),
-                        'voice' => $data['billing']['voice'],
-                        'email' => $data['billing']['email']
-                    ],
-                    [
-                        'user_id' => $userId,
-                        'type' => 'billing'
-                    ]
-                );
-                
-                $db->update(
-                    'users_contact',
-                    [
-                        'first_name' => $data['tech']['first_name'],
-                        'last_name' => $data['tech']['last_name'],
-                        'org' => $data['tech']['org'],
-                        'street1' => $data['tech']['street1'],
-                        'city' => $data['tech']['city'],
-                        'sp' => $data['tech']['sp'],
-                        'pc' => $data['tech']['pc'],
-                        'cc' => strtolower($data['tech']['cc']),
-                        'voice' => $data['tech']['voice'],
-                        'email' => $data['tech']['email']
-                    ],
-                    [
-                        'user_id' => $userId,
-                        'type' => 'tech'
-                    ]
-                );
-                
-                $db->update(
-                    'users_contact',
-                    [
-                        'first_name' => $data['abuse']['first_name'],
-                        'last_name' => $data['abuse']['last_name'],
-                        'org' => $data['abuse']['org'],
-                        'street1' => $data['abuse']['street1'],
-                        'city' => $data['abuse']['city'],
-                        'sp' => $data['abuse']['sp'],
-                        'pc' => $data['abuse']['pc'],
-                        'cc' => strtolower($data['abuse']['cc']),
-                        'voice' => $data['abuse']['voice'],
-                        'email' => $data['abuse']['email']
-                    ],
-                    [
-                        'user_id' => $userId,
-                        'type' => 'abuse'
-                    ]
-                );
-
-                $db->commit();
-            } catch (Exception $e) {
-                $db->rollBack();
-                $this->container->get('flash')->addMessage('error', 'Database failure during update: ' . $e->getMessage());
-                return $response->withHeader('Location', '/profile')->withStatus(302);
-            }
-
-            $this->container->get('flash')->addMessage('success', 'User ' . $username . ' has been updated successfully on ' . $update);
-            return $response->withHeader('Location', '/profile')->withStatus(302);
-        }
     }
 
 }

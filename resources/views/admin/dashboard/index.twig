@@ -25,13 +25,13 @@
                       {{ __('Support Tickets') }}
                     </a>
                   </span>
-                  <a href="{{route('createZone')}}" class="btn btn-primary d-none d-sm-inline-block">
+                  {% if roles == 0 %}<a href="{{route('createZone')}}" class="btn btn-primary d-none d-sm-inline-block">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                     {{ __('Create New Zone') }}
                   </a>
                   <a href="{{route('createZone')}}" class="btn btn-primary d-sm-none btn-icon" aria-label="{{ __('Create New Zone') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                  </a>
+                  </a>{% endif %}
                 </div>
               </div>
             </div>
@@ -43,7 +43,7 @@
             <div class="col-12">
             {% include 'partials/flash.twig' %}
               <div class="row row-cards">
-                <div class="col-sm-6 col-lg-3">
+                <div class="col-sm-6 col-lg-4">
                   <a class="card card-link" href="{{route('listZones')}}">
                     <div class="card-body">
                       <div class="row align-items-center">
@@ -61,7 +61,7 @@
                     </div>
                   </a>
                 </div>
-                {% if roles == 0 %}<div class="col-sm-6 col-lg-3">
+                {% if roles == 0 %}<div class="col-sm-6 col-lg-4">
                   <a class="card card-link" href="{{route('listUsers')}}">
                     <div class="card-body">
                       <div class="row align-items-center">
@@ -79,7 +79,7 @@
                     </div>
                   </a>
                 </div>{% endif %}
-                <div class="col-sm-6 col-lg-3">
+                <div class="col-sm-6 col-lg-4">
                   <a class="card card-link" href="{{route('ticketview')}}">
                     <div class="card-body">
                       <div class="row align-items-center">

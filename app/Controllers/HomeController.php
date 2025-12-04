@@ -21,7 +21,11 @@ class HomeController extends Controller
 {
     public function index(Request $request, Response $response)
     {
-        return view($response,'index.twig');
+        $appName = envi('APP_NAME') ?: '';
+
+        return view($response, 'index.twig', [
+            'app_name' => $appName,
+        ]);
     }
 
     public function dashboard(Request $request, Response $response)

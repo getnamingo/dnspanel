@@ -93,11 +93,11 @@
         resizableColumns:false,
         placeholder: "{{ __('No Data') }}",
         columns:[
-            {formatter:"responsiveCollapse", width:30, minWidth:30, hozAlign:"center", resizable:false, headerSort:false, responsive:0},
-            {title:"{{ __('Zone') }}", field:"domain_name", minWidth:180, resizable:false, headerSort:true, formatter: domainLinkFormatter, responsive:0},
+            {formatter:"responsiveCollapse", width:40, minWidth:40, hozAlign:"center", resizable:false, headerSort:false, responsive:0},
+            {title:"{{ __('Zone') }}", field:"domain_name", minWidth:170, resizable:false, headerSort:true, formatter: domainLinkFormatter, responsive:0},
             {title:"{{ __('Provider') }}", minWidth:200, field:"config", resizable:false, headerSort:true, responsive:2},
-            {title:"{{ __('Creation Date') }}", width:250, minWidth:150, field:"created_at", resizable:false, headerSort:true, responsive:2},
-            {title:"{{ __('Last Updated') }}", width:250, minWidth:150, field:"updated_at", resizable:false, headerSort:true, responsive:2},
+            {title:"{{ __('Creation Date') }}", width:250, minWidth:140, field:"created_at", resizable:false, headerSort:true, responsive:2},
+            {title:"{{ __('Last Updated') }}", width:250, minWidth:140, field:"updated_at", resizable:false, headerSort:true, responsive:2},
             {title: "{{ __('Actions') }}", formatter: actionsFormatter, resizable:false, headerSort:false, download:false, hozAlign: "center", responsive:0, cellClick: function(e, cell){
                 if (e.target.closest('.delete-btn')) {
                     e.preventDefault(); // Prevent the default link behavior

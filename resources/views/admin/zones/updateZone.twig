@@ -165,13 +165,13 @@
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                                             </button>
                                             <button type="button" class="btn btn-outline-danger btn-icon" value="delete" title="Delete Record" onclick="confirmDelete('record-form-{{ record.recordId }}')">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
-                                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
-                                                        stroke-linecap="round" stroke-linejoin="round">
-                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
-                                                        <path d="M10 10l4 4m0 -4l-4 4"/>
-                                                    </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
+                                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
+                                                    <path d="M10 10l4 4m0 -4l-4 4"/>
+                                                </svg>
                                             </button>
                                         </td>
                                     </form>
@@ -191,26 +191,28 @@
                         <h3 class="card-title">DS Records</h3>
                     </div>
                     <div class="card-body">
-                        <table class="table table-vcenter">
-                            <thead>
-                                <tr>
-                                    <th>Key Tag</th>
-                                    <th>Algo</th>
-                                    <th>Digest Type</th>
-                                    <th>Digest</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for ds in dsList %}
+                        <div class="table-responsive">
+                            <table class="table table-vcenter card-table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Key Tag</th>
+                                        <th>Algo</th>
+                                        <th>Digest Type</th>
+                                        <th>Digest</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ds in dsList %}
                                     <tr>
                                         <td>{{ ds.keytag }}</td>
                                         <td>{{ ds.algorithm }}</td>
                                         <td>{{ ds.digest_type }}</td>
-                                        <td><code>{{ ds.digest }}</code></td>
+                                        <td><code class="user-select-all">{{ ds.digest }}</code></td>
                                     </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             {% endif %}
@@ -219,7 +221,7 @@
         </div>
         {% include 'partials/footer.twig' %}
       </div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/modules/js/sweetalert2.min.js" defer></script>
 <script>
 function confirmDelete(formId) {
     let form = document.getElementById(formId);
@@ -239,12 +241,10 @@ function confirmDelete(formId) {
         confirmButtonText: "Yes, delete it!"
     }).then((result) => {
         if (result.isConfirmed) {
-            // Remove any existing action input
             let existingInput = form.querySelector("input[name='action']");
             if (existingInput) {
-                existingInput.value = "delete"; // Just update it
+                existingInput.value = "delete";
             } else {
-                // Create a hidden input for delete action
                 let input = document.createElement("input");
                 input.type = "hidden";
                 input.name = "action";
@@ -252,7 +252,7 @@ function confirmDelete(formId) {
                 form.appendChild(input);
             }
 
-            form.submit(); // Submit the form
+            form.submit();
         }
     });
 }
