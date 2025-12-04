@@ -294,7 +294,7 @@ log "Cloning NDM into $INSTALL_PATH …"
 mkdir -p "$INSTALL_PATH"
 
 if [[ -z "$(ls -A "$INSTALL_PATH")" ]]; then
-  git clone https://github.com/getnamingo/dnspanel.git "$INSTALL_PATH"
+  git clone https://github.com/getnamingo/domain-manager.git "$INSTALL_PATH"
 else
   warn "$INSTALL_PATH is not empty. Skipping git clone."
 fi

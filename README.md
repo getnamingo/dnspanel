@@ -39,7 +39,7 @@ Namingo Domain Manager supports the following **DNS providers**, each requiring 
 To get started, copy the command below and paste it into your server terminal:
 
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/dnspanel/refs/heads/main/docs/install.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/domain-manager/refs/heads/main/docs/install.sh)
 ```
 
 For detailed installation steps, see [install.md](docs/install.md)
@@ -55,7 +55,7 @@ See the full configuration guide at [Configuration Guide](docs/configuration.md)
 To get started, copy the command below and paste it into your server terminal:
 
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/dnspanel/refs/heads/main/docs/update.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/domain-manager/refs/heads/main/docs/update.sh)
 ```
 
 ## Contributing
@@ -65,4 +65,4 @@ Contributions are welcome! Feel free to submit a pull request or open an issue.
 This project is licensed under the **MIT License**.
 
 ## Contact
-For any issues or feature requests, please open an issue on **[GitHub](https://github.com/getnamingo/dnspanel/issues)**.
+For any issues or feature requests, please open an issue on **[GitHub](https://github.com/getnamingo/domain-manager/issues)**.

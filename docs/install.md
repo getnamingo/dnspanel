@@ -192,7 +192,7 @@ Replace `dns` with your desired username and `RANDOM_STRONG_PASSWORD` with a sec
 ## 5. Download Domain Manager:
 
 ```bash
-git clone https://github.com/getnamingo/dnspanel /var/www/dns
+git clone https://github.com/getnamingo/domain-manager /var/www/dns
 ```
 
 ## 6. Setup Domain Manager:
