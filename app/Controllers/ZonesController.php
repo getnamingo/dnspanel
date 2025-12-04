@@ -265,6 +265,26 @@ class ZonesController extends Controller
                 }
                 if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
                     $config['powerdnsip'] = $powerdnsip;
+                    $config['pdns_master_ip'] = $powerdnsip;
+                }
+                // NS2–NS13 (slaves)
+                for ($i = 2; $i <= 13; $i++) {
+                    $suffix = '_NS' . $i;
+
+                    $apiKeyKey = 'API_KEY' . $suffix;
+                    if (!empty($credentials[$apiKeyKey])) {
+                        $config['apikey_ns' . $i] = $credentials[$apiKeyKey];
+                    }
+
+                    $bindKey = 'BIND_IP' . $suffix;
+                    if (!empty($credentials[$bindKey]) && isValidIP($credentials[$bindKey])) {
+                        $config['bindip_ns' . $i] = $credentials[$bindKey];
+                    }
+
+                    $pdnsKey = 'POWERDNS_IP' . $suffix;
+                    if (!empty($credentials[$pdnsKey]) && isValidIP($credentials[$pdnsKey])) {
+                        $config['powerdnsip_ns' . $i] = $credentials[$pdnsKey];
+                    }
                 }
                 if ($providerDisplay === 'ClouDNS') {
                     $config['cloudns_auth_id'] = $cloudnsAuthId;
@@ -617,6 +637,26 @@ class ZonesController extends Controller
                 }
                 if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
                     $recordData['powerdnsip'] = $powerdnsip;
+                    $recordData['pdns_master_ip'] = $powerdnsip;
+                }
+                // NS2–NS13 (slaves)
+                for ($i = 2; $i <= 13; $i++) {
+                    $suffix = '_NS' . $i;
+
+                    $apiKeyKey = 'API_KEY' . $suffix;
+                    if (!empty($credentials[$apiKeyKey])) {
+                        $recordData['apikey_ns' . $i] = $credentials[$apiKeyKey];
+                    }
+
+                    $bindKey = 'BIND_IP' . $suffix;
+                    if (!empty($credentials[$bindKey]) && isValidIP($credentials[$bindKey])) {
+                        $recordData['bindip_ns' . $i] = $credentials[$bindKey];
+                    }
+
+                    $pdnsKey = 'POWERDNS_IP' . $suffix;
+                    if (!empty($credentials[$pdnsKey]) && isValidIP($credentials[$pdnsKey])) {
+                        $recordData['powerdnsip_ns' . $i] = $credentials[$pdnsKey];
+                    }
                 }
                 if ($providerDisplay === 'ClouDNS') {
                     $recordData['cloudns_auth_id'] = $cloudnsAuthId;
@@ -805,6 +845,26 @@ class ZonesController extends Controller
                         }
                         if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
                             $recordData['powerdnsip'] = $powerdnsip;
+                            $recordData['pdns_master_ip'] = $powerdnsip;
+                        }
+                        // NS2–NS13 (slaves)
+                        for ($i = 2; $i <= 13; $i++) {
+                            $suffix = '_NS' . $i;
+
+                            $apiKeyKey = 'API_KEY' . $suffix;
+                            if (!empty($credentials[$apiKeyKey])) {
+                                $recordData['apikey_ns' . $i] = $credentials[$apiKeyKey];
+                            }
+
+                            $bindKey = 'BIND_IP' . $suffix;
+                            if (!empty($credentials[$bindKey]) && isValidIP($credentials[$bindKey])) {
+                                $recordData['bindip_ns' . $i] = $credentials[$bindKey];
+                            }
+
+                            $pdnsKey = 'POWERDNS_IP' . $suffix;
+                            if (!empty($credentials[$pdnsKey]) && isValidIP($credentials[$pdnsKey])) {
+                                $recordData['powerdnsip_ns' . $i] = $credentials[$pdnsKey];
+                            }
                         }
                         if ($providerDisplay === 'ClouDNS') {
                             $recordData['cloudns_auth_id'] = $cloudnsAuthId;
@@ -1050,6 +1110,26 @@ class ZonesController extends Controller
                 }
                 if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
                     $recordData['powerdnsip'] = $powerdnsip;
+                    $recordData['pdns_master_ip'] = $powerdnsip;
+                }
+                // NS2–NS13 (slaves)
+                for ($i = 2; $i <= 13; $i++) {
+                    $suffix = '_NS' . $i;
+
+                    $apiKeyKey = 'API_KEY' . $suffix;
+                    if (!empty($credentials[$apiKeyKey])) {
+                        $recordData['apikey_ns' . $i] = $credentials[$apiKeyKey];
+                    }
+
+                    $bindKey = 'BIND_IP' . $suffix;
+                    if (!empty($credentials[$bindKey]) && isValidIP($credentials[$bindKey])) {
+                        $recordData['bindip_ns' . $i] = $credentials[$bindKey];
+                    }
+
+                    $pdnsKey = 'POWERDNS_IP' . $suffix;
+                    if (!empty($credentials[$pdnsKey]) && isValidIP($credentials[$pdnsKey])) {
+                        $recordData['powerdnsip_ns' . $i] = $credentials[$pdnsKey];
+                    }
                 }
                 if ($providerDisplay === 'ClouDNS') {
                     $recordData['cloudns_auth_id'] = $cloudnsAuthId;
@@ -1279,6 +1359,26 @@ class ZonesController extends Controller
                 }
                 if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
                     $deleteData['powerdnsip'] = $powerdnsip;
+                    $deleteData['pdns_master_ip'] = $powerdnsip;
+                }
+                // NS2–NS13 (slaves)
+                for ($i = 2; $i <= 13; $i++) {
+                    $suffix = '_NS' . $i;
+
+                    $apiKeyKey = 'API_KEY' . $suffix;
+                    if (!empty($credentials[$apiKeyKey])) {
+                        $deleteData['apikey_ns' . $i] = $credentials[$apiKeyKey];
+                    }
+
+                    $bindKey = 'BIND_IP' . $suffix;
+                    if (!empty($credentials[$bindKey]) && isValidIP($credentials[$bindKey])) {
+                        $deleteData['bindip_ns' . $i] = $credentials[$bindKey];
+                    }
+
+                    $pdnsKey = 'POWERDNS_IP' . $suffix;
+                    if (!empty($credentials[$pdnsKey]) && isValidIP($credentials[$pdnsKey])) {
+                        $deleteData['powerdnsip_ns' . $i] = $credentials[$pdnsKey];
+                    }
                 }
                 if ($providerDisplay === 'ClouDNS') {
                     $deleteData['cloudns_auth_id'] = $cloudnsAuthId;
@@ -1310,6 +1410,26 @@ class ZonesController extends Controller
                 }
                 if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
                     $updateData['powerdnsip'] = $powerdnsip;
+                    $updateData['pdns_master_ip'] = $powerdnsip;
+                }
+                // NS2–NS13 (slaves)
+                for ($i = 2; $i <= 13; $i++) {
+                    $suffix = '_NS' . $i;
+
+                    $apiKeyKey = 'API_KEY' . $suffix;
+                    if (!empty($credentials[$apiKeyKey])) {
+                        $updateData['apikey_ns' . $i] = $credentials[$apiKeyKey];
+                    }
+
+                    $bindKey = 'BIND_IP' . $suffix;
+                    if (!empty($credentials[$bindKey]) && isValidIP($credentials[$bindKey])) {
+                        $updateData['bindip_ns' . $i] = $credentials[$bindKey];
+                    }
+
+                    $pdnsKey = 'POWERDNS_IP' . $suffix;
+                    if (!empty($credentials[$pdnsKey]) && isValidIP($credentials[$pdnsKey])) {
+                        $updateData['powerdnsip_ns' . $i] = $credentials[$pdnsKey];
+                    }
                 }
                 if ($providerDisplay === 'ClouDNS') {
                     $updateData['cloudns_auth_id'] = $cloudnsAuthId;
@@ -1439,6 +1559,26 @@ class ZonesController extends Controller
             }
             if ($powerdnsip !== '127.0.0.1' && isValidIP($powerdnsip)) {
                 $config['powerdnsip'] = $powerdnsip;
+                $config['pdns_master_ip'] = $powerdnsip;
+            }
+            // NS2–NS13 (slaves)
+            for ($i = 2; $i <= 13; $i++) {
+                $suffix = '_NS' . $i;
+
+                $apiKeyKey = 'API_KEY' . $suffix;
+                if (!empty($credentials[$apiKeyKey])) {
+                    $config['apikey_ns' . $i] = $credentials[$apiKeyKey];
+                }
+
+                $bindKey = 'BIND_IP' . $suffix;
+                if (!empty($credentials[$bindKey]) && isValidIP($credentials[$bindKey])) {
+                    $config['bindip_ns' . $i] = $credentials[$bindKey];
+                }
+
+                $pdnsKey = 'POWERDNS_IP' . $suffix;
+                if (!empty($credentials[$pdnsKey]) && isValidIP($credentials[$pdnsKey])) {
+                    $config['powerdnsip_ns' . $i] = $credentials[$pdnsKey];
+                }
             }
             if ($providerDisplay === 'ClouDNS') {
                 $config['cloudns_auth_id'] = $cloudnsAuthId;

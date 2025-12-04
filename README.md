@@ -15,20 +15,20 @@ Namingo Domain Manager is a powerful and flexible tool for managing **DNS zones*
 
 ✅ **Fast and secure** – Uses API keys for authentication and ensures secure communication.
 
-## Supported Providers & Requirements
+## Supported Providers
 Namingo Domain Manager supports the following **DNS providers**, each requiring specific credentials:
 
-| Provider    | Credentials in .env | Requirements  | Status | DNSSEC |
-|------------|---------------------|------------|---------------------|---------------------|
-| **AnycastDNS** | `API_KEY` | | ✅ | ❌ |
-| **Bind9** | `API_KEY:BIND_IP` | [bind9-api-server](https://github.com/getnamingo/bind9-api-server)/[bind9-api-server-sqlite](https://github.com/getnamingo/bind9-api-server-sqlite) | ✅ | 🚧 |
-| **Cloudflare** | `EMAIL:API_KEY` or `API_TOKEN` | | ✅ | ❌ |
-| **ClouDNS** | `AUTH_ID:AUTH_PASSWORD` | | ✅ | ✅ |
-| **Desec** | `API_KEY` | | ✅ | ✅ |
-| **DNSimple** | `API_KEY` | | ✅ | ❌ |
-| **Hetzner** | `API_KEY` | | 🚧 | ❌ |
-| **PowerDNS** | `API_KEY:POWERDNS_IP` | gmysql-dnssec=yes in pdns.conf | ✅ | ✅ |
-| **Vultr** | `API_KEY` | | ✅ | ❌ |
+| Provider    | Credentials | Status | DNSSEC |
+|------------|---------------------|------------|---------------------|
+| **AnycastDNS** | `API_KEY` | ✅ | ❌ |
+| **Bind9** | `API_KEY:BIND_IP` | ✅ | 🚧 |
+| **Cloudflare** | `EMAIL:API_KEY` or `API_TOKEN` | ✅ | ❌ |
+| **ClouDNS** | `AUTH_ID:AUTH_PASSWORD` | ✅ | ✅ |
+| **Desec** | `API_KEY` | ✅ | ✅ |
+| **DNSimple** | `API_KEY` | ✅ | ❌ |
+| **Hetzner** | `API_KEY` | 🚧 | ❌ |
+| **PowerDNS** | `API_KEY:POWERDNS_IP` | ✅ | ✅ |
+| **Vultr** | `API_KEY` | ✅ | ❌ |
 
 ## Documentation
 
@@ -43,6 +43,12 @@ bash <(wget -qO- https://raw.githubusercontent.com/getnamingo/dnspanel/refs/head
 ```
 
 For detailed installation steps, see [install.md](docs/install.md)
+
+### Configuration
+
+After installation, configure your DNS providers and nameservers using `.env`.
+
+See the full configuration guide at [Configuration Guide](docs/configuration.md)
 
 ### Update
 
